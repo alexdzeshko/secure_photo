@@ -26,16 +26,7 @@ public class ImageHelper {
             stream = new FileInputStream(imageUri.getPath());
             byte[] buffer = new byte[stream.available()];
             stream.read(buffer);
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.inJustDecodeBounds = true;
-            BitmapFactory.decodeByteArray(buffer, 0, buffer.length, opts);
-            int imageHeight = opts.outHeight;
-            int imageWidth = opts.outWidth;
-            if (imageHeight > viewHeight || imageWidth > viewWidth) {
-                int hRatio = Math.round((float) imageHeight / (float) viewHeight);
-                int wRatio = Math.round((float) imageWidth / (float) viewWidth);
-                return hRatio < wRatio ? hRatio : wRatio;
-            }
+            return getScaleFactor(buffer, viewWidth, viewHeight);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,6 +38,21 @@ public class ImageHelper {
         return 1;
     }
 
+    public static int getScaleFactor(byte[] buffer, int viewWidth, int viewHeight){
+        int ratio = 1;
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(buffer, 0, buffer.length, opts);
+        int imageHeight = opts.outHeight;
+        int imageWidth = opts.outWidth;
+        AppConst.Log.d("image", "width: %s, height: %s", imageWidth, imageHeight);
+        if (imageHeight > viewHeight || imageWidth > viewWidth) {
+            int hRatio = Math.round((float) imageHeight / (float) viewHeight);
+            int wRatio = Math.round((float) imageWidth / (float) viewWidth);
+            ratio = hRatio > wRatio ? hRatio : wRatio;
+        }
+        return ratio > 1 ? ratio : 1;
+    }
     public static int getScaleFactor(Uri imageUri) {
         return getScaleFactor(imageUri, WIDTH, HEIGHT);
     }

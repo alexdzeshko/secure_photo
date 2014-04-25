@@ -20,9 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.GridView;
 import android.widget.Toast;
 
-import com.etsy.android.grid.StaggeredGridView;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 import com.sckftr.android.securephoto.contract.Contracts;
@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
     private static final int MENU_SHARE = R.id.menu_item_share;
     private static final int MENU_ADD = R.id.menu_add_items;
 
-    @ViewById StaggeredGridView grid;
+    @ViewById GridView grid;
 
     private ImagesGridCursorAdapter mAdapter;
 
@@ -205,8 +205,7 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         showImageFragment(position);
     }
 

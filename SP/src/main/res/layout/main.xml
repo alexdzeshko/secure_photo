@@ -5,28 +5,21 @@
                 android:layout_height="fill_parent"
                 android:orientation="vertical">
 
-    <!--<GridView-->
-        <!--android:id="@+id/grid_view_main"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:columnWidth="@dimen/column_width"-->
-        <!--android:numColumns="auto_fit"-->
-        <!--android:paddingLeft="@dimen/dim_normal"-->
-        <!--android:paddingRight="@dimen/dim_normal"-->
-        <!--android:stretchMode="columnWidth"-->
-        <!--android:adjustViewBounds="true" >-->
-    <!--</GridView>-->
-
-    <com.etsy.android.grid.StaggeredGridView
+    <GridView
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:column_count="3"
-        app:item_margin="8dp"/>
+        android:columnWidth="@dimen/column_width"
+        android:numColumns="auto_fit"
+        android:paddingLeft="@dimen/dim_normal"
+        android:paddingRight="@dimen/dim_normal"
+        android:stretchMode="columnWidth"
+        android:adjustViewBounds="true" >
+    </GridView>
+
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

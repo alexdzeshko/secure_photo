@@ -21,7 +21,7 @@
         <EditText
             android:id="@+id/edit_text_prepare"
             android:layout_width="0dp"
-            android:layout_height="@dimen/tap_item_height"
+            android:layout_height="@dimen/tap_item_dimen"
             android:layout_weight="1"
             android:inputType="text"
             android:textColor="#146899" />
@@ -29,7 +29,7 @@
         <Button
             android:id="@+id/button_prepare_ok"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/tap_item_height"
+            android:layout_height="@dimen/tap_item_dimen"
             android:padding="8dp"
             android:text="@android:string/ok" />
     </LinearLayout>

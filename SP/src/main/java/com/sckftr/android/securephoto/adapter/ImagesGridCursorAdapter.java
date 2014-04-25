@@ -36,9 +36,9 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
     protected void bindData(View view, Context context, Cursor cursor, ViewHolder holder) {
         final String uri = CursorHelper.get(cursor, Contracts.ImageContract.URI);
         final String key = CursorHelper.get(cursor, Contracts.ImageContract.KEY);
+
         final ImageView imageView = (ImageView) holder.getViewById(RES_ID_PHOTO);
-        final ProgressBar progressBar = (ProgressBar) holder
-                .getViewById(RES_ID_PROGRESS);
+        final ProgressBar progressBar = (ProgressBar) holder.getViewById(RES_ID_PROGRESS);
 
         new AsyncTask<String, Void, Bitmap>() {
 

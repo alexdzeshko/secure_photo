@@ -8,7 +8,7 @@
     <EditText
         android:id="@+id/passwordInput"
         android:layout_width="240dp"
-        android:layout_height="@dimen/tap_item_height"
+        android:layout_height="@dimen/tap_item_dimen"
         android:layout_centerInParent="true"
         android:inputType="textPassword" />
 

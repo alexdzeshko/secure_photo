@@ -24,5 +24,22 @@
     
     <dimen name="tap_item_height">48dp</dimen>
 
+    <dimen name="unit.5">4dp</dimen>
+    <dimen name="unit">8dp</dimen>
+    <dimen name="unit2">16dp</dimen>
+    <dimen name="unit3">24dp</dimen>
+    <dimen name="unit4">32dp</dimen>
+    <dimen name="unit5">40dp</dimen>
+    <dimen name="unit6">48dp</dimen>
+    <dimen name="unit8">72dp</dimen>
+    <dimen name="unit9">96dp</dimen>
+
+    <dimen name="textMini">12sp</dimen>
+    <dimen name="textMidi">16sp</dimen>
+    <dimen name="textMaxi">20sp</dimen>
+
+    <dimen name="tap_item_dimen">48dp</dimen>
+
     <dimen name="column_width">100dp</dimen>
+
 </resources>

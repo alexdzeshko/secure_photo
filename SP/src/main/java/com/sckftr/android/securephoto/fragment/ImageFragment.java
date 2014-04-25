@@ -52,8 +52,7 @@ public class ImageFragment extends Fragment implements OnClickListener {
 					byte[] buffer = new byte[stream.available()];
 					stream.read(buffer);
 					byte[] decr = Crypto.decrypt(buffer, uriKey[1]);
-					Bitmap bitmap = BitmapFactory.decodeByteArray(decr, 0,
-							decr.length);
+					Bitmap bitmap = BitmapFactory.decodeByteArray(decr, 0, decr.length);
 					mImageView.setImageBitmap(bitmap);
 
 				} catch (Exception e) {

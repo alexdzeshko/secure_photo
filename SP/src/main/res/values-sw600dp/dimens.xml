@@ -20,6 +20,7 @@
     <dimen name="text_large">24sp</dimen>
     
     <dimen name="tap_item_height">56dp</dimen>
+    <dimen name="tap_item_dimen">56dp</dimen>
 
     <dimen name="column_width">140dp</dimen>
 </resources>
