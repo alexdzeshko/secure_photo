@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import by.deniotokiari.core.helpers.CursorHelper;
+
 public class TakePhotoHelper {
 
     private static final String DIR = ".secure_cam";
@@ -103,7 +105,7 @@ public class TakePhotoHelper {
         int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         final String path = cursor.getString(columnIndex);
-        cursor.close();
+        CursorHelper.close(cursor);
         return "file://" + path;
     }
 

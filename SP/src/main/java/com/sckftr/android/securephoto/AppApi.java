@@ -25,14 +25,16 @@ public class AppApi extends MutableContextWrapper implements AppConst {
 
     static final String ID_TYPE_STRING = "string";
 
+    private Picasso picasso;
 
     public AppApi(Context context) {
         super(context.getApplicationContext());
 
+        picasso = Picasso.with(getApplicationContext());
     }
 
     public Picasso images() {
-        return Picasso.with(getApplicationContext());
+        return picasso;
     }
 
     public String string(int resId, Object... args) {

@@ -85,6 +85,7 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
                                                 .getColumnIndex(Contracts.ImageContract.URI));
                                         String key = cursor.getString(cursor
                                                 .getColumnIndex(Contracts.ImageContract.KEY));
+                                        cursor.close();
                                         FileInputStream stream = null;
                                         FileOutputStream fileOutputStream = null;
                                         try {

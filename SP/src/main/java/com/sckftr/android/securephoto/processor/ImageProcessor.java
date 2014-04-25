@@ -64,8 +64,7 @@ public class ImageProcessor implements IProcessor<Object[], ContentValues> {
 			return false;
 		}
 		try {
-			context.getContentResolver().insert(ContractUtils.getUri(Contracts.ImageContract.class),
-					contentValues);
+			context.getContentResolver().insert(ContractUtils.getUri(Contracts.ImageContract.class), contentValues);
 			return true;
 		} catch (Exception e) {
 			return false;
