@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+<!--  Exceptions -->
+    <string name="ERR_NO_NETWORK_TITLE">Error</string>
+    <string name="ERR_NO_NETWORK">Network unavailable</string>
+
+
+
+    <string name="ERR_UNKNOWN">Unknown error</string>
+    <string name="ERR_UNKNOWN_TITLE">Error</string>
+    
+    <string name="ERR_JSONException">JSON is invalid</string>
+    <string name="ERR_IllegalArgumentException">Wrong data</string>
+   	<string name="ERR_ActivityNotFoundException">No such Activity</string>
+   
+
+    <string name="ERR_TITLE_RemoteException">The data can not be displayed</string>
+    <string name="ERR_RemoteException">Technical problem, please try again later.</string>
+  
+    <string name="ERR_TITLE_SharingError">Post failed. </string>
+    <string name="ERR_SharingError">Logout and try again.</string>
+
+    <string name="ERR_NoSuchElementException">Information about this item is not available</string>
+
+<!--  business -->
+
+ 	<string	name="ERROR_INVALID_DATA">Value entered is invalid</string>
+ 	
+    <string name="ERROR_INT_NUMBER_IN_RANGE">Value entered is invalid. It should be between {0} and {1} and have no decimal point.</string> 
+ 		
+	<string	name="ERROR_VALIDATION_TITLE">Validation error</string>
+
+<!--  technical -->
+    <string name="ERR_FEATURE_IS_NOT_SUPPORTED">The feature is not supported by the version of the device you are using</string>
+    <string name="ERR_NO_VOICE_RECOGNIZED">No voice recognized. Please try again.</string>
+    <string name="ERR_NO_AUTOFOCUS">Your camera does not have autofocus, which is necessary for optimal operation of this module.</string>
+       
+</resources>

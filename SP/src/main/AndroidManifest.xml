@@ -1,0 +1,53 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.sckftr.android.securephoto">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppBaseTheme"
+        android:name=".Application">
+
+        <activity
+            android:name=".activity.MainActivity_"
+            android:label="@string/app_name">
+
+        </activity>
+
+        <activity
+            android:name=".activity.StartActivity_"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppThemeNoBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.PrepareActivity_">
+        </activity>
+
+        <service android:name="by.deniotokiari.core.service.SourceService">
+        </service>
+
+        <provider
+            android:name=".provider.ImagesProvider"
+            android:authorities="com.sckftr.android.securephoto.provider.ImagesProvider"
+            android:exported="false"/>
+
+        <receiver
+            android:name=".receiver.DummyReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.ACTION_MEDIA_MOUNTED"/>
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>
