@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_alpha_black">#cc000000</color>
+    <color name="epam_color">#146899</color>
+
+    <color name="bg_popup">#F0F0F0</color>
+</resources>

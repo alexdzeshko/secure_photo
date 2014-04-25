@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="240dp"
+        android:layout_height="@dimen/tap_item_height"
+        android:layout_centerInParent="true"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/passwordCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/passwordInput"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:text="@string/input_password"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/commitButton"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordInput"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:padding="16dp"
+        android:text="@string/commit_new_password" />
+
+</RelativeLayout>

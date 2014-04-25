@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SecurePhoto</string>
+    <string name="capture_photo">Capture photo</string>
+    <string name="share">Share</string>
+    <string name="input_password">Input password</string>
+    <string name="commit_new_password">Commit new password</string>
+    <string name="add_from_gallery">Add from gallery</string>
+</resources>
