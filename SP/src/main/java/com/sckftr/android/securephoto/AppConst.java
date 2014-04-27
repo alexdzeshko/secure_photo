@@ -3,6 +3,7 @@ package com.sckftr.android.securephoto;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.sckftr.android.securephoto.data.DataApi;
 import com.sckftr.android.utils.Strings;
 import com.squareup.picasso.Picasso;
 
@@ -112,9 +113,9 @@ public interface AppConst {
             return get().images();
         }
 
-//        public static DataApi data() {
-//            return DataApi.instance();
-//        }
+        public static DataApi data() {
+            return DataApi.instance();
+        }
 
 
         // invoked only at Application.onCreate()

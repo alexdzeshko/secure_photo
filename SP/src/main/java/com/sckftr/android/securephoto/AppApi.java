@@ -144,4 +144,9 @@ public class AppApi extends MutableContextWrapper implements AppConst {
         context.startActivity(Intent.createChooser(intent, "Send via..."));
     }
 
+    public void web(String url){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 }

@@ -34,3 +34,9 @@ proguard/
 /local.properties
 /.idea/workspace.xml
 .DS_Store
+
+# Idea non-crucial project fileS
+*.idea
+*.iws
+.idea
+*.iml

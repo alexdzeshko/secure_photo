@@ -1,6 +1,5 @@
 package com.sckftr.android.securephoto.activity;
 
-import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -20,27 +19,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
-import android.widget.Toast;
 
+import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 import com.sckftr.android.securephoto.contract.Contracts;
+import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.ImageFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.securephoto.processor.Crypto;
+import com.sckftr.android.utils.UI;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import by.deniotokiari.core.utils.ContractUtils;
-import by.deniotokiari.core.utils.IOUtils;
 
 @EActivity(R.layout.main)
 public class MainActivity extends FragmentActivity implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -150,77 +144,19 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                                            final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        MainActivity.this);
-                builder.setTitle("Choose action");
-                builder.setMessage("What do you want to do?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("Decrypt",
-                        new DialogInterface.OnClickListener() { // ������ ��
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                new Thread(new Runnable() {
 
-                                    @Override
-                                    public void run() {
-                                        Cursor cursor = (Cursor) mAdapter
-                                                .getItem(position);
-                                        String uri = cursor.getString(cursor
-                                                .getColumnIndex(Contracts.ImageContract.URI));
-                                        String key = cursor.getString(cursor
-                                                .getColumnIndex(Contracts.ImageContract.KEY));
-                                        cursor.close();
-                                        FileInputStream stream = null;
-                                        FileOutputStream fileOutputStream = null;
-                                        try {
-                                            stream = new FileInputStream(uri);
-                                            byte[] buffer = new byte[stream
-                                                    .available()];
-                                            stream.read(buffer);
-                                            byte[] decrypted = Crypto.decrypt(buffer, key);
-                                            fileOutputStream = new FileOutputStream(
-                                                    uri);
-                                            fileOutputStream.write(decrypted);
-                                        } catch (FileNotFoundException e) {
-                                            Toast.makeText(
-                                                    getApplicationContext(),
-                                                    e.getMessage(),
-                                                    Toast.LENGTH_LONG).show();
-                                        } catch (IOException e) {
-                                            Toast.makeText(
-                                                    getApplicationContext(),
-                                                    e.getMessage(),
-                                                    Toast.LENGTH_LONG).show();
-                                        } finally {
-                                            IOUtils.closeStream(stream);
-                                            IOUtils.closeStream(fileOutputStream);
-                                        }
-                                        getContentResolver()
-                                                .delete(ContractUtils
-                                                                .getUri(Contracts.ImageContract.class),
-                                                        Contracts.ImageContract.URI
-                                                                + " = '" + uri
-                                                                + "'", null
-                                                );
-                                    }
-                                }).start();
-                                mAdapter.notifyDataSetChanged();
-                                dialog.dismiss();
-                            }
-                        }
-                );
-                builder.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                dialog.dismiss();
-                            }
-                        }
-                );
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                UI.showAlert(MainActivity.this, null, "Unlock file?", new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) {
+                        Cursor cursor = (Cursor) mAdapter
+                                .getItem(position);
+                        AppConst.API.data().uncryptonize(new Image(cursor), null);
+                        dialog.dismiss();
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
                 return true;
             }
