@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -54,10 +53,96 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
 
     private ImagesGridCursorAdapter mAdapter;
 
-    private boolean mConfigChanged;
+    @Override protected void onResume() {
+        super.onResume();
+        if(!UserHelper.isLogged(this)) StartActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case MENU_CAM:
+                TakePhotoHelper.takePhotoFromCamera(this);
+                return true;
+            case MENU_SHARE:
+                // share
+                return false;
+            case MENU_ADD:
+                TakePhotoHelper.takePhotoFromGallery(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Uri uri = null;
+        if (requestCode == TakePhotoHelper.KEY_CAMERA_REQUEST) {
+            uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
+
+        } else if (requestCode == TakePhotoHelper.KEY_IMAGE_REQUEST && resultCode == RESULT_OK) {
+            uri = data.getData();
+        }
+        if (uri != null) {
+            PrepareActivity.start(this, Uri.parse(TakePhotoHelper.getPath(uri, this)));
+        }
+
+    }
+
+
+    private void showImageFragment(int pos) {
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction();
+        Fragment fragment = new ImageFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ImageFragment.KEY_ARG_POS, pos);
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.content, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        showImageFragment(position);
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        UserHelper.setIsLogged(this, false);
+        super.onUserLeaveHint();
+    }
+
+    public static void start(Context context) {
+        MainActivity_.intent(context).start();
+    }
+
+    @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, null);
+    }
+
+    @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
+    }
 
     @AfterViews void init() {
 
+        //todo REFACTOR
         grid.setOnItemClickListener(this);
         mAdapter = new ImagesGridCursorAdapter(this);
         grid.setAdapter(mAdapter);
@@ -143,111 +228,4 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
 
         getLoaderManager().initLoader(123, null, this);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        mConfigChanged = true;
-        switch (item.getItemId()) {
-            case MENU_CAM:
-                TakePhotoHelper.takePhotoFromCamera(this);
-                return true;
-            case MENU_SHARE:
-                // share
-                return false;
-            case MENU_ADD:
-                TakePhotoHelper.takePhotoFromGallery(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == TakePhotoHelper.KEY_CAMERA_REQUEST) {
-            Uri uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
-            if (uri != null) {
-                mAdapter.notifyDataSetChanged();
-                Intent intent = new Intent(this, PrepareActivity.class);
-                intent.setData(uri);
-                mConfigChanged = true;
-                startActivity(intent);
-            }
-        } else if (requestCode == TakePhotoHelper.KEY_IMAGE_REQUEST && resultCode == RESULT_OK) {
-            Uri uri = data.getData();
-//            Intent intent = new Intent(this, PrepareActivity.class);
-//            intent.setData(Uri.parse(TakePhotoHelper.getPath(uri, getBaseContext())));
-            mConfigChanged = true;
-            PrepareActivity.start(this, Uri.parse(TakePhotoHelper.getPath(uri, this)));
-        }
-    }
-
-
-    private void showImageFragment(int pos) {
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction();
-        Fragment fragment = new ImageFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(ImageFragment.KEY_ARG_POS, pos);
-        fragment.setArguments(bundle);
-        transaction.replace(R.id.content, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        showImageFragment(position);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mConfigChanged = true;
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        UserHelper.setIsLogged(this, false);
-        super.onUserLeaveHint();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.e("onStop", "onStop");
-        if (!mConfigChanged) {
-            Log.e("onStop", "log out");
-            UserHelper.setIsLogged(this, false);
-        }
-        mConfigChanged = false;
-        super.onDestroy();
-    }
-
-    public static void start(Context context) {
-        MainActivity_.intent(context).start();
-    }
-
-    @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, null);
-    }
-
-    @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-    }
-
 }

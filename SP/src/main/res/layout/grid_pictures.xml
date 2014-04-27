@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:id="@+id/progressContainer"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/loading_message"
+            android:paddingTop="4dip"
+            android:singleLine="true"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/listContainer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refreshContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.sta.android.list.HotelResultsActivity">
+
+            <GridView
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:columnWidth="@dimen/column_width"
+                android:numColumns="auto_fit"
+                android:paddingLeft="@dimen/dim_normal"
+                android:paddingRight="@dimen/dim_normal"
+                android:drawSelectorOnTop="true"
+                android:stretchMode="columnWidth"
+                android:adjustViewBounds="true" >
+            </GridView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/emptyContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/unit2"
+            android:gravity="top">
+
+            <TextView
+                android:id="@android:id/empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_dark"
+                android:text="@string/empty_list_text"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <TextView
+                android:id="@+id/emptySub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unit"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textSize="@dimen/textMini"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <Button
+                android:id="@+id/emptyAction"
+                style="@style/wrap_content"
+                android:layout_marginTop="@dimen/unit2"
+                android:visibility="gone"
+                android:gravity="center"/>
+        </LinearLayout>
+    </FrameLayout>
+
+
+</RelativeLayout>

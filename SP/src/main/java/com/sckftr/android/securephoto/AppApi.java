@@ -8,8 +8,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
-import com.sckftr.android.securephoto.utils.UI;
-import com.sckftr.android.securephoto.utils.net.Network;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sckftr.android.utils.UI;
+import com.sckftr.android.utils.net.Network;
 import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
@@ -26,6 +28,13 @@ public class AppApi extends MutableContextWrapper implements AppConst {
     static final String ID_TYPE_STRING = "string";
 
     private Picasso picasso;
+
+    private Gson gson;
+
+    public Gson gson() {
+        if(gson == null) gson = new GsonBuilder().create();
+        return gson;
+    }
 
     public AppApi(Context context) {
         super(context.getApplicationContext());
@@ -134,4 +143,5 @@ public class AppApi extends MutableContextWrapper implements AppConst {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(Intent.createChooser(intent, "Send via..."));
     }
+
 }

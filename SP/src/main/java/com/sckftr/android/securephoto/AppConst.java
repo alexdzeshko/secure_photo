@@ -2,7 +2,8 @@ package com.sckftr.android.securephoto;
 
 import android.content.Context;
 
-import com.sckftr.android.securephoto.utils.Strings;
+import com.google.gson.Gson;
+import com.sckftr.android.utils.Strings;
 import com.squareup.picasso.Picasso;
 
 public interface AppConst {
@@ -85,7 +86,6 @@ public interface AppConst {
     public enum ERROR {
         UNKNOWN,
         NO_NETWORK,
-        BAD_FILTER,
         NOT_SPECIFIED
     }
 
@@ -99,6 +99,12 @@ public interface AppConst {
         public static AppApi get() {
 
             return INSTANCE;
+        }
+
+        private Gson gson;
+
+        public static Gson gson(){
+            return get().gson();
         }
 
         public static Picasso images() {

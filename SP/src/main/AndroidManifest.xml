@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <!--<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>-->
 
     <application
         android:allowBackup="true"
@@ -40,13 +40,13 @@
             android:authorities="com.sckftr.android.securephoto.provider.ImagesProvider"
             android:exported="false"/>
 
-        <receiver
-            android:name=".receiver.DummyReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.ACTION_MEDIA_MOUNTED"/>
-            </intent-filter>
-        </receiver>
+        <!--<receiver-->
+            <!--android:name=".receiver.DummyReceiver"-->
+            <!--android:exported="true">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.ACTION_MEDIA_MOUNTED"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
     </application>
 

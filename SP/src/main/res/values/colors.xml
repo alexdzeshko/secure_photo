@@ -4,4 +4,43 @@
     <color name="epam_color">#146899</color>
 
     <color name="bg_popup">#F0F0F0</color>
+
+    <color name="white">#F3F3F2</color>
+
+    <color name="bg_white_transparent" >#40FFFFFF</color>
+    <color name="bg_white_transparent90">#C8FFFFFF</color>
+
+    <color name="bg_semitransparent" >#40F3F3F2</color>
+
+    <color name="bg_light">#EBEBEA</color>
+    <color name="bg_guests">#ECECEA</color>
+    <color name="bg_active">#00AED2</color>
+    <color name="bg_active_transparent">#2000AED2</color>
+    <color name="bg_active_primary">#CADA2A</color>
+    <color name="bg_active_secondary">#e2e8b0</color>
+    <color name="bg_active_primary80">#C8CADA2A</color>
+    <color name="bg_inactive_panel">#C6C1BC</color>
+    <color name="bg_orange">#ed7724</color>
+
+    <color name="bg_card">#C6C1BC</color>
+
+    <color name="bg_special">#9164AA</color>
+    <color name="bg_alarm">#C52743</color>
+
+    <color name="bg_grey">#6D6E70</color>
+    <color name="bg_grey_transparent">#603F4142</color>
+
+    <color name="text">#6D6E70</color>
+    <color name="text_dark">#3F4142</color>
+    <color name="text_light">#234770</color>
+    <color name="text_white">#FFFFFF</color>
+
+    <color name="bg_black_transparent">#9111</color>
+    <color name="bg_light_pressed">#ccc</color>
+    <color name="bg_dark">#555</color>
+    <color name="bg_dark_pressed">#999</color>
+    <color name="bg_dark_checked">#bbb</color>
+    <color name="bg_dark_disabled">#aaa</color>
+    <color name="bg_dark_unavailable">#888</color>
+    <color name="sky_blue">#00aed1</color>
 </resources>

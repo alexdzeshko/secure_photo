@@ -4,6 +4,7 @@ import android.content.Context;
 import by.deniotokiari.core.helpers.PreferencesHelper;
 import by.deniotokiari.core.utils.HashUtils;
 
+//todo complete refactor
 public class UserHelper {
 
 	private static final String PREF_FIRST_LOGGED = "user:firstLogged";
