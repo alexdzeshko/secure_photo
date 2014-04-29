@@ -19,8 +19,7 @@ public class SourceService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Request request = new Request(intent);
-        ResultReceiver receiver = intent
-                .getParcelableExtra(KEY_RESULT_RECEIVER);
+        ResultReceiver receiver = intent.getParcelableExtra(KEY_RESULT_RECEIVER);
         request.executeRequest(getApplicationContext(), receiver);
     }
 

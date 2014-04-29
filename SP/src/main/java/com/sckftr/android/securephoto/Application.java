@@ -1,7 +1,7 @@
 package com.sckftr.android.securephoto;
 
 import com.sckftr.android.securephoto.processor.ImageProcessor;
-import com.sckftr.android.securephoto.source.ThroughSource;
+import com.sckftr.android.securephoto.source.BitmapFileSource;
 
 import org.androidannotations.annotations.EApplication;
 
@@ -10,13 +10,13 @@ import by.deniotokiari.core.app.CoreApplication;
 @EApplication
 public class Application extends CoreApplication {
 
-	public static final class SOURCE {
+	public interface SOURCE {
 
-		public static final String THROUGH = "source:ThroughSource";
+		public static final String BITMAPFILE = "source:BitmapFileSource";
 
 	}
 
-	public static final class PROCESSOR {
+	public interface PROCESSOR {
 
 		public static final String IMAGE = "processor:ImageProcessor";
 
@@ -28,7 +28,7 @@ public class Application extends CoreApplication {
 
         AppConst.API.init(this);
 
-		registerService(new ThroughSource());
+		registerService(new BitmapFileSource());
 		registerService(new ImageProcessor());
 	}
 

@@ -6,6 +6,7 @@ import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,7 +50,7 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
 
     @Override protected void onResume() {
         super.onResume();
-        if(!UserHelper.isLogged(this)) StartActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+//        if(!UserHelper.isLogged(this)) StartActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
     }
 
     @Override
@@ -65,7 +66,9 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case MENU_CAM:
-                TakePhotoHelper.takePhotoFromCamera(this);
+                if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+                    TakePhotoHelper.takePhotoFromCamera(this);
+                }
                 return true;
             case MENU_SHARE:
                 // share
@@ -81,14 +84,18 @@ public class MainActivity extends FragmentActivity implements AdapterView.OnItem
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Uri uri = null;
-        if (requestCode == TakePhotoHelper.KEY_CAMERA_REQUEST) {
+        if (requestCode == TakePhotoHelper.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.content,PrepareFragment.build(data.getExtras()))
+//                    .addToBackStack("prepare").commit();
 
-        } else if (requestCode == TakePhotoHelper.KEY_IMAGE_REQUEST && resultCode == RESULT_OK) {
+        } else if (requestCode == TakePhotoHelper.REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
             uri = data.getData();
         }
         if (uri != null) {
-            PrepareActivity.start(this, Uri.parse(TakePhotoHelper.getPath(uri, this)));
+//            PrepareActivity.start(this, Uri.parse(TakePhotoHelper.getPath(uri, this)));
+            PrepareActivity.start(this, uri);
         }
 
     }

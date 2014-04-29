@@ -15,7 +15,7 @@ import by.deniotokiari.core.source.ISource;
 import by.deniotokiari.core.utils.IOUtils;
 
 
-public class ThroughSource implements ISource<Object[], Object[]> {
+public class BitmapFileSource implements ISource<Object[], Object[]> {
 
 	@Override
 	public Object[] getSource(Object[] objects) throws Exception {
@@ -43,6 +43,6 @@ public class ThroughSource implements ISource<Object[], Object[]> {
 
 	@Override
 	public String getKey() {
-		return Application.SOURCE.THROUGH;
+		return Application.SOURCE.BITMAPFILE;
 	}
 }

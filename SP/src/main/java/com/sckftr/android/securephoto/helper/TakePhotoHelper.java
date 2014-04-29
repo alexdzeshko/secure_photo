@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.utils.IO;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,30 +22,37 @@ import by.deniotokiari.core.helpers.CursorHelper;
 
 public class TakePhotoHelper {
 
-    private static final String DIR = ".secure_cam";
-    public static final int KEY_CAMERA_REQUEST = 124;
-    public static final int KEY_IMAGE_REQUEST = 123;
+    private static final String DIR_IMAGES = ".secure_cam";
+    public static final int REQUEST_IMAGE_CAPTURE = 124;
+    public static final int REQUEST_IMAGE_GALLERY = 123;
 
     private static Uri sCurrentUri;
 
     public static void takePhotoFromCamera(Activity activity) {
+
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+//            activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//        }
+
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri imageUri = Uri.fromFile(createImageFile());
+        AppConst.Log.d("temp_file", imageUri.toString());
         sCurrentUri = imageUri;
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        activity.startActivityForResult(intent, KEY_CAMERA_REQUEST);
+        activity.startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
 
     public static void takePhotoFromGallery(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        activity.startActivityForResult(intent, KEY_IMAGE_REQUEST);
+        activity.startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
 
     public static Uri getImageUri(int requestCode, int resultCode) {
-        if (requestCode == KEY_CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             return sCurrentUri;
-        } else if (requestCode == KEY_CAMERA_REQUEST) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
             deleteImage(sCurrentUri);
             return null;
         }
@@ -52,6 +60,9 @@ public class TakePhotoHelper {
     }
 
     public static void deleteImage(Uri uri) {
+        //FIXME delete as per stackoverflow
+        // or may be not because it is a simply temp file
+        // refactor anyway
         File file = new File(uri.getPath());
         if (file.exists()) {
             if (!file.delete()) {
@@ -63,9 +74,10 @@ public class TakePhotoHelper {
     }
 
     public static List<Uri> getAllImages() {
+        // todo get both internal and external
         File storageDir = new File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                DIR);
+                DIR_IMAGES);
         File[] files = storageDir.listFiles();
         List<Uri> uris = new ArrayList<Uri>(files.length);
         for (File file : files) {
@@ -75,37 +87,55 @@ public class TakePhotoHelper {
     }
 
     private static File getAlbum() {
-        File storageDir = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                DIR);
-        if (storageDir.exists()) {
-            return storageDir;
-        } else {
-            storageDir.mkdirs();
-            return storageDir;
+//        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                DIR_IMAGES);
+
+        File storageDir = new File(IO.getExternalDir(), DIR_IMAGES);
+        if (!storageDir.exists()) {
+            if(!storageDir.mkdirs()){
+                AppConst.Log.e("STORAGE", "Directory not created");
+            }
         }
+        return storageDir;
+
     }
+
 
     private static File createImageFile() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = timeStamp.hashCode() + "_";
         try {
+
             File album = getAlbum();
+
             return File.createTempFile(imageFileName, ".jpg", album);
+
         } catch (IOException e) {
-            e.printStackTrace();
+
+            AppConst.Log.e("STORAGE", "temp file", e);
+
         }
         return null;
     }
 
     public static String getPath(Uri uri, Context context) {
+
         String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver()
-                .query(uri, proj, null, null, null);
+
+        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+
+        if (cursor == null) return null;
+
         int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
         cursor.moveToFirst();
+
         final String path = cursor.getString(columnIndex);
+
         CursorHelper.close(cursor);
+
+        AppConst.Log.d("image_path", "uri=%s, path=%s", uri, path);
+
         return "file://" + path;
     }
 

@@ -19,6 +19,7 @@ public class Image implements Cryptonite {
         uri = cursor.getString(cursor.getColumnIndex(Contracts.ImageContract.URI));
     }
 
+
     public String getKey() {
         return key;
     }
@@ -31,6 +32,7 @@ public class Image implements Cryptonite {
         key = in.readString();
         uri = in.readString();
     }
+
     @Override public int describeContents() {
         return 0;
     }

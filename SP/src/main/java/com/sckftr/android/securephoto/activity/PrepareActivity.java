@@ -3,9 +3,7 @@ package com.sckftr.android.securephoto.activity;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -49,14 +47,15 @@ public class PrepareActivity extends Activity implements OnClickListener {
         String key = mEditText.getText().toString();
         if (key != null && key.trim().length() != 0) {
             Request<Object[], Object[], ContentValues> request = new Request<Object[], Object[], ContentValues>(new Object[]{mUri, key},
-                    Application.SOURCE.THROUGH, Application.PROCESSOR.IMAGE, true);
+                    Application.SOURCE.BITMAPFILE, Application.PROCESSOR.IMAGE, true);
             SourceService.execute(this, request);
-            try {
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-                        Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
-            } catch (Exception e) {
-                // kitkat security issue
-            }
+
+
+//            try {
+//                sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+//            } catch (Exception e) {
+//                // kitkat security issue
+//            }
             finish();
         } else {
             ToastHelper.show(this, "Input key!", Toast.LENGTH_LONG);
@@ -66,6 +65,7 @@ public class PrepareActivity extends Activity implements OnClickListener {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        //todo remove as per stackoverflow
         TakePhotoHelper.deleteImage(mUri);
     }
 
