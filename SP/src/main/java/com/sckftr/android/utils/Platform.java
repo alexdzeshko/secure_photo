@@ -92,4 +92,8 @@ public class Platform {
         final int id = AppConst.API.get().getId(getNameKey(target.getClass()), type);
         return id==0?defId:id;
     }
+
+    public static boolean hasCamera(Context context){
+        return context != null && context.getPackageManager() != null && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
 }

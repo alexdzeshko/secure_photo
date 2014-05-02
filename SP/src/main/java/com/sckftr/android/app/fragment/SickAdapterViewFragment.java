@@ -55,7 +55,8 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(layoutId(), container);
+        return inflater.inflate(layoutId(), null);
+//        return inflater.inflate(Platform.getResourceIdFor(this, Platform.RESOURCE_TYPE_LAYOUT, R.layout.list_content), container, false);
     }
 
     protected abstract int layoutId();
@@ -228,10 +229,8 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
 
         if (shown) {
             if (animate) {
-                mProgressContainer.startAnimation(AnimationUtils.loadAnimation(
-                        getActivity(), android.R.anim.fade_out));
-                mListContainer.startAnimation(AnimationUtils.loadAnimation(
-                        getActivity(), android.R.anim.fade_in));
+                mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+                mListContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
             } else {
                 mProgressContainer.clearAnimation();
                 mListContainer.clearAnimation();
@@ -240,10 +239,8 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
             mProgressContainer.setVisibility(View.GONE);
         } else {
             if (animate) {
-                mProgressContainer.startAnimation(AnimationUtils.loadAnimation(
-                        getActivity(), android.R.anim.fade_in));
-                mListContainer.startAnimation(AnimationUtils.loadAnimation(
-                        getActivity(), android.R.anim.fade_out));
+                mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+                mListContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
             } else {
                 mProgressContainer.clearAnimation();
                 mListContainer.clearAnimation();

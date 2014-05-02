@@ -13,6 +13,12 @@ android {
         packageName "com.sckftr.android.securephoto"
     }
     buildTypes {
+
+        debug{
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
