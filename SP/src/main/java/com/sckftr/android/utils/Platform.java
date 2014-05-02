@@ -94,6 +94,23 @@ public class Platform {
     }
 
     public static boolean hasCamera(Context context){
-        return context != null && context.getPackageManager() != null && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+        return context != null && context.getPackageManager() != null
+                && (hasJB42() ? context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) : context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA));
+    }
+
+    public static boolean hasKK(){
+        return getSdkInt() >= Build.VERSION_CODES.KITKAT;
+    }
+
+    public static boolean hasJB43(){
+        return getSdkInt() >= Build.VERSION_CODES.JELLY_BEAN_MR2;
+    }
+
+    public static boolean hasJB42(){
+        return getSdkInt() >= Build.VERSION_CODES.JELLY_BEAN_MR1;
+    }
+
+    public static boolean hasJB(){
+        return getSdkInt() >= Build.VERSION_CODES.JELLY_BEAN;
     }
 }

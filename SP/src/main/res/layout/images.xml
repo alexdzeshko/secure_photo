@@ -47,6 +47,9 @@
                 android:numColumns="auto_fit"
                 android:paddingLeft="@dimen/dim_normal"
                 android:paddingRight="@dimen/dim_normal"
+                android:paddingTop="@dimen/unit2"
+                android:clipToPadding="false"
+                android:scrollbarStyle="outsideOverlay"
                 android:drawSelectorOnTop="true"
                 android:stretchMode="columnWidth"
                 android:adjustViewBounds="true" >

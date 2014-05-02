@@ -20,8 +20,8 @@ import org.androidannotations.annotations.EActivity;
 @EActivity(R.layout.frame)
 public class MainActivity extends BaseActivity {
 
-    private static final int MENU_CAM = R.id.menu_item_camera;
-    private static final int MENU_SHARE = R.id.menu_item_share;
+    private static final int MENU_CAM = R.id.menu_camera;
+    private static final int MENU_SHARE = R.id.menu_share;
     private static final int MENU_ADD = R.id.menu_add_items;
 
     @AfterViews void init() {
@@ -44,13 +44,15 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
+
         switch (item.getItemId()) {
-            case MENU_CAM:
-                if(!Platform.hasCamera(this)) {
-                    TakePhotoHelper.takePhotoFromCamera(this);
-                }
+            case MENU_CAM: {
+                if (!Platform.hasCamera(this)) return false;
+
+                TakePhotoHelper.takePhotoFromCamera(this);
+
                 return true;
+            }
             case MENU_SHARE:
                 // share
                 return false;
