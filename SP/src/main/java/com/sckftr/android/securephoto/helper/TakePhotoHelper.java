@@ -30,11 +30,6 @@ public class TakePhotoHelper {
 
     public static void takePhotoFromCamera(Activity activity) {
 
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
-//            activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//        }
-
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri imageUri = Uri.fromFile(createImageFile());
         AppConst.Log.d("temp_file", imageUri.toString());
@@ -53,24 +48,10 @@ public class TakePhotoHelper {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             return sCurrentUri;
         } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            deleteImage(sCurrentUri);
+            IO.delete(sCurrentUri);
             return null;
         }
         return null;
-    }
-
-    public static void deleteImage(Uri uri) {
-        //FIXME delete as per stackoverflow
-        // or may be not because it is a simply temp file
-        // refactor anyway
-        File file = new File(uri.getPath());
-        if (file.exists()) {
-            if (!file.delete()) {
-                AppConst.Log.w("File", "file not deleted " + uri);
-            }
-        } else {
-            AppConst.Log.w("File", "file does not exist: " + uri);
-        }
     }
 
     public static List<Uri> getAllImages() {
@@ -86,27 +67,12 @@ public class TakePhotoHelper {
         return uris;
     }
 
-    private static File getAlbum() {
-//        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//                DIR_IMAGES);
-
-        File storageDir = new File(IO.getExternalDir(), DIR_IMAGES);
-        if (!storageDir.exists()) {
-            if(!storageDir.mkdirs()){
-                AppConst.Log.e("STORAGE", "Directory not created");
-            }
-        }
-        return storageDir;
-
-    }
-
-
     private static File createImageFile() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = timeStamp.hashCode() + "_";
         try {
 
-            File album = getAlbum();
+            File album = AppConst.Storage.getSecureFolder();
 
             return File.createTempFile(imageFileName, ".jpg", album);
 
@@ -118,7 +84,7 @@ public class TakePhotoHelper {
         return null;
     }
 
-    public static String getPath(Uri uri, Context context) {
+    public static Uri getPath(Uri uri, Context context) {
 
         String[] proj = {MediaStore.Images.Media.DATA};
 
@@ -136,7 +102,7 @@ public class TakePhotoHelper {
 
         AppConst.Log.d("image_path", "uri=%s, path=%s", uri, path);
 
-        return "file://" + path;
+        return Uri.parse("file://" + path);
     }
 
 

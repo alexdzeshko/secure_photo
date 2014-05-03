@@ -1,6 +1,8 @@
 package com.sckftr.android.securephoto.db;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 
 import com.sckftr.android.securephoto.contract.Contracts;
@@ -12,6 +14,10 @@ public class Image implements Cryptonite {
     public Image(String key, String uri) {
         this.key = key;
         this.uri = uri;
+    }
+
+    public Image(String key, Uri uri) {
+        this(key, uri.toString());
     }
 
     public Image(Cursor cursor){
@@ -26,6 +32,10 @@ public class Image implements Cryptonite {
 
     public String getUri() {
         return uri;
+    }
+
+    public Uri getURI() {
+        return Uri.parse(uri);
     }
 
     public Image(Parcel in) {
@@ -52,4 +62,11 @@ public class Image implements Cryptonite {
             return new Image[0];
         }
     };
+
+    public ContentValues contentValues(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Contracts.ImageContract.KEY, key);
+        contentValues.put(Contracts.ImageContract.URI, uri);
+        return contentValues;
+    }
 }

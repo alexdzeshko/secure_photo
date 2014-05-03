@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
@@ -33,28 +32,23 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/refreshContainer"
+        <GridView
+            android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.sta.android.list.HotelResultsActivity">
-
-            <GridView
-                android:id="@android:id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:columnWidth="@dimen/column_width"
-                android:numColumns="auto_fit"
-                android:paddingLeft="@dimen/dim_normal"
-                android:paddingRight="@dimen/dim_normal"
-                android:paddingTop="@dimen/unit2"
-                android:clipToPadding="false"
-                android:scrollbarStyle="outsideOverlay"
-                android:drawSelectorOnTop="true"
-                android:stretchMode="columnWidth"
-                android:adjustViewBounds="true" >
-            </GridView>
-        </android.support.v4.widget.SwipeRefreshLayout>
+            android:columnWidth="@dimen/column_width"
+            android:numColumns="auto_fit"
+            android:paddingLeft="@dimen/dim_normal"
+            android:paddingRight="@dimen/dim_normal"
+            android:paddingTop="@dimen/unit2"
+            android:clipToPadding="false"
+            android:scrollbarStyle="outsideOverlay"
+            android:drawSelectorOnTop="true"
+            android:stretchMode="columnWidth"
+            android:adjustViewBounds="true"
+            android:horizontalSpacing="@dimen/unit.5"
+            android:verticalSpacing="@dimen/unit.5">
+        </GridView>
 
         <LinearLayout
             android:id="@+id/emptyContainer"

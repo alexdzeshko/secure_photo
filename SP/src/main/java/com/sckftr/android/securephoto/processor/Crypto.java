@@ -6,27 +6,28 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.utils.IO;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
 import by.deniotokiari.core.context.ContextHolder;
-import by.deniotokiari.core.utils.IOUtils;
 
 public class Crypto {
 
     public static final String TAG = Crypto.class.getSimpleName();
 
     //MAIN XOR METHOD
-	public static byte[] encrypt(byte[] arr, String keyWord) {
-		byte[] keyarr = keyWord.getBytes();
-		byte[] result = new byte[arr.length];
-		for (int i = 0; i < arr.length; i++) {
-			result[i] = (byte) (arr[i] ^ keyarr[i % keyarr.length]);
-		}
-		return result;
-	}
+    public static byte[] encrypt(byte[] arr, String keyWord) {
+        byte[] keyarr = keyWord.getBytes();
+        byte[] result = new byte[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            result[i] = (byte) (arr[i] ^ keyarr[i % keyarr.length]);
+        }
+        return result;
+    }
 
     //MAIN XOR METHOD
     public static byte[] decrypt(byte[] text, String keyWord) {
@@ -39,9 +40,9 @@ public class Crypto {
     }
 
 
-    public static boolean encrypt(Bitmap bitmap, Uri fileUri, String key){
+    public static boolean encrypt(Bitmap bitmap, Uri fileUri, String key) {
         if (bitmap == null || key == null || fileUri == null) {
-            AppConst.Log.w(TAG, "encrypt with null: bitmap-%s, uri-%s, key-%s", bitmap==null, fileUri==null, key==null);
+            AppConst.Log.w(TAG, "encrypt with null: bitmap-%s, uri-%s, key-%s", bitmap == null, fileUri == null, key == null);
             return false;
         }
 
@@ -54,9 +55,10 @@ public class Crypto {
             baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
             bitmap.recycle();
-
             byte[] b = baos.toByteArray();
+
             byte[] encryptedData = encrypt(b, key);
+
             File file = new File(fileUri.getPath());
             fileOutputStream = new FileOutputStream(file);
             fileOutputStream.write(encryptedData);
@@ -65,11 +67,54 @@ public class Crypto {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             result = false;
         } finally {
-            IOUtils.closeStream(baos);
-            IOUtils.closeStream(fileOutputStream);
+            IO.close(baos);
+            IO.close(fileOutputStream);
         }
 
         return result;
     }
 
+    public static boolean encrypt(Uri fileUri, String key) {
+
+        boolean result;
+
+        InputStream inputStream = null;
+        Context context = ContextHolder.getInstance().getContext();
+
+        FileOutputStream fileOutputStream = null;
+        try {
+            inputStream = context.getContentResolver().openInputStream(fileUri);
+
+            if (inputStream == null) return false;
+
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+
+            byte[] encryptedData = encrypt(buffer, key);
+
+            Uri secureUri = AppConst.Storage.getSecureUri(fileUri);
+
+            File file = new File(secureUri.getPath());
+
+            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(encryptedData);
+            result = true;
+
+        } catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            result = false;
+        } finally {
+            IO.close(inputStream);
+            IO.close(fileOutputStream);
+        }
+
+        return result;
+    }
+
+    public static void deleteUnsecureFile(Uri uri) {
+        Uri secureUri = AppConst.Storage.getSecureUri(uri);
+        if (!secureUri.equals(uri)) {
+            IO.delete(uri);
+        }
+    }
 }

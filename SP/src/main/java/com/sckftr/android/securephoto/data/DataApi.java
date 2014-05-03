@@ -1,7 +1,9 @@
 package com.sckftr.android.securephoto.data;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
@@ -54,16 +56,32 @@ public class DataApi implements AppConst {
 
     }
 
+    private void lockFile(Cryptonite file) {
+
+        Uri uri = Uri.parse(file.getUri());
+        String key = file.getKey();
+
+        if (Crypto.encrypt(uri, key)) Crypto.deleteUnsecureFile(uri);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Contracts.ImageContract.KEY, key);
+        contentValues.put(Contracts.ImageContract.URI, Storage.getSecureUri(uri).getPath());
+
+        API.get().getApplicationContext().getContentResolver().insert(ContractUtils.getUri(Contracts.ImageContract.class), contentValues);
+
+    }
+
     public static DataApi instance() {
         if (instance == null) instance = new DataApi();
         return instance;
     }
 
     private enum CommandName {
-        unlockFile
+        unlockFile,
+        lockFile
     }
 
-    protected static class DataAsyncEnforcerService extends IntentService {
+    public static class DataAsyncEnforcerService extends IntentService {
         public static final String PARAM_IN_COMMAND_NAME = "icommand";
         public static final String PARAM_IN_DATA = "idata";
         public static final String PARAM_IN_CALLBACK = "icallback";
@@ -84,10 +102,13 @@ public class DataApi implements AppConst {
                     Image image = intent.getParcelableExtra(PARAM_IN_DATA);
                     API.data().unlockFile(image);
                     break;
-//                case addLocationEntry:
-//                    LocationInfo locationInfo = intent.getParcelableExtra(PARAM_IN_DATA);
-//                    resultingBundle = createSingleEntyBundle(API.data().addLocationEntry(application, locationInfo));
-//                    break;
+                case lockFile:
+                    image = intent.getParcelableExtra(PARAM_IN_DATA);
+                    API.data().lockFile(image);
+                    //                    resultingBundle = createSingleEntyBundle(API.data().addLocationEntry(application, locationInfo));
+                    break;
+                default:
+                    break;
 
             }
 
@@ -111,8 +132,14 @@ public class DataApi implements AppConst {
 
     }
 
-    public void uncryptonize(Cryptonite cryptonite, Procedure<? extends Object> callback){
+    public void uncryptonize(Cryptonite cryptonite, Procedure<? extends Object> callback) {
         final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.unlockFile, createResultReceiver(callback));
+        intent.putExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
+        dispatchServiceCall(intent);
+    }
+
+    public void cryptonize(Cryptonite cryptonite, Procedure<? extends Object> callback) {
+        final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.lockFile, createResultReceiver(callback));
         intent.putExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
         dispatchServiceCall(intent);
     }

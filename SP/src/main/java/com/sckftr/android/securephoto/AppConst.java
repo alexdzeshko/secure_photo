@@ -1,11 +1,15 @@
 package com.sckftr.android.securephoto;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.google.gson.Gson;
 import com.sckftr.android.securephoto.data.DataApi;
+import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Strings;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 public interface AppConst {
     int ASCENDING = 1;
@@ -199,8 +203,26 @@ public interface AppConst {
         }
     }
 
-    public static class Settings {
+    public static class Storage {
 
+        private static final String DIR_IMAGES = ".secure_cam";
 
+        public static File getSecureFolder() {
+//        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                DIR_IMAGES);
+
+            File storageDir = new File(IO.getExternalDir(), DIR_IMAGES);
+            if (!storageDir.exists()) {
+                if (!storageDir.mkdirs()) {
+                    AppConst.Log.e("STORAGE", "Directory not created");
+                }
+            }
+            return storageDir;
+
+        }
+
+        public static Uri getSecureUri(Uri unsecureUri){
+            return Uri.parse(getSecureFolder()+unsecureUri.getLastPathSegment());
+        }
     }
 }

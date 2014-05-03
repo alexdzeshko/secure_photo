@@ -3,11 +3,11 @@ package com.sckftr.android.securephoto.helper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.processor.Crypto;
+import com.sckftr.android.utils.IO;
 
 import java.io.FileInputStream;
 
@@ -16,7 +16,7 @@ import by.deniotokiari.core.utils.IOUtils;
 /**
  * Created by Aliaksei_Dziashko on 12/18/13.
  */
-public class ImageHelper {
+public class ImageHelper implements AppConst{
 
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 768;
@@ -47,7 +47,7 @@ public class ImageHelper {
         BitmapFactory.decodeByteArray(buffer, 0, buffer.length, opts);
         int imageHeight = opts.outHeight;
         int imageWidth = opts.outWidth;
-        AppConst.Log.d("image", "width: %s, height: %s", imageWidth, imageHeight);
+        Log.d("image", "width: %s, height: %s", imageWidth, imageHeight);
         if (imageHeight > viewHeight || imageWidth > viewWidth) {
             int hRatio = Math.round((float) imageHeight / (float) viewHeight);
             int wRatio = Math.round((float) imageWidth / (float) viewWidth);
@@ -59,15 +59,17 @@ public class ImageHelper {
         return getScaleFactor(imageUri, WIDTH, HEIGHT);
     }
 
-    public static void setBitmapByUri(Uri uri, ImageView view) {
+    public static void load(Uri uri, ImageView view) {
         // big todo
-        AppConst.API.images().load(uri).into(view);
+        API.images().load(uri).into(view);
     }
 
     public static void loadEncryptedFile(String key, String uri, ImageView imageView){
+
+        FileInputStream stream = null;
         try {
             //todo big refactor
-            FileInputStream stream = new FileInputStream(uri);
+            stream = new FileInputStream(uri);
             byte[] buffer = new byte[stream.available()];
             stream.read(buffer);
             byte[] decr = Crypto.decrypt(buffer, key);
@@ -77,7 +79,9 @@ public class ImageHelper {
             imageView.setImageBitmap(bitmap);
 
         } catch (Exception e) {
-            AppConst.Log.e("ImageHelper", "encrypted file load error", e);
+            Log.e("ImageHelper", "encrypted file load error", e);
+        } finally {
+            IO.close(stream);
         }
     }
 }

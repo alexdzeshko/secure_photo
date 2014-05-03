@@ -34,8 +34,9 @@
         <activity android:name=".activity.PrepareActivity_">
         </activity>
 
-        <service android:name="by.deniotokiari.core.service.SourceService">
-        </service>
+        <service android:name=".data.DataApi$DataAsyncEnforcerService"/>
+
+        <service android:name="by.deniotokiari.core.service.SourceService"/>
 
         <provider
             android:name=".provider.ImagesProvider"

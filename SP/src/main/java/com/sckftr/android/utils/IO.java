@@ -1,6 +1,9 @@
 package com.sckftr.android.utils;
 
+import android.net.Uri;
 import android.os.Environment;
+
+import com.sckftr.android.securephoto.AppConst;
 
 import java.io.Closeable;
 import java.io.File;
@@ -43,5 +46,15 @@ public class IO {
 
     public static File getExternalDir(){
         return ContextHolder.getInstance().getContext().getExternalFilesDir(null);
+    }
+
+    public static void delete(Uri uri) {
+        File file = new File(uri.getPath());
+        if (file.exists()) {
+            AppConst.Log.d("File", "file: %s, deleted: %s ", uri, file.delete());
+
+        } else {
+            AppConst.Log.w("File", "file does not exist: " + uri);
+        }
     }
 }

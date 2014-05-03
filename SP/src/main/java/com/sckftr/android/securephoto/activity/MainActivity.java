@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseActivity;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.ImagesFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
@@ -70,16 +71,13 @@ public class MainActivity extends BaseActivity {
         Uri uri = null;
         if (requestCode == TakePhotoHelper.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.content,PrepareFragment.build(data.getExtras()))
-//                    .addToBackStack("prepare").commit();
 
         } else if (requestCode == TakePhotoHelper.REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
-            uri = data.getData();
+            uri = TakePhotoHelper.getPath(data.getData(), this);
         }
         if (uri != null) {
-//            PrepareActivity.start(this, Uri.parse(TakePhotoHelper.getPath(uri, this)));
-            PrepareActivity.start(this, uri);
+            Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
+            PrepareActivity.start(this, image);
         }
 
     }

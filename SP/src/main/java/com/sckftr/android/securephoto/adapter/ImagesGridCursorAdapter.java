@@ -40,6 +40,8 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
         final ImageView imageView = (ImageView) holder.getViewById(RES_ID_PHOTO);
         final ProgressBar progressBar = (ProgressBar) holder.getViewById(RES_ID_PROGRESS);
 
+        imageView.setImageResource(R.drawable.ic_blue_lock);
+
         new AsyncTask<String, Void, Bitmap>() {
 
             @Override
