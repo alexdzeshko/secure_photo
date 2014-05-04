@@ -9,11 +9,10 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
-import by.deniotokiari.core.context.ContextHolder;
-
 public class IO {
 
     public static final float MIN_ACCEPTABLE_SPACE = 50 * 1024 * 1024;
+    private static final String TAG = IO.class.getSimpleName();
 
     public static void close(Closeable closeable) {
         if (closeable != null) {
@@ -45,16 +44,23 @@ public class IO {
     }
 
     public static File getExternalDir(){
-        return ContextHolder.getInstance().getContext().getExternalFilesDir(null);
+        return Environment.getExternalStorageDirectory();
+//        return ContextHolder.getInstance().getContext().getExternalFilesDir(null);
+    }
+
+    public static File getExternalDirPublic() {
+        File publicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        publicDirectory.mkdirs();
+        return publicDirectory;
     }
 
     public static void delete(Uri uri) {
         File file = new File(uri.getPath());
         if (file.exists()) {
-            AppConst.Log.d("File", "file: %s, deleted: %s ", uri, file.delete());
+            AppConst.Log.d(TAG, "file: %s, deleted: %s ", uri, file.delete());
 
         } else {
-            AppConst.Log.w("File", "file does not exist: " + uri);
+            AppConst.Log.w(TAG, "file does not exist: " + uri);
         }
     }
 }

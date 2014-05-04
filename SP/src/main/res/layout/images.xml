@@ -34,20 +34,17 @@
 
         <GridView
             android:id="@android:id/list"
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:columnWidth="@dimen/column_width"
             android:numColumns="auto_fit"
-            android:paddingLeft="@dimen/dim_normal"
-            android:paddingRight="@dimen/dim_normal"
-            android:paddingTop="@dimen/unit2"
+            android:padding="@dimen/unit.5"
             android:clipToPadding="false"
             android:scrollbarStyle="outsideOverlay"
             android:drawSelectorOnTop="true"
             android:stretchMode="columnWidth"
-            android:adjustViewBounds="true"
-            android:horizontalSpacing="@dimen/unit.5"
-            android:verticalSpacing="@dimen/unit.5">
+            >
         </GridView>
 
         <LinearLayout

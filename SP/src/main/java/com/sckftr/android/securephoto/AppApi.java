@@ -7,6 +7,7 @@ import android.content.MutableContextWrapper;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,17 +33,17 @@ public class AppApi extends MutableContextWrapper implements AppConst {
     private Gson gson;
 
     public Gson gson() {
-        if(gson == null) gson = new GsonBuilder().create();
+        if (gson == null) gson = new GsonBuilder().create();
         return gson;
     }
 
     public AppApi(Context context) {
         super(context.getApplicationContext());
 
-        picasso = Picasso.with(getApplicationContext());
     }
 
     public Picasso images() {
+        if (picasso == null) picasso = Picasso.with(getApplicationContext());
         return picasso;
     }
 
@@ -54,9 +55,9 @@ public class AppApi extends MutableContextWrapper implements AppConst {
         return resId > 0 ? getResources().getQuantityString(resId, i, i) : null;
     }
 
-	public int color(int resId) {
-		return resId > 0 ? getResources().getColor(resId) : getResources().getColor(android.R.color.darker_gray);
-	}
+    public int color(int resId) {
+        return resId > 0 ? getResources().getColor(resId) : getResources().getColor(android.R.color.darker_gray);
+    }
 
     public String[] stringArray(int resId) {
         return getResources().getStringArray(resId);
@@ -133,20 +134,43 @@ public class AppApi extends MutableContextWrapper implements AppConst {
     public void call(String number) {
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getBaseContext().startActivity(intent);
+        startActivity(intent);
     }
 
     public void email(Activity context, String emailAddress) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("mailto:"+emailAddress));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + emailAddress));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(Intent.createChooser(intent, "Send via..."));
     }
 
-    public void web(String url){
+    public void web(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    public void gallery(Activity activity, int requestCode) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public void camera(Activity activity, int requestCode) {
+        if (activity == null) return;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivityForResult(takePictureIntent, requestCode);
+        }
+    }
+
+    public void camera(Activity activity, int requestCode, Uri target) {
+        if (activity == null) return;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+            if (target != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, target);
+                activity.startActivityForResult(takePictureIntent, requestCode);
+            }
+        }
     }
 }

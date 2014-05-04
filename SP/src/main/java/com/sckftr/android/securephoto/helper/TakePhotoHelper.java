@@ -2,7 +2,6 @@ package com.sckftr.android.securephoto.helper;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -10,6 +9,7 @@ import android.provider.MediaStore;
 
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.utils.IO;
+import com.sckftr.android.utils.Platform;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,23 +25,24 @@ public class TakePhotoHelper {
     private static final String DIR_IMAGES = ".secure_cam";
     public static final int REQUEST_IMAGE_CAPTURE = 124;
     public static final int REQUEST_IMAGE_GALLERY = 123;
+    private static final String TAG = TakePhotoHelper.class.getSimpleName();
 
     private static Uri sCurrentUri;
 
-    public static void takePhotoFromCamera(Activity activity) {
+    public static boolean takePhotoFromCamera(Activity activity) {
+        if (!Platform.hasCamera(activity)) return false;
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri imageUri = Uri.fromFile(createImageFile());
-        AppConst.Log.d("temp_file", imageUri.toString());
+
         sCurrentUri = imageUri;
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        activity.startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+
+        AppConst.API.get().camera(activity, REQUEST_IMAGE_CAPTURE, imageUri);
+
+        return true;
     }
 
     public static void takePhotoFromGallery(Activity activity) {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        activity.startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
+        AppConst.API.get().gallery(activity, REQUEST_IMAGE_GALLERY);
     }
 
     public static Uri getImageUri(int requestCode, int resultCode) {
@@ -68,17 +69,21 @@ public class TakePhotoHelper {
     }
 
     private static File createImageFile() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = timeStamp.hashCode() + "_";
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + "_";
         try {
 
             File album = AppConst.Storage.getSecureFolder();
 
-            return File.createTempFile(imageFileName, ".jpg", album);
+            File tempFile = File.createTempFile(imageFileName, ".jpg", album);
+
+            AppConst.Log.d("temp_file", Uri.fromFile(tempFile).toString());
+
+            return tempFile;
 
         } catch (IOException e) {
 
-            AppConst.Log.e("STORAGE", "temp file", e);
+            AppConst.Log.e("STORAGE", "temp_file", e);
 
         }
         return null;
@@ -100,9 +105,10 @@ public class TakePhotoHelper {
 
         CursorHelper.close(cursor);
 
-        AppConst.Log.d("image_path", "uri=%s, path=%s", uri, path);
+        Uri filePath = Uri.parse("file://" + path);
 
-        return Uri.parse("file://" + path);
+        AppConst.Log.d(TAG, "gallery img uri: %s, path: %s", uri, filePath);
+        return filePath;
     }
 
 

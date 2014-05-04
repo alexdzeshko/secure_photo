@@ -2,6 +2,7 @@ package com.sckftr.android.securephoto.processor;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.widget.Toast;
 
@@ -101,7 +102,7 @@ public class Crypto {
             result = true;
 
         } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            AppConst.Log.e(TAG, "when encrypt", e);
             result = false;
         } finally {
             IO.close(inputStream);
@@ -113,8 +114,18 @@ public class Crypto {
 
     public static void deleteUnsecureFile(Uri uri) {
         Uri secureUri = AppConst.Storage.getSecureUri(uri);
+        AppConst.Log.d(TAG, "orig_uri: %s, sec_uri: %s", uri, secureUri);
         if (!secureUri.equals(uri)) {
             IO.delete(uri);
+            MediaScannerConnection.scanFile(ContextHolder.getInstance().getContext(), new String[]{uri.toString()}, null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            AppConst.Log.d(TAG, "Scanned " + path + ":");
+                            AppConst.Log.d(TAG, "-> uri=" + uri);
+                        }
+                    }
+            );
+            AppConst.Log.d(TAG, "deleted: %s", uri);
         }
     }
 }

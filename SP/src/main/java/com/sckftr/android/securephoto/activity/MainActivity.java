@@ -13,7 +13,6 @@ import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.ImagesFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.utils.Platform;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -47,15 +46,11 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case MENU_CAM: {
-                if (!Platform.hasCamera(this)) return false;
+            case MENU_CAM:
+                return TakePhotoHelper.takePhotoFromCamera(this);
 
-                TakePhotoHelper.takePhotoFromCamera(this);
-
-                return true;
-            }
             case MENU_SHARE:
-                // share
+
                 return false;
             case MENU_ADD:
                 TakePhotoHelper.takePhotoFromGallery(this);
@@ -77,7 +72,9 @@ public class MainActivity extends BaseActivity {
         }
         if (uri != null) {
             Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
-            PrepareActivity.start(this, image);
+            API.data().cryptonize(image, null);
+//            PrepareActivity.start(this, image);
+
         }
 
     }

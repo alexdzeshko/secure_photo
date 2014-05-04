@@ -205,16 +205,20 @@ public interface AppConst {
 
     public static class Storage {
 
+
         private static final String DIR_IMAGES = ".secure_cam";
+        public static final String NOMEDIA = ".nomedia";
+        private static final String TAG = Storage.class.getSimpleName();
 
         public static File getSecureFolder() {
-//        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//                DIR_IMAGES);
 
             File storageDir = new File(IO.getExternalDir(), DIR_IMAGES);
             if (!storageDir.exists()) {
                 if (!storageDir.mkdirs()) {
                     AppConst.Log.e("STORAGE", "Directory not created");
+                } else {
+                    File nomedia = new File(storageDir, NOMEDIA);
+                    nomedia.mkdir();
                 }
             }
             return storageDir;
@@ -222,7 +226,12 @@ public interface AppConst {
         }
 
         public static Uri getSecureUri(Uri unsecureUri){
-            return Uri.parse(getSecureFolder()+unsecureUri.getLastPathSegment());
+            Log.d(TAG, "orig_uri: %s", unsecureUri);
+
+            Uri secureUri = Uri.parse(Uri.fromFile(getSecureFolder()).toString() + File.separator +unsecureUri.getLastPathSegment());
+
+            Log.d(TAG, "sec_uri: %s", secureUri);
+            return secureUri;
         }
     }
 }

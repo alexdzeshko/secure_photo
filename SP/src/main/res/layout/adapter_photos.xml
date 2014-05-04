@@ -3,15 +3,16 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="@dimen/unit.5">
 
     <ImageView
         android:id="@+id/image_view_grid"
-        android:layout_width="@dimen/picture_normal"
-        android:layout_height="@dimen/picture_normal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/column_width"
         android:layout_centerInParent="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_blue_lock" />
+        android:src="@drawable/placeholder" />
 
     <ProgressBar
         android:id="@+id/progress_bar_grid"
