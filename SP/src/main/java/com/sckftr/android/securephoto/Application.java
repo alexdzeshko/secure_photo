@@ -32,4 +32,7 @@ public class Application extends CoreApplication {
 		registerService(new ImageProcessor());
 	}
 
+    public static Application get(){
+        return Application_.getInstance();
+    }
 }

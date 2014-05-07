@@ -8,7 +8,7 @@ import by.deniotokiari.core.annotations.db.DBTableName;
 import by.deniotokiari.core.annotations.db.types.DBVarchar;
 import by.deniotokiari.core.content.CoreContract;
 
-public class Contracts {
+public class Contracts implements CoreContract{
 
     private static final String TYPE = "vnd.android.cursor.dir/";
 

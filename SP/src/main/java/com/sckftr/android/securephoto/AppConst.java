@@ -23,6 +23,8 @@ public interface AppConst {
     // Application package id.
     String PACKAGE = "com.sckftr.android.securephoto";
 
+    String PR = "com.sckftr.android.securephoto";
+
     // Entity kind key.
     String KEY_KIND = "_kind";
     // Entity PK key.

@@ -6,10 +6,13 @@ import android.net.Uri;
 import android.os.Parcel;
 
 import com.sckftr.android.securephoto.contract.Contracts;
+import com.sckftr.android.utils.CursorUtils;
 
-public class Image implements Cryptonite {
+import by.deniotokiari.core.utils.ContractUtils;
 
-    private String key, uri;
+public class Image implements Cryptonite, DbModel {
+
+    private String key, uri, _id;
 
     public Image(String key, String uri) {
         this.key = key;
@@ -21,8 +24,9 @@ public class Image implements Cryptonite {
     }
 
     public Image(Cursor cursor){
-        key = cursor.getString(cursor.getColumnIndex(Contracts.ImageContract.KEY));
-        uri = cursor.getString(cursor.getColumnIndex(Contracts.ImageContract.URI));
+        _id = CursorUtils.getString(Contracts._ID, cursor);
+        key = CursorUtils.getString(Contracts.ImageContract.KEY, cursor);
+        uri = CursorUtils.getString(Contracts.ImageContract.URI, cursor);
     }
 
 
@@ -30,11 +34,19 @@ public class Image implements Cryptonite {
         return key;
     }
 
-    public String getUri() {
+    @Override public String get_id() {
+        return null;
+    }
+
+    @Override public Uri getContentUri() {
+        return ContractUtils.getUri(Contracts.ImageContract.class);
+    }
+
+    public String getFileUriString() {
         return uri;
     }
 
-    public Uri getURI() {
+    public Uri getFileUri() {
         return Uri.parse(uri);
     }
 

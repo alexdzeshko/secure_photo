@@ -32,9 +32,9 @@ import java.util.ArrayList;
 import by.deniotokiari.core.utils.ContractUtils;
 
 @EFragment(R.layout.images)
-public class ImagesFragment extends SickAdapterViewFragment<GridView, ImagesGridCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
+public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesGridCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
 
-    private ArrayList<Integer> actionList;
+    private ArrayList<Image> actionList;
 
     @Override protected int layoutId() {
         return R.layout.images;
@@ -106,14 +106,16 @@ public class ImagesFragment extends SickAdapterViewFragment<GridView, ImagesGrid
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 
-        if(actionList==null)actionList = new ArrayList<Integer>();
-        actionList.add(position);
+        if(actionList==null)actionList = new ArrayList<Image>();
+        Cursor cursor = (Cursor) getAdapter().getItem(position);
+        actionList.add(new Image(cursor));
     }
 
     @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
-        actionList = new ArrayList<Integer>();
+        actionList = new ArrayList<Image>();
         MenuInflater inflater = mode.getMenuInflater();
+        if (inflater==null) return false;
         inflater.inflate(R.menu.cab_image_list, menu);
         return true;
     }
@@ -125,7 +127,7 @@ public class ImagesFragment extends SickAdapterViewFragment<GridView, ImagesGrid
     @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_delete:
-//                deleteSelectedItems();
+                deleteSelectedItems();
                 mode.finish(); // Action picked, so close the CAB
                 return true;
             case R.id.menu_unlock:
@@ -135,6 +137,11 @@ public class ImagesFragment extends SickAdapterViewFragment<GridView, ImagesGrid
             default:
                 return false;
         }
+    }
+
+    private void deleteSelectedItems() {
+        API.data().deleteFiles(actionList);
+
     }
 
     @Override public void onDestroyActionMode(ActionMode mode) {

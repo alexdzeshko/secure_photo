@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import com.sckftr.android.app.activity.BaseActivity;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.db.Image;
-import com.sckftr.android.securephoto.fragment.ImagesFragment;
+import com.sckftr.android.securephoto.fragment.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
 
@@ -26,7 +26,7 @@ public class MainActivity extends BaseActivity {
 
     @AfterViews void init() {
 
-        addFragment(ImagesFragment.build());
+        addFragment(ImageGridFragment.build());
     }
 
     @Override protected void onResume() {

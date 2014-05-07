@@ -28,7 +28,7 @@ public class PrepareActivity extends Activity implements OnClickListener {
 
         getActionBar().hide();
 
-        ImageHelper.load(image.getURI(), mImageView);
+        ImageHelper.load(image.getURIi(), mImageView);
 
         AppConst.Log.d("PREPARE", "uri: %s", image.getUri());
 
@@ -47,7 +47,7 @@ public class PrepareActivity extends Activity implements OnClickListener {
     public void onBackPressed() {
         super.onBackPressed();
         //todo remove as per stackoverflow
-//        TakePhotoHelper.deleteImage(image.getURI());
+//        TakePhotoHelper.deleteImage(image.getURIi());
     }
 
     public static void start(Context context, Image image) {
