@@ -1,7 +1,6 @@
 package com.sckftr.android.securephoto.data;
 
 import android.app.IntentService;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -68,11 +67,14 @@ public class DataApi implements AppConst {
 
         if (Crypto.encrypt(uri, key)) Crypto.deleteUnsecureFile(uri);
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Contracts.ImageContract.KEY, key);
-        contentValues.put(Contracts.ImageContract.URI, Storage.getSecureUri(uri).getPath());
-
-        API.get().getApplicationContext().getContentResolver().insert(ContractUtils.getUri(Contracts.ImageContract.class), contentValues);
+        if(file instanceof DbModel){
+            DbService.insert((DbModel)file);
+        }
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(Contracts.ImageContract.KEY, key);
+//        contentValues.put(Contracts.ImageContract.URI, Storage.getSecureUri(uri).getPath());
+//
+//        API.get().getApplicationContext().getContentResolver().insert(ContractUtils.getUri(Contracts.ImageContract.class), contentValues);
 
     }
 

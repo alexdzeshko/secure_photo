@@ -28,9 +28,9 @@ public class PrepareActivity extends Activity implements OnClickListener {
 
         getActionBar().hide();
 
-        ImageHelper.load(image.getURIi(), mImageView);
+        ImageHelper.load(image.getFileUri(), mImageView);
 
-        AppConst.Log.d("PREPARE", "uri: %s", image.getUri());
+        AppConst.Log.d("PREPARE", "uri: %s", image.getFileUri());
 
     }
 

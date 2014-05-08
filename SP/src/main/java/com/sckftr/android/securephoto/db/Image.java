@@ -75,7 +75,7 @@ public class Image implements Cryptonite, DbModel {
         }
     };
 
-    public ContentValues contentValues(){
+    public ContentValues getContentValues() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Contracts.ImageContract.KEY, key);
         contentValues.put(Contracts.ImageContract.URI, uri);

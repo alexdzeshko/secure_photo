@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.MutableContextWrapper;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -57,6 +58,10 @@ public class AppApi extends MutableContextWrapper implements AppConst {
 
     public int color(int resId) {
         return resId > 0 ? getResources().getColor(resId) : getResources().getColor(android.R.color.darker_gray);
+    }
+
+    public Drawable drawable(int resId) {
+        return resId > 0 ? getResources().getDrawable(resId) : null;
     }
 
     public String[] stringArray(int resId) {

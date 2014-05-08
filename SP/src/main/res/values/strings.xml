@@ -7,5 +7,9 @@
     <string name="commit_new_password">Commit new password</string>
     <string name="add_from_gallery">Add from gallery</string>
 
+    <plurals name="selected_items">
+        <item quantity="one">One item selected</item>
+        <item quantity="other">%d items selected</item>
+    </plurals>
 
 </resources>

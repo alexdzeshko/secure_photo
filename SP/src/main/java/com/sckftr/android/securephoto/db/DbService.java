@@ -1,6 +1,7 @@
 package com.sckftr.android.securephoto.db;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -24,6 +25,12 @@ public class DbService extends IntentService implements ServiceConst {
         super(NAME);
     }
 
+    public static void insert(DbModel... objects) {
+        if (objects != null && objects.length > 0) {
+
+            createIntent(DbOperation.insert, objects);
+        }
+    }
 
 
     enum DbOperation {
@@ -36,9 +43,15 @@ public class DbService extends IntentService implements ServiceConst {
         DbModel[] objects = (DbModel[]) intent.getParcelableArrayExtra(PARAM_IN_DATA);
         switch (operation) {
             case insert:
+                Uri uri = objects[0].getContentUri();
+                ContentValues[] values = new ContentValues[objects.length];
+                for (int i = 0; i < objects.length; i++) {
+                   values[i] = objects[i].getContentValues();
+                }
+                getContentResolver().bulkInsert(uri, values);
                 break;
             case delete:
-                Uri uri = objects[0].getContentUri();
+                uri = objects[0].getContentUri();
                 String[] ids = new String[objects.length];
                 for (int i = 0; i < objects.length; i++) {
                     ids[i] = objects[i].get_id();

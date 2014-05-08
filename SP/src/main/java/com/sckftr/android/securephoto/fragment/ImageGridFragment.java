@@ -100,12 +100,13 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     }
 
     public static Fragment build(){
-        return ImagesFragment_.builder().build();
+        return ImageGridFragment_.builder().build();
     }
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 
+        mode.setSubtitle(API.qstring(R.plurals.selected_items, getAdapterView().getCheckedItemCount()));
         if(actionList==null)actionList = new ArrayList<Image>();
         Cursor cursor = (Cursor) getAdapter().getItem(position);
         actionList.add(new Image(cursor));
@@ -113,6 +114,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
+        mode.setTitle("Select items");
         actionList = new ArrayList<Image>();
         MenuInflater inflater = mode.getMenuInflater();
         if (inflater==null) return false;

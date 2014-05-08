@@ -23,7 +23,7 @@ import by.deniotokiari.core.utils.IOUtils;
 
 public class ImagesGridCursorAdapter extends BaseCursorAdapter {
 
-    public static final int RES_LAYOUT = R.layout.adapter_photos;
+    public static final int RES_LAYOUT = R.layout.image_item;
     public static final int RES_ID_PHOTO = R.id.image_view_grid;
     public static final int RES_ID_PROGRESS = R.id.progress_bar_grid;
 
@@ -75,12 +75,22 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
             protected void onPostExecute(Bitmap bitmap) {
                 progressBar.setVisibility(View.GONE);
 
-                if (bitmap != null){
+                if (bitmap != null) {
                     imageView.setImageBitmap(bitmap);
                 }
             }
         }.execute(uri, key);
 
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 10;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position % 10;
     }
 
     @Override

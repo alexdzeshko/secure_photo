@@ -1,6 +1,7 @@
 package com.sckftr.android.securephoto;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import com.google.gson.Gson;
@@ -145,6 +146,10 @@ public interface AppConst {
 
             return get().color(resId);
 
+        }
+
+        public static Drawable drawable(int resId){
+            return get().drawable(resId);
         }
     }
 
