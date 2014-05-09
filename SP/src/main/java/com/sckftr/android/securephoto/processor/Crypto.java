@@ -2,12 +2,12 @@ package com.sckftr.android.securephoto.processor;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.widget.Toast;
 
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.utils.IO;
+import com.sckftr.android.utils.Storage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -93,7 +93,7 @@ public class Crypto {
 
             byte[] encryptedData = encrypt(buffer, key);
 
-            Uri secureUri = AppConst.Storage.getSecureUri(fileUri);
+            Uri secureUri = Storage.Images.getPrivateUri(fileUri);//todo storage images
 
             File file = new File(secureUri.getPath());
 
@@ -112,19 +112,16 @@ public class Crypto {
         return result;
     }
 
-    public static void deleteUnsecureFile(Uri uri) {
-        Uri secureUri = AppConst.Storage.getSecureUri(uri);
+    public static void deleteFileIfPublic(Uri uri) {
+        Uri secureUri = Storage.Images.getPrivateUri(uri);//todo storage images
         AppConst.Log.d(TAG, "orig_uri: %s, sec_uri: %s", uri, secureUri);
+
         if (!secureUri.equals(uri)) {
+
             IO.delete(uri);
-            MediaScannerConnection.scanFile(ContextHolder.getInstance().getContext(), new String[]{uri.toString()}, null,
-                    new MediaScannerConnection.OnScanCompletedListener() {
-                        public void onScanCompleted(String path, Uri uri) {
-                            AppConst.Log.d(TAG, "Scanned " + path + ":");
-                            AppConst.Log.d(TAG, "-> uri=" + uri);
-                        }
-                    }
-            );
+
+            Storage.scanFile(uri);
+
             AppConst.Log.d(TAG, "deleted: %s", uri);
         }
     }

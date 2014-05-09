@@ -17,6 +17,8 @@ import com.sckftr.android.securephoto.helper.UserHelper;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 
+import java.util.ArrayList;
+
 @EActivity(R.layout.frame)
 public class MainActivity extends BaseActivity {
 
@@ -72,7 +74,10 @@ public class MainActivity extends BaseActivity {
         }
         if (uri != null) {
             Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
-            API.data().cryptonize(image, null);
+
+            ArrayList<Image> images = new ArrayList<Image>();
+            images.add(image);
+            API.data().cryptonize(images, null);
 //            PrepareActivity.start(this, image);
 
         }

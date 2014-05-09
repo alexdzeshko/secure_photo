@@ -3,7 +3,6 @@ package com.sckftr.android.securephoto.fragment;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,12 +16,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
-import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.Image;
-import com.sckftr.android.utils.UI;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -48,27 +45,6 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
-        //todo REFACTOR
-        getAdapterView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                           final int position, long id) {
-
-                UI.showAlert(getBaseActivity(), null, "Unlock file?", new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
-                        Cursor cursor = (Cursor) getAdapter().getItem(position);
-                        AppConst.API.data().uncryptonize(new Image(cursor), null);
-                        dialog.dismiss();
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                return true;
-            }
-        });
 
         getLoaderManager().initLoader(123, null, this);
     }
@@ -99,7 +75,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         showImageFragment(position);
     }
 
-    public static Fragment build(){
+    public static Fragment build() {
         return ImageGridFragment_.builder().build();
     }
 
@@ -107,18 +83,22 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 
         mode.setSubtitle(API.qstring(R.plurals.selected_items, getAdapterView().getCheckedItemCount()));
-        if(actionList==null)actionList = new ArrayList<Image>();
         Cursor cursor = (Cursor) getAdapter().getItem(position);
         actionList.add(new Image(cursor));
     }
 
     @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
-        mode.setTitle("Select items");
+        mode.setTitle(API.string(R.string.cab_title_select_items));
+
         actionList = new ArrayList<Image>();
+
         MenuInflater inflater = mode.getMenuInflater();
-        if (inflater==null) return false;
+
+        if (inflater == null) return false;
+
         inflater.inflate(R.menu.cab_image_list, menu);
+
         return true;
     }
 
@@ -129,21 +109,20 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_delete:
-                deleteSelectedItems();
-                mode.finish(); // Action picked, so close the CAB
-                return true;
-            case R.id.menu_unlock:
-                //todo unlock file
+
+                API.data().deleteFiles(actionList);
                 mode.finish();
                 return true;
+
+            case R.id.menu_unlock:
+
+                API.data().uncryptonize(actionList, null);
+                mode.finish();
+                return true;
+
             default:
                 return false;
         }
-    }
-
-    private void deleteSelectedItems() {
-        API.data().deleteFiles(actionList);
-
     }
 
     @Override public void onDestroyActionMode(ActionMode mode) {

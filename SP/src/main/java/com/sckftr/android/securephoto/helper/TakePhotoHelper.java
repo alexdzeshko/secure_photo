@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Platform;
+import com.sckftr.android.utils.Storage;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +74,7 @@ public class TakePhotoHelper {
         String imageFileName = timeStamp + "_";
         try {
 
-            File album = AppConst.Storage.getSecureFolder();
+            File album = Storage.Images.getPrivateFolder();
 
             File tempFile = File.createTempFile(imageFileName, ".jpg", album);
 

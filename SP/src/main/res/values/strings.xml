@@ -6,6 +6,7 @@
     <string name="input_password">Input password</string>
     <string name="commit_new_password">Commit new password</string>
     <string name="add_from_gallery">Add from gallery</string>
+    <string name="cab_title_select_items">Select items</string>
 
     <plurals name="selected_items">
         <item quantity="one">One item selected</item>

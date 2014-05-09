@@ -11,8 +11,6 @@ import com.sckftr.android.utils.IO;
 
 import java.io.FileInputStream;
 
-import by.deniotokiari.core.utils.IOUtils;
-
 /**
  * Created by Aliaksei_Dziashko on 12/18/13.
  */
@@ -20,6 +18,7 @@ public class ImageHelper implements AppConst{
 
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 768;
+    public static final String TAG = ImageHelper.class.getSimpleName();
 
     public static int getScaleFactor(Uri imageUri, int viewWidth, int viewHeight) {
 
@@ -32,9 +31,9 @@ public class ImageHelper implements AppConst{
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(ImageHelper.class.getSimpleName(), e.toString());
+            Log.e(TAG, e.toString());
         } finally {
-            IOUtils.closeStream(stream);
+            IO.close(stream);
         }
 
         return 1;
@@ -47,7 +46,7 @@ public class ImageHelper implements AppConst{
         BitmapFactory.decodeByteArray(buffer, 0, buffer.length, opts);
         int imageHeight = opts.outHeight;
         int imageWidth = opts.outWidth;
-        Log.d("image", "width: %s, height: %s", imageWidth, imageHeight);
+        Log.d(TAG, "width: %s, height: %s", imageWidth, imageHeight);
         if (imageHeight > viewHeight || imageWidth > viewWidth) {
             int hRatio = Math.round((float) imageHeight / (float) viewHeight);
             int wRatio = Math.round((float) imageWidth / (float) viewWidth);
@@ -57,11 +56,6 @@ public class ImageHelper implements AppConst{
     }
     public static int getScaleFactor(Uri imageUri) {
         return getScaleFactor(imageUri, WIDTH, HEIGHT);
-    }
-
-    public static void load(Uri uri, ImageView view) {
-        // big todo
-        API.images().load(uri).into(view);
     }
 
     public static void loadEncryptedFile(String key, String uri, ImageView imageView){
@@ -79,7 +73,7 @@ public class ImageHelper implements AppConst{
             imageView.setImageBitmap(bitmap);
 
         } catch (Exception e) {
-            Log.e("ImageHelper", "encrypted file load error", e);
+            Log.e(TAG, "encrypted file load error", e);
         } finally {
             IO.close(stream);
         }

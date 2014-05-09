@@ -2,7 +2,6 @@
           package="com.sckftr.android.securephoto">
 
     <!--<uses-permission android:name="android.permission.CAMERA"/>-->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -31,10 +30,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.PrepareActivity_">
-        </activity>
-
         <service android:name=".data.DataApi$DataAsyncEnforcerService"/>
+
+        <service android:name=".db.DbService"/>
 
         <service android:name="by.deniotokiari.core.service.SourceService"/>
 
@@ -42,14 +40,6 @@
             android:name=".provider.ImagesProvider"
             android:authorities="com.sckftr.android.securephoto.provider.ImagesProvider"
             android:exported="false"/>
-
-        <!--<receiver-->
-            <!--android:name=".receiver.DummyReceiver"-->
-            <!--android:exported="true">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.ACTION_MEDIA_MOUNTED"/>-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
 
     </application>
 

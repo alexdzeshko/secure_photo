@@ -7,6 +7,7 @@ import android.os.Parcel;
 
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.utils.CursorUtils;
+import com.sckftr.android.utils.Storage;
 
 import by.deniotokiari.core.utils.ContractUtils;
 
@@ -35,7 +36,7 @@ public class Image implements Cryptonite, DbModel {
     }
 
     @Override public String get_id() {
-        return null;
+        return _id;
     }
 
     @Override public Uri getContentUri() {
@@ -51,6 +52,7 @@ public class Image implements Cryptonite, DbModel {
     }
 
     public Image(Parcel in) {
+        _id = in.readString();
         key = in.readString();
         uri = in.readString();
     }
@@ -60,6 +62,7 @@ public class Image implements Cryptonite, DbModel {
     }
 
     @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_id);
         dest.writeString(key);
         dest.writeString(uri);
     }
@@ -78,7 +81,7 @@ public class Image implements Cryptonite, DbModel {
     public ContentValues getContentValues() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Contracts.ImageContract.KEY, key);
-        contentValues.put(Contracts.ImageContract.URI, uri);
+        contentValues.put(Contracts.ImageContract.URI, Storage.Images.getPrivateUri(getFileUri()).getPath());
         return contentValues;
     }
 }

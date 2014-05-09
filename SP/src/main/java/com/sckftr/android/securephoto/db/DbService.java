@@ -4,49 +4,50 @@ import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 
 import com.sckftr.android.app.ServiceConst;
 import com.sckftr.android.securephoto.Application;
 import com.sckftr.android.securephoto.contract.Contracts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DbService extends IntentService implements ServiceConst {
 
     public static final String NAME = DbService.class.getName();
 
+    private static DbService instance;
+
+    public static DbService get() {
+        if (instance == null) instance = new DbService();
+        return instance;
+    }
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
      */
-    public DbService(String name) {
+    public DbService() {
         super(NAME);
     }
 
-    public static void insert(DbModel... objects) {
-        if (objects != null && objects.length > 0) {
-
-            createIntent(DbOperation.insert, objects);
-        }
-    }
-
-
     enum DbOperation {
         insert,
-        delete;
+        delete
     }
+
     @Override protected void onHandleIntent(Intent intent) {
 
         DbOperation operation = (DbOperation) intent.getSerializableExtra(PARAM_IN_COMMAND_NAME);
-        DbModel[] objects = (DbModel[]) intent.getParcelableArrayExtra(PARAM_IN_DATA);
+        DbModel[] objects = dataFromIntent(intent);
+
+        if (objects == null || objects.length == 0) return;
+
         switch (operation) {
             case insert:
                 Uri uri = objects[0].getContentUri();
                 ContentValues[] values = new ContentValues[objects.length];
                 for (int i = 0; i < objects.length; i++) {
-                   values[i] = objects[i].getContentValues();
+                    values[i] = objects[i].getContentValues();
                 }
                 getContentResolver().bulkInsert(uri, values);
                 break;
@@ -63,23 +64,45 @@ public class DbService extends IntentService implements ServiceConst {
 
     }
 
-    public static void delete(DbModel... objects) {
+    private DbModel[] dataFromIntent(Intent intent) {
+        Parcelable[] parcelables = intent.getParcelableArrayExtra(PARAM_IN_DATA);
+        if (parcelables == null || parcelables.length == 0) return null;
+        DbModel[] data = new DbModel[parcelables.length];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (DbModel) parcelables[i];
+        }
+        return data;
+    }
+
+    public void insert(DbModel... objects) {
         if (objects != null && objects.length > 0) {
 
-            createIntent(DbOperation.delete, objects);
+            Intent intent = createIntent(DbOperation.insert, objects);
+            dispatchServiceCall(intent);
         }
     }
 
-    public static void delete(ArrayList<? extends DbModel> files) {
+    public void delete(DbModel... objects) {
+        if (objects != null && objects.length > 0) {
+
+            Intent intent = createIntent(DbOperation.delete, objects);
+            dispatchServiceCall(intent);
+        }
+    }
+
+    public void delete(ArrayList<? extends DbModel> files) {
         delete(files.toArray(new DbModel[files.size()]));
     }
 
-    private static Intent createIntent(DbOperation commandName, DbModel[] models) {
+    private Intent createIntent(DbOperation commandName, DbModel[] models) {
         Application application = Application.get();
         Intent intent = new Intent(application, DbService.class);
         intent.putExtra(PARAM_IN_COMMAND_NAME, commandName);
-        intent.putParcelableArrayListExtra(PARAM_IN_DATA, new ArrayList<DbModel>(Arrays.asList(models)));
+        intent.putExtra(PARAM_IN_DATA, models);
         return intent;
     }
 
+    private void dispatchServiceCall(final Intent intent) {
+        Application.get().startService(intent);
+    }
 }

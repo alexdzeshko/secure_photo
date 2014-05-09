@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.google.gson.Gson;
 import com.sckftr.android.securephoto.data.DataApi;
+import com.sckftr.android.securephoto.db.DbService;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Strings;
 import com.squareup.picasso.Picasso;
@@ -124,6 +125,9 @@ public interface AppConst {
             return DataApi.instance();
         }
 
+        public static DbService db() {
+            return DbService.get();
+        }
 
         // invoked only at Application.onCreate()
         static void init(Context context) {
@@ -210,35 +214,4 @@ public interface AppConst {
         }
     }
 
-    public static class Storage {
-
-
-        private static final String DIR_IMAGES = ".secure_cam";
-        public static final String NOMEDIA = ".nomedia";
-        private static final String TAG = Storage.class.getSimpleName();
-
-        public static File getSecureFolder() {
-
-            File storageDir = new File(IO.getExternalDir(), DIR_IMAGES);
-            if (!storageDir.exists()) {
-                if (!storageDir.mkdirs()) {
-                    AppConst.Log.e("STORAGE", "Directory not created");
-                } else {
-                    File nomedia = new File(storageDir, NOMEDIA);
-                    nomedia.mkdir();
-                }
-            }
-            return storageDir;
-
-        }
-
-        public static Uri getSecureUri(Uri unsecureUri){
-            Log.d(TAG, "orig_uri: %s", unsecureUri);
-
-            Uri secureUri = Uri.parse(Uri.fromFile(getSecureFolder()).toString() + File.separator +unsecureUri.getLastPathSegment());
-
-            Log.d(TAG, "sec_uri: %s", secureUri);
-            return secureUri;
-        }
-    }
 }
