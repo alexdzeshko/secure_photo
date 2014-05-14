@@ -4,6 +4,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.securephoto.processor.Crypto;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,19 @@ public class Storage {
             }
         }
         return file;
+    }
+
+    public static void deleteFileIfPublic(Uri uri) {
+        Uri secureUri = Images.getPrivateUri(uri);//todo storage images
+        AppConst.Log.d(Crypto.TAG, "orig_uri: %s, sec_uri: %s", uri, secureUri);
+
+        if (!secureUri.equals(uri)) {
+
+            IO.delete(uri);
+
+//            scanFile(uri);
+
+        }
     }
 
     public static class Images {

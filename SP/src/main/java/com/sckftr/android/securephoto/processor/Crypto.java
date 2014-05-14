@@ -79,14 +79,14 @@ public class Crypto {
 
         boolean result;
 
-        InputStream inputStream = null;
         Context context = ContextHolder.getInstance().getContext();
 
+        InputStream inputStream = null;
         FileOutputStream fileOutputStream = null;
+
         try {
             inputStream = context.getContentResolver().openInputStream(fileUri);
-
-            if (inputStream == null) return false;
+//            inputStream = new FileInputStream(fileUri.getPath());
 
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
@@ -112,17 +112,4 @@ public class Crypto {
         return result;
     }
 
-    public static void deleteFileIfPublic(Uri uri) {
-        Uri secureUri = Storage.Images.getPrivateUri(uri);//todo storage images
-        AppConst.Log.d(TAG, "orig_uri: %s, sec_uri: %s", uri, secureUri);
-
-        if (!secureUri.equals(uri)) {
-
-            IO.delete(uri);
-
-            Storage.scanFile(uri);
-
-            AppConst.Log.d(TAG, "deleted: %s", uri);
-        }
-    }
 }

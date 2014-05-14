@@ -1,13 +1,14 @@
 package com.sckftr.android.securephoto.helper;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Platform;
 import com.sckftr.android.utils.Storage;
@@ -90,11 +91,13 @@ public class TakePhotoHelper {
         return null;
     }
 
-    public static Uri getPath(Uri uri, Context context) {
+    public static Object[] resolveContent(Uri uri) {
 
-        String[] proj = {MediaStore.Images.Media.DATA};
+        Object[] content = new Object[2];
 
-        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+        String[] proj = {MediaStore.Images.Media.DATA, BaseColumns._ID};
+
+        Cursor cursor = AppConst.API.db().query(uri, proj);
 
         if (cursor == null) return null;
 
@@ -104,12 +107,15 @@ public class TakePhotoHelper {
 
         final String path = cursor.getString(columnIndex);
 
+        content[0] = Uri.parse("file://" + path);
+
+        AppConst.Log.d(TAG, "gallery img uri: %s, path: %s", uri, content[0]);
+
+        content[1] = CursorUtils.getString(BaseColumns._ID, cursor);
+
         CursorHelper.close(cursor);
 
-        Uri filePath = Uri.parse("file://" + path);
-
-        AppConst.Log.d(TAG, "gallery img uri: %s, path: %s", uri, filePath);
-        return filePath;
+        return content;
     }
 
 

@@ -11,9 +11,9 @@ import com.sckftr.android.utils.Storage;
 
 import by.deniotokiari.core.utils.ContractUtils;
 
-public class Image implements Cryptonite, DbModel {
+public class Image extends BaseModel implements Cryptonite {
 
-    private String key, uri, _id;
+    private String key, uri, _id, originalContentId;
 
     public Image(String key, String uri) {
         this.key = key;
@@ -55,6 +55,14 @@ public class Image implements Cryptonite, DbModel {
         _id = in.readString();
         key = in.readString();
         uri = in.readString();
+    }
+
+    public String getOriginalContentId() {
+        return originalContentId;
+    }
+
+    public void setOriginalContentId(String originalContentId) {
+        this.originalContentId = originalContentId;
     }
 
     @Override public int describeContents() {

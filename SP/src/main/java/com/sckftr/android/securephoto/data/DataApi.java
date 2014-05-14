@@ -12,6 +12,7 @@ import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.Application;
 import com.sckftr.android.securephoto.Application_;
 import com.sckftr.android.securephoto.contract.Contracts;
+import com.sckftr.android.securephoto.db.BaseModel;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
 import com.sckftr.android.securephoto.processor.Crypto;
@@ -36,9 +37,9 @@ public class DataApi implements AppConst {
 
     private static DataApi instance;
 
-    private void unlockFiles(ArrayList<Cryptonite> files){
+    private void unlockFiles(ArrayList<Cryptonite> files) {
 
-        for(Cryptonite file : files){
+        for (Cryptonite file : files) {
             unlockFile(file);
         }
     }
@@ -74,23 +75,35 @@ public class DataApi implements AppConst {
 
     }
 
-    private void lockFiles(ArrayList<Cryptonite> files){
+    private void lockFiles(ArrayList<Cryptonite> files) {
 
-        for(Cryptonite file : files){
+        for (Cryptonite file : files) {
             lockFile(file);
         }
     }
 
-    private void lockFile(Cryptonite file) {
+    private boolean lockFile(Cryptonite file) {
 
         Uri uri = file.getFileUri();
         String key = file.getKey();
 
-        if (Crypto.encrypt(uri, key)) Crypto.deleteFileIfPublic(uri);
+        if (Crypto.encrypt(uri, key)) {
 
-        if(file instanceof DbModel){
-            API.db().insert((DbModel) file);
-        }
+            Storage.deleteFileIfPublic(uri);
+
+            if (file instanceof BaseModel) {
+                BaseModel model = (BaseModel) file;
+                API.db().insert(model);
+                //todo hardcode
+//                if(model.getOriginalContentId()!=null) {
+//                    API.db().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, BaseColumns._ID + "=" + ((BaseModel) file).getOriginalContentId(), null);
+//                }
+            }
+            return true;
+
+        } else
+            return false;
+
 
     }
 
@@ -101,10 +114,10 @@ public class DataApi implements AppConst {
 
     public void deleteFiles(ArrayList<? extends Cryptonite> files) {
         ArrayList<DbModel> dbList = null;
-        for(Cryptonite image : files){
+        for (Cryptonite image : files) {
             IO.delete(image.getFileUri());
-            if(image instanceof DbModel) {
-                if(dbList == null) dbList = new ArrayList<DbModel>();
+            if (image instanceof DbModel) {
+                if (dbList == null) dbList = new ArrayList<DbModel>();
                 dbList.add((DbModel) image);
             }
         }
@@ -138,7 +151,7 @@ public class DataApi implements AppConst {
                 case lockFile:
                     files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
                     API.data().lockFiles(files);
-                    //                    resultingBundle = createSingleEntyBundle(API.data().addLocationEntry(application, locationInfo));
+                    resultingBundle = createSingleEntryBundle("ok");
                     break;
                 case deleteFiles:
                     files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
@@ -180,7 +193,7 @@ public class DataApi implements AppConst {
         dispatchServiceCall(intent);
     }
 
-    public void delete(ArrayList<? extends Cryptonite> cryptonite, Procedure<Integer> callback){
+    public void delete(ArrayList<? extends Cryptonite> cryptonite, Procedure<Integer> callback) {
         final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.deleteFiles, createResultReceiver(callback));
         intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
         dispatchServiceCall(intent);

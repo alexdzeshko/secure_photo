@@ -3,6 +3,7 @@ package com.sckftr.android.securephoto.db;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcelable;
 
@@ -92,6 +93,26 @@ public class DbService extends IntentService implements ServiceConst {
 
     public void delete(ArrayList<? extends DbModel> files) {
         delete(files.toArray(new DbModel[files.size()]));
+    }
+
+    public void delete(final Uri uri, final String where, final String[] whereArgs){
+        new Thread(new Runnable() {
+            @Override public void run() {
+                Application.get().getContentResolver().delete(uri, where, whereArgs);
+            }
+        }).start();
+    }
+
+    public Cursor query(Uri uri, String[] projection, String where, String[] whereArgs, String sortOrder){
+
+        return Application.get().getContentResolver().query(uri, projection, where, whereArgs, sortOrder);
+
+    }
+
+    public Cursor query(final Uri uri, String[] projection){
+
+        return query(uri, projection, null, null, null);
+
     }
 
     private Intent createIntent(DbOperation commandName, DbModel[] models) {

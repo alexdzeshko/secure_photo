@@ -3,6 +3,7 @@ package com.sckftr.android.securephoto.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,8 @@ import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
+import com.sckftr.android.utils.Procedure;
+import com.sckftr.android.utils.UI;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -67,19 +70,37 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Uri uri = null;
         if (requestCode == TakePhotoHelper.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
             uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
+            if (uri != null) {
+                Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
+                ArrayList<Image> images = new ArrayList<Image>();
+                images.add(image);
+                API.data().cryptonize(images, null);
+            }
 
         } else if (requestCode == TakePhotoHelper.REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
-            uri = TakePhotoHelper.getPath(data.getData(), this);
-        }
-        if (uri != null) {
-            Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
 
+            String originalContentId = null;
+
+            Object[] objects = TakePhotoHelper.resolveContent(data.getData());
+            uri = (Uri) objects[0];
+            originalContentId = (String) objects[1];
+
+            Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
+            image.setOriginalContentId(originalContentId);
             ArrayList<Image> images = new ArrayList<Image>();
             images.add(image);
-            API.data().cryptonize(images, null);
-//            PrepareActivity.start(this, image);
 
+            final String contentId = originalContentId;
+            final Uri contentUri = data.getData();
+
+            API.data().cryptonize(images, new Procedure<Object>() {
+                @Override public void apply(Object dialog) {
+                    API.db().delete(contentUri, BaseColumns._ID + "=" + contentId, null);
+                    UI.showHint(MainActivity.this, "result received "+ contentUri+" "+contentId);
+                }
+            });
         }
 
     }
