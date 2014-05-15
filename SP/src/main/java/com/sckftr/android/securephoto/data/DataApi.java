@@ -15,7 +15,7 @@ import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.BaseModel;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
-import com.sckftr.android.securephoto.processor.Crypto;
+import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
@@ -52,7 +52,7 @@ public class DataApi implements AppConst {
             stream = new FileInputStream(item.getFileUri().toString());
             byte[] buffer = new byte[stream.available()];
             stream.read(buffer);
-            byte[] decrypted = Crypto.decrypt(buffer, item.getKey());
+            byte[] decrypted = Cryptograph.decrypt(buffer, item.getKey());
 
             File publicFile = Storage.Images.getPublicFile(item.getFileUri());
             fileOutputStream = new FileOutputStream(publicFile);
@@ -68,10 +68,8 @@ public class DataApi implements AppConst {
             IOUtils.closeStream(stream);
             IOUtils.closeStream(fileOutputStream);
         }
-        //todo refactor
-        API.get().getApplicationContext().getContentResolver()
-                .delete(ContractUtils.getUri(Contracts.ImageContract.class),
-                        Contracts.ImageContract.URI + " = '" + item.getFileUri().toString() + "'", null);
+
+        API.db().delete(ContractUtils.getUri(Contracts.ImageContract.class),Contracts.ImageContract.URI + " = '" + item.getFileUri().toString() + "'", null);
 
     }
 
@@ -87,17 +85,13 @@ public class DataApi implements AppConst {
         Uri uri = file.getFileUri();
         String key = file.getKey();
 
-        if (Crypto.encrypt(uri, key)) {
+        if (Cryptograph.encrypt(uri, key)) {
 
             Storage.deleteFileIfPublic(uri);
 
             if (file instanceof BaseModel) {
                 BaseModel model = (BaseModel) file;
                 API.db().insert(model);
-                //todo hardcode
-//                if(model.getOriginalContentId()!=null) {
-//                    API.db().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, BaseColumns._ID + "=" + ((BaseModel) file).getOriginalContentId(), null);
-//                }
             }
             return true;
 

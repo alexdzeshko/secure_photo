@@ -1,11 +1,14 @@
 package com.sckftr.android.securephoto.helper;
 
 import android.content.Context;
-import by.deniotokiari.core.helpers.PreferencesHelper;
+
+import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.utils.Strings;
+
 import by.deniotokiari.core.utils.HashUtils;
 
 //todo complete refactor
-public class UserHelper {
+public class UserHelper implements AppConst{
 
 	private static final String PREF_FIRST_LOGGED = "user:firstLogged";
 	private static final String PREF_NAME = "user";
@@ -14,47 +17,45 @@ public class UserHelper {
 	private static final int PREF_MODE = Context.MODE_PRIVATE;
 	private static final String TEMPLATE_FOR_HASH = "%s-%s";
 
-	public static boolean isLogged(Context context) {
-		return PreferencesHelper.getBoolean(context, PREF_NAME, PREF_MODE,
-				PREF_KEY_LOGGED, false);
+	public static boolean isLogged() {
+        return API.get().getPreferenceBool(KEYS.USER_LOGGED, false);
 	}
 
-	public static void setIsLogged(Context context, boolean isLogged) {
-		PreferencesHelper.put(context, PREF_NAME, PREF_MODE, PREF_KEY_LOGGED,
-				isLogged);
+	public static void setIsLogged(boolean isLogged) {
+        API.get().putPreference(KEYS.USER_LOGGED, isLogged);
 	}
 
-	public static void logIn(Context context, String userName, String password) {
-		String hash = HashUtils.stringToMD5(String.format(TEMPLATE_FOR_HASH,
-				userName, password));
-		PreferencesHelper.put(context, PREF_NAME, PREF_MODE, PREF_KEY_HASH,
-				hash);
+	public static void logIn(String userName, String password) {
+
+		String hash = HashUtils.stringToMD5(String.format(TEMPLATE_FOR_HASH, userName, password));
+
+        API.get().putPreference(KEYS.USER_KEY, hash);
+
 	}
 
-	public static boolean authenticate(Context context, String userName,
-			String password) {
-		String hash = HashUtils.stringToMD5(String.format(TEMPLATE_FOR_HASH,
-				userName, password));
-		return hash != null && hash.equals(getUserHash(context));
+	public static boolean authenticate(Context context, String userName,String password) {
+
+		String hash = HashUtils.stringToMD5(String.format(TEMPLATE_FOR_HASH, userName, password));
+
+		return hash != null && hash.equals(getUserHash());
 	}
 
-	public static void clearUserAuthentificateInfo(Context context) {
-		PreferencesHelper.clear(context, PREF_NAME, PREF_MODE);
+	public static void clearUserAuthenticateInfo() {
+        API.get().putPreference(KEYS.USER_KEY, Strings.EMPTY);
+        API.get().putPreference(PREF_FIRST_LOGGED, false);
+        API.get().putPreference(KEYS.USER_LOGGED, false);
 	}
 
-	public static void setFirstLogin(Context context, boolean was) {
-		PreferencesHelper.put(context, PREF_NAME, PREF_MODE, PREF_FIRST_LOGGED,
-				was);
+	public static void setFirstLogin(boolean was) {
+        API.get().putPreference(PREF_FIRST_LOGGED, was);
 	}
 
-	public static boolean isFirstLogin(Context context) {
-		return PreferencesHelper.getBoolean(context, PREF_NAME, PREF_MODE,
-				PREF_FIRST_LOGGED, true);
+	public static boolean isFirstLogin() {
+		return API.get().getPreferenceBool(PREF_FIRST_LOGGED, true);
 	}
 
-	private static String getUserHash(Context context) {
-		return PreferencesHelper.getString(context, PREF_NAME, PREF_MODE,
-				PREF_KEY_HASH, "");
+	public static String getUserHash() {
+		return API.get().getPreferenceString(KEYS.USER_KEY, Strings.EMPTY);
 	}
 
 }

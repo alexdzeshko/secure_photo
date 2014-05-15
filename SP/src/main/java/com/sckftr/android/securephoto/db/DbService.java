@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import com.sckftr.android.app.ServiceConst;
 import com.sckftr.android.securephoto.Application;
 import com.sckftr.android.securephoto.contract.Contracts;
+import com.sckftr.android.utils.Strings;
 
 import java.util.ArrayList;
 
@@ -58,7 +59,7 @@ public class DbService extends IntentService implements ServiceConst {
                 for (int i = 0; i < objects.length; i++) {
                     ids[i] = objects[i].get_id();
                 }
-                getContentResolver().delete(uri, Contracts._ID + "=?", ids);
+                getContentResolver().delete(uri, String.format(Contracts._ID+" IN (%s)", Strings.joinBy(Strings.COMMA, ids)), null);
                 break;
 
         }

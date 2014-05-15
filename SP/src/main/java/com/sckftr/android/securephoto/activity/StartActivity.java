@@ -29,14 +29,19 @@ public class StartActivity extends Activity implements TextWatcher {
     @ViewById Button commitButton;
 
     @AfterViews void init() {
-        if (UserHelper.isFirstLogin(this)) {
 
-            passwordCaption.setText("Choose your new password");
+        if (UserHelper.isFirstLogin()) {
+
+            passwordCaption.setText(getString(R.string.choose_new_password));
 
         } else {
+
             commitButton.setVisibility(View.GONE);
-            passwordCaption.setText("Input password");
+
+            passwordCaption.setText(R.string.input_password);
+
             passwordInput.addTextChangedListener(this);
+
         }
 
     }
@@ -54,11 +59,11 @@ public class StartActivity extends Activity implements TextWatcher {
     public void onTextChanged(CharSequence newText, int start, int before, int count) {
         Log.d(LOG_TAG, "onTextChanged: " + newText);
 
-        if (UserHelper.authenticate(this, "userName", newText.toString())) {
+        if (UserHelper.authenticate(this, "userName", newText.toString())) {// todo manage with user name
 
             passwordInput.setActivated(false);
 
-            UserHelper.setIsLogged(this, true);
+            UserHelper.setIsLogged(true);
 
             MainActivity.start(this);
 
@@ -70,9 +75,9 @@ public class StartActivity extends Activity implements TextWatcher {
     @Click(R.id.commitButton) void commitClicked() {
 
         String newPassword = passwordInput.getText().toString();
-        UserHelper.logIn(this, "userName", newPassword);
-        UserHelper.setIsLogged(this, true);
-        UserHelper.setFirstLogin(this, false);
+        UserHelper.logIn("userName", newPassword); // todo manage with user name
+        UserHelper.setIsLogged(true);
+        UserHelper.setFirstLogin(false);
         MainActivity.start(this);
         finish();
     }

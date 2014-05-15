@@ -2,16 +2,12 @@ package com.sckftr.android.securephoto;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 
 import com.google.gson.Gson;
 import com.sckftr.android.securephoto.data.DataApi;
 import com.sckftr.android.securephoto.db.DbService;
-import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Strings;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
 
 public interface AppConst {
     int ASCENDING = 1;
@@ -85,6 +81,9 @@ public interface AppConst {
         String PHONE = PACKAGE + ".PHONE";
         String EMAIL = PACKAGE + ".EMAIL";
         String USER_INFO = PACKAGE+".USER_INFO";
+        String USER_KEY = PACKAGE+".USER_KEY";
+        String USER_LOGGED = PACKAGE+".USER_LOGGED";
+        String APP_PRIVATE_KEY = PACKAGE+".a.p.k.";
 
         String CURRENCY = PACKAGE+".CURRENCY";
         String DISTANCE = PACKAGE+".DISTANCE";

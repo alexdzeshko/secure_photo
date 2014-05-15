@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
-import com.sckftr.android.securephoto.processor.Crypto;
+import com.sckftr.android.securephoto.processor.Cryptograph;
 
 import java.io.FileInputStream;
 
@@ -54,7 +54,7 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
                     stream = new FileInputStream(params[0]);
                     byte[] buffer = new byte[stream.available()];
                     stream.read(buffer);
-                    byte[] decr = Crypto.decrypt(buffer, params[1]);
+                    byte[] decr = Cryptograph.decrypt(buffer, params[1]);
 
                     BitmapFactory.Options opts = new BitmapFactory.Options();
                     //TODO need calculation

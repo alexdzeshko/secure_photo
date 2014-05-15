@@ -107,7 +107,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onUserLeaveHint() {
-        UserHelper.setIsLogged(this, false);
+        UserHelper.setIsLogged(false);
         super.onUserLeaveHint();
     }
 

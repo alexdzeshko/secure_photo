@@ -1,6 +1,6 @@
 package androidkeystore.android.security;
 
-public class NativeCryptoConstants {
+public interface NativeCryptoConstants {
 
     public static final int EVP_PKEY_RSA = 6; // NID_rsaEcnryption
     public static final int EVP_PKEY_DSA = 116; // NID_dsa
@@ -9,7 +9,4 @@ public class NativeCryptoConstants {
     public static final int EVP_PKEY_HMAC = 855; // NID_hmac
     public static final int EVP_PKEY_CMAC = 894; // NID_cmac
 
-
-    private NativeCryptoConstants() {
-    }
 }

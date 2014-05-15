@@ -1,8 +1,5 @@
 package com.sckftr.android.securephoto;
 
-import com.sckftr.android.securephoto.processor.ImageProcessor;
-import com.sckftr.android.securephoto.source.BitmapFileSource;
-
 import org.androidannotations.annotations.EApplication;
 
 import by.deniotokiari.core.app.CoreApplication;
@@ -28,8 +25,6 @@ public class Application extends CoreApplication {
 
         AppConst.API.init(this);
 
-		registerService(new BitmapFileSource());
-		registerService(new ImageProcessor());
 	}
 
     public static Application get(){

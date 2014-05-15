@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.widget.ImageView;
 
 import com.sckftr.android.securephoto.AppConst;
-import com.sckftr.android.securephoto.processor.Crypto;
+import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.IO;
 
 import java.io.FileInputStream;
@@ -66,7 +66,7 @@ public class ImageHelper implements AppConst{
             stream = new FileInputStream(uri);
             byte[] buffer = new byte[stream.available()];
             stream.read(buffer);
-            byte[] decr = Crypto.decrypt(buffer, key);
+            byte[] decr = Cryptograph.decrypt(buffer, key);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = ImageHelper.getScaleFactor(decr, WIDTH, HEIGHT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(decr, 0, decr.length,options);
