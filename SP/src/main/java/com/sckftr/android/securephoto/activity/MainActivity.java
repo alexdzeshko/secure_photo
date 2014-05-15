@@ -15,7 +15,6 @@ import com.sckftr.android.securephoto.fragment.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.Procedure;
-import com.sckftr.android.utils.UI;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -26,8 +25,10 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity {
 
     private static final int MENU_CAM = R.id.menu_camera;
-    private static final int MENU_SHARE = R.id.menu_share;
+    //    private static final int MENU_SHARE = R.id.menu_share;
     private static final int MENU_ADD = R.id.menu_add_items;
+
+    private boolean saveLivingHint;
 
     @AfterViews void init() {
 
@@ -36,7 +37,12 @@ public class MainActivity extends BaseActivity {
 
     @Override protected void onResume() {
         super.onResume();
-//        if(!UserHelper.isLogged(this)) StartActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+        if (!UserHelper.isLogged())
+            StartActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+    }
+
+    @Override protected void onNewIntent(Intent intent) {
+        setIntent(intent);
     }
 
     @Override
@@ -52,14 +58,19 @@ public class MainActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case MENU_CAM:
-                return TakePhotoHelper.takePhotoFromCamera(this);
 
-            case MENU_SHARE:
+                saveLivingHint = TakePhotoHelper.takePhotoFromCamera(this);
 
-                return false;
+                return saveLivingHint;
+
             case MENU_ADD:
+
+                saveLivingHint = true;
+
                 TakePhotoHelper.takePhotoFromGallery(this);
+
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -68,6 +79,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        saveLivingHint = false;
+
         Uri uri = null;
         if (requestCode == TakePhotoHelper.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
@@ -98,7 +112,7 @@ public class MainActivity extends BaseActivity {
             API.data().cryptonize(images, new Procedure<Object>() {
                 @Override public void apply(Object dialog) {
                     API.db().delete(contentUri, BaseColumns._ID + "=" + contentId, null);
-                    UI.showHint(MainActivity.this, "result received "+ contentUri+" "+contentId);
+//                    UI.showHint(MainActivity.this, "result received " + contentUri + " " + contentId);
                 }
             });
         }
@@ -107,8 +121,18 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onUserLeaveHint() {
-        UserHelper.setIsLogged(false);
+
         super.onUserLeaveHint();
+
+        if (!saveLivingHint) UserHelper.setIsLogged(false);
+    }
+
+    @Override public void onBackPressed() {
+
+        super.onBackPressed();
+
+        if (isFinishing()) UserHelper.setIsLogged(false);
+
     }
 
     public static void start(Context context) {
