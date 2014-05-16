@@ -9,19 +9,9 @@
         android:src="@drawable/ic_blue_lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="300dp"
+        android:minHeight="300dp"
         android:layout_centerInParent="true"
-        android:padding="8dp"
-        android:scaleType="centerInside" />
-
-    <TextView
-        android:id="@+id/text_view_key"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="#9fff"
-        android:padding="2dp"
-        android:layout_margin="8dp"
-        android:textColor="@color/epam_color" />
+        android:padding="8dp" />
 
 </RelativeLayout>

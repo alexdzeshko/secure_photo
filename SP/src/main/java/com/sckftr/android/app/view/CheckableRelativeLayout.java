@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import com.sckftr.android.securephoto.R;
 
 public class CheckableRelativeLayout extends RelativeLayout implements Checkable {
+
     private boolean mChecked;
 
     public CheckableRelativeLayout(Context context) {
@@ -18,15 +19,18 @@ public class CheckableRelativeLayout extends RelativeLayout implements Checkable
         super(context, attrs);
     }
 
+    @Override
     public void setChecked(boolean checked) {
         mChecked = checked;
         setBackgroundResource(checked ? R.drawable.checkable_layout : 0);
     }
 
+    @Override
     public boolean isChecked() {
         return mChecked;
     }
 
+    @Override
     public void toggle() {
         setChecked(!mChecked);
     }

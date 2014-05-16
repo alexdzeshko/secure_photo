@@ -19,6 +19,7 @@ public class ImageHelper implements AppConst{
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 768;
     public static final String TAG = ImageHelper.class.getSimpleName();
+    private static final int MAX_SCALE_VALUE = 16;
 
     public static int getScaleFactor(Uri imageUri, int viewWidth, int viewHeight) {
 
@@ -41,18 +42,26 @@ public class ImageHelper implements AppConst{
 
     public static int getScaleFactor(byte[] buffer, int viewWidth, int viewHeight){
         int ratio = 1;
+
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
+
         BitmapFactory.decodeByteArray(buffer, 0, buffer.length, opts);
+
         int imageHeight = opts.outHeight;
         int imageWidth = opts.outWidth;
+
         Log.d(TAG, "width: %s, height: %s", imageWidth, imageHeight);
+
         if (imageHeight > viewHeight || imageWidth > viewWidth) {
-            int hRatio = Math.round((float) imageHeight / (float) viewHeight);
-            int wRatio = Math.round((float) imageWidth / (float) viewWidth);
+
+            int hRatio = Math.round((float) imageHeight / viewHeight);
+            int wRatio = Math.round((float) imageWidth / viewWidth);
+
             ratio = hRatio > wRatio ? hRatio : wRatio;
         }
-        return ratio > 1 ? ratio : 1;
+
+        return ratio < MAX_SCALE_VALUE ? ratio : 1;
     }
     public static int getScaleFactor(Uri imageUri) {
         return getScaleFactor(imageUri, WIDTH, HEIGHT);
@@ -67,9 +76,16 @@ public class ImageHelper implements AppConst{
             byte[] buffer = new byte[stream.available()];
             stream.read(buffer);
             byte[] decr = Cryptograph.decrypt(buffer, key);
+
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = ImageHelper.getScaleFactor(decr, WIDTH, HEIGHT);
+            options.inSampleSize = ImageHelper.getScaleFactor(decr, imageView.getWidth(), imageView.getHeight());
+            options.inPurgeable = true;
+            options.inMutable = true;
+
+            Log.d(TAG, "inSampleSize=%s", options.inSampleSize);
+
             Bitmap bitmap = BitmapFactory.decodeByteArray(decr, 0, decr.length,options);
+
             imageView.setImageBitmap(bitmap);
 
         } catch (Exception e) {

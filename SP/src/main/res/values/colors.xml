@@ -15,7 +15,7 @@
     <color name="bg_light">#EBEBEA</color>
     <color name="bg_guests">#ECECEA</color>
     <color name="bg_active">#00AED2</color>
-    <color name="bg_active_transparent">#2000AED2</color>
+    <color name="bg_active_transparent">#6600AED2</color>
     <color name="bg_active_primary">#CADA2A</color>
     <color name="bg_active_secondary">#e2e8b0</color>
     <color name="bg_active_primary80">#C8CADA2A</color>

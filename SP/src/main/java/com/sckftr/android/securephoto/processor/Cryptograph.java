@@ -23,7 +23,7 @@ public class Cryptograph {
     //MAIN XOR METHOD
     private static byte[] encrypt(byte[] arr, String keyWord) {
 
-        keyWord += UserHelper.getUserHash();
+        keyWord = getKey(keyWord);
 
         byte[] keyarr = keyWord.getBytes();
         byte[] result = new byte[arr.length];
@@ -36,7 +36,7 @@ public class Cryptograph {
     //MAIN XOR METHOD
     public static byte[] decrypt(byte[] text, String keyWord) {
 
-        keyWord += UserHelper.getUserHash();
+        keyWord = getKey(keyWord);
 
         byte[] result = new byte[text.length];
         byte[] keyarr = keyWord.getBytes();
@@ -44,6 +44,11 @@ public class Cryptograph {
             result[i] = (byte) (text[i] ^ keyarr[i % keyarr.length]);
         }
         return result;
+    }
+
+    public static String getKey(String keyWord) {
+        keyWord += UserHelper.getUserHash();
+        return keyWord;
     }
 
 

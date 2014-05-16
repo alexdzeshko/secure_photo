@@ -3,31 +3,30 @@ package com.sckftr.android.securephoto;
 import org.androidannotations.annotations.EApplication;
 
 import by.deniotokiari.core.app.CoreApplication;
+import uk.co.senab.bitmapcache.BitmapLruCache;
 
 @EApplication
 public class Application extends CoreApplication {
 
-	public interface SOURCE {
+    private BitmapLruCache mCache;
 
-		public static final String BITMAPFILE = "source:BitmapFileSource";
-
-	}
-
-	public interface PROCESSOR {
-
-		public static final String IMAGE = "processor:ImageProcessor";
-
-	}
-
-	@Override
-	public void register() {
-		// PLUGINS
+    @Override
+    public void register() {
+        // PLUGINS
 
         AppConst.API.init(this);
 
-	}
+        BitmapLruCache.Builder builder = new BitmapLruCache.Builder(this);
+        builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
+        mCache = builder.build();
 
-    public static Application get(){
+    }
+
+    public BitmapLruCache getBitmapCache() {
+        return mCache;
+    }
+
+    public static Application get() {
         return Application_.getInstance();
     }
 }
