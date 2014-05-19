@@ -4,7 +4,7 @@ import by.deniotokiari.core.annotations.db.DBAutoincrement;
 import by.deniotokiari.core.annotations.db.DBPrimaryKey;
 import by.deniotokiari.core.annotations.db.types.DBInteger;
 
-public interface CoreContract {
+public interface BaseContract {
 	
 	@DBAutoincrement
 	@DBInteger

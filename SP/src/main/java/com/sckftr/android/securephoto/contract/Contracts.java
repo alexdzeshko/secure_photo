@@ -6,9 +6,9 @@ import by.deniotokiari.core.annotations.ContractInfo;
 import by.deniotokiari.core.annotations.db.DBContract;
 import by.deniotokiari.core.annotations.db.DBTableName;
 import by.deniotokiari.core.annotations.db.types.DBVarchar;
-import by.deniotokiari.core.content.CoreContract;
+import by.deniotokiari.core.content.BaseContract;
 
-public class Contracts implements CoreContract{
+public class Contracts implements BaseContract {
 
     private static final String TYPE = "vnd.android.cursor.dir/";
 
@@ -17,7 +17,7 @@ public class Contracts implements CoreContract{
     @DBContract
     @DBTableName(tableName = "IMAGES")
     @ContractInfo(type = TYPE + "IMAGES", uri = URI + "ImagesProvider/GENRES")
-    public static final class ImageContract implements CoreContract {
+    public static final class ImageContract implements BaseContract {
 
         @DBVarchar
         public static final String URI = "URI";

@@ -1,85 +1,84 @@
 package by.deniotokiari.core.content;
 
-import by.deniotokiari.core.helpers.UriHelper;
-import by.deniotokiari.core.utils.ContractUtils;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+import by.deniotokiari.core.helpers.UriHelper;
+import by.deniotokiari.core.utils.ContractUtils;
+
 abstract public class CoreProvider extends ContentProvider {
 
-	public static final String IS_NO_NOTIFAED = "is_notifaed";
+    public static final String IS_NO_NOTIFAED = "is_notifaed";
 
-	private CoreDataBase mDataBase;
+    private CoreDataBase mDataBase;
 
-	protected abstract Class<?> getContract();
+    protected abstract Class<?> getContract();
 
-	@Override
-	public boolean onCreate() {
-		mDataBase = new CoreDataBase(getContext());
-		return true;
-	}
+    @Override
+    public boolean onCreate() {
+        mDataBase = new CoreDataBase(getContext());
+        return true;
+    }
 
-	@Override
-	public String getType(Uri uri) {
-		return ContractUtils.getType(getContract());
-	}
+    @Override
+    public String getType(Uri uri) {
+        return ContractUtils.getType(getContract());
+    }
 
-	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		int result = mDataBase.deleteItems(getContract(), selection,
-				selectionArgs);
-		if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
-			getContext().getContentResolver().notifyChange(uri, null);
-		}
-		return result;
-	}
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        int result = mDataBase.deleteItems(getContract(), selection,
+                selectionArgs);
+        if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return result;
+    }
 
-	@Override
-	public int bulkInsert(Uri uri, ContentValues[] values) {
-		int inserted = mDataBase.addItems(getContract(), values);
-		if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
-			getContext().getContentResolver().notifyChange(uri, null);
-		}
-		return inserted;
-	}
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        int inserted = mDataBase.addItems(getContract(), values);
+        if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return inserted;
+    }
 
-	@Override
-	public Uri insert(Uri uri, ContentValues value) {
-		long id = mDataBase.addItem(getContract(), value);
-		Uri itemUri = Uri.parse(uri + "/" + id);
-		if (id > 0) {
-			if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
-				getContext().getContentResolver().notifyChange(itemUri, null);
-			}
-		}
-		return itemUri;
-	}
+    @Override
+    public Uri insert(Uri uri, ContentValues value) {
+        long id = mDataBase.addItem(getContract(), value);
+        Uri itemUri = Uri.parse(uri + "/" + id);
+        if (id > 0) {
+            if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+                getContext().getContentResolver().notifyChange(itemUri, null);
+            }
+        }
+        return itemUri;
+    }
 
-	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-		Cursor items = mDataBase.getItems(getContract(), selection,
-				selectionArgs, sortOrder);
-		if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
-			items.setNotificationUri(getContext().getContentResolver(), uri);
-		}
-		return items;
-	}
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Cursor items = mDataBase.getItems(getContract(), selection, selectionArgs, sortOrder);
+        if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+            items.setNotificationUri(getContext().getContentResolver(), uri);
+        }
+        return items;
+    }
 
-	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
-		return 0;
-	}
+    @Override
+    public int update(Uri uri, ContentValues values, String selection,
+                      String[] selectionArgs) {
+        return 0;
+    }
 
-	public Cursor rawQuery(Uri uri, String sql, String[] selectionArgs) {
-		Cursor items = mDataBase.rawQuery(getContract(), sql, selectionArgs);
-		if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
-			items.setNotificationUri(getContext().getContentResolver(), uri);
-		}
-		return items;
-	}
+    public Cursor rawQuery(Uri uri, String sql, String[] selectionArgs) {
+        Cursor items = mDataBase.rawQuery(getContract(), sql, selectionArgs);
+        if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+            items.setNotificationUri(getContext().getContentResolver(), uri);
+        }
+        return items;
+    }
 
 }

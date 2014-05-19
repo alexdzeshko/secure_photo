@@ -50,7 +50,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     }
 
     @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, null);
+        return new CursorLoader(getActivity(), ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, Contracts.ImageContract._ID+" DESC");
     }
 
     @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
