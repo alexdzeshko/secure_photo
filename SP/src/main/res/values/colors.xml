@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background_alpha_black">#cc000000</color>
-    <color name="epam_color">#146899</color>
 
     <color name="bg_popup">#F0F0F0</color>
+    <color name="primary">#549999</color>
+    <color name="primary_dark">#1D6E6E</color>
+    <color name="primary_light">#BFE3E3</color>
 
-    <color name="white">#F3F3F2</color>
+    <color name="accent1">#FFD98C</color>
+    <color name="accent1_dark">#B88B30</color>
+    <color name="accent1_light">#FFF1D6</color>
+
+    <color name="primary_inverse">#FF8C8C</color>
+    <color name="primary_inverse_dark">#B83030</color>
+    <color name="primary_inverse_light">#FFD6D6</color>
+
+    <color name="chrome_background">#E6E6E6E6</color>
+    <color name="chrome_custom_background_alpha">#E6FFFFFF</color>
 
     <color name="bg_white_transparent" >#40FFFFFF</color>
     <color name="bg_white_transparent90">#C8FFFFFF</color>
@@ -13,7 +24,6 @@
     <color name="bg_semitransparent" >#40F3F3F2</color>
 
     <color name="bg_light">#EBEBEA</color>
-    <color name="bg_guests">#ECECEA</color>
     <color name="bg_active">#00AED2</color>
     <color name="bg_active_transparent">#6600AED2</color>
     <color name="bg_active_primary">#CADA2A</color>
@@ -22,7 +32,6 @@
     <color name="bg_inactive_panel">#C6C1BC</color>
     <color name="bg_orange">#ed7724</color>
 
-    <color name="bg_card">#C6C1BC</color>
 
     <color name="bg_special">#9164AA</color>
     <color name="bg_alarm">#C52743</color>

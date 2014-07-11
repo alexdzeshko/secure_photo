@@ -1,28 +1,12 @@
 <resources>
 
-    <!--
-        Base application theme for API 14+. This theme completely replaces
-        AppBaseTheme from BOTH res/values/styles.xml and
-        res/values-v11/styles.xml on API 14+ devices.
-
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-
-        <!-- API 14 theme customizations can go here. -->
-        <item name="android:actionBarStyle">@style/EpamActionBar</item>
+    <style name="Widget.SP.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@color/primary</item>
+        <item name="android:titleTextStyle">@style/TextAppearance.SP.Widget.ActionBar.Title</item>
     </style>
 
-    <style name="EpamActionBar" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:background">#146899</item>
-        <item name="android:titleTextStyle">@style/LightTheme.ActionBar.TitleTextStyle</item>
-    </style>
-
-    <style name="LightTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">#fff</item>
-    </style>
-
-    <style name="AppThemeNoBar" parent="android:Theme.Holo.Light.NoActionBar">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="TextAppearance.SP.Widget.ActionBar.Title" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/accent1_light</item>
     </style>
 
     <style name="panel">

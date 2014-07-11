@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SP.Base" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="Theme.SP" parent="Theme.SP.Base">
+        <item name="android:actionBarStyle">@style/Widget.SP.ActionBar</item>
+
+    </style>
+
+    <style name="Theme.SP.NoActionBar" parent="Theme.SP">
+
+    </style>
+
+</resources>

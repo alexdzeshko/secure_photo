@@ -22,7 +22,7 @@ public class CheckableRelativeLayout extends RelativeLayout implements Checkable
     @Override
     public void setChecked(boolean checked) {
         mChecked = checked;
-        setBackgroundResource(checked ? R.drawable.checkable_layout : 0);
+        setBackgroundResource(checked ? R.drawable.bg_checkable_item : 0);
     }
 
     @Override
