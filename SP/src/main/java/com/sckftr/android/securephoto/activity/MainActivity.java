@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.sckftr.android.app.activity.BaseActivity;
+import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.ImageGridFragment;
@@ -21,8 +21,8 @@ import org.androidannotations.annotations.EActivity;
 
 import java.util.ArrayList;
 
-@EActivity(R.layout.frame)
-public class MainActivity extends BaseActivity {
+@EActivity
+public class MainActivity extends BaseSPActivity {
 
     private static final int MENU_CAM = R.id.menu_camera;
     //    private static final int MENU_SHARE = R.id.menu_share;

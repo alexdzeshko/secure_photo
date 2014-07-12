@@ -1,27 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.sckftr.android.app.view.InsetFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frame_inset"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
-
-    <GridView
-        android:id="@+id/grid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="@dimen/column_width"
-        android:numColumns="auto_fit"
-        android:paddingLeft="@dimen/dim_normal"
-        android:paddingRight="@dimen/dim_normal"
-        android:stretchMode="columnWidth"
-        android:adjustViewBounds="true"
-        tools:listitem="@layout/image_item">
-    </GridView>
+    android:orientation="vertical"
+    app:insetBackground="?attr/default_inset_color">
 
     <FrameLayout
-        android:id="@+id/content"
+        android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 </com.sckftr.android.app.view.InsetFrameLayout>

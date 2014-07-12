@@ -1,5 +1,6 @@
 package com.sckftr.android.app.fragment;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,8 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
     View mProgressContainer;
     View mListContainer;
     boolean mListShown;
+
+    Rect mInsets;
 
     /**
      * The current activated item position. Only used on tablets.
@@ -301,15 +304,32 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //to implement
+        //NOOP
     }
 
     @Override public void onScrollStateChanged(AbsListView view, int scrollState) {
-        //to implement
+        //NOOP
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        //to implement
+        //NOOP
+    }
+
+    @Override
+    public void populateInsets(Rect insets) {
+        mInsets = insets;
+        updateInsets(insets);
+    }
+
+    private void updateInsets(Rect insets) {
+
+        final T view = getAdapterView();
+        view.setClipToPadding(false);
+        view.setPadding(
+                insets.left,
+                insets.top,
+                insets.right,
+                insets.bottom);
     }
 }

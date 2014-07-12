@@ -23,7 +23,7 @@ import com.sckftr.android.utils.Function;
 import com.sckftr.android.utils.Platform;
 import com.sckftr.android.utils.UI;
 
-public abstract class BaseFragment extends Fragment implements AppConst {
+public abstract class BaseFragment extends InsetAwareFragment implements AppConst {
 
     protected final Handler mHandler = new Handler();
 

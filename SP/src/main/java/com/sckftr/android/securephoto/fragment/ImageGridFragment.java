@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import org.androidannotations.annotations.EFragment;
 
 import java.util.ArrayList;
 
+import by.deniotokiari.core.helpers.CursorHelper;
 import by.deniotokiari.core.utils.ContractUtils;
 
 @EFragment(R.layout.images)
@@ -62,17 +64,19 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         getAdapter().swapCursor(null);
     }
 
-    private void showImageFragment(int pos) {
+    private void showImageFragment(String[] value) {
         Fragment fragment = new ImageFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ImageFragment.KEY_ARG_POS, pos);
+        bundle.putStringArray(ImageFragment.KEY_ARG_VALUE, value);
         fragment.setArguments(bundle);
         getBaseActivity().addFragment(0, fragment, "fullscreen");
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        showImageFragment(position);
+        Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+        final String[] strings = {CursorHelper.get(cursor, Contracts.ImageContract.URI), CursorHelper.get(cursor, Contracts.ImageContract.KEY)};
+        showImageFragment(strings);
     }
 
     public static Fragment build() {
@@ -128,5 +132,17 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @Override public void onDestroyActionMode(ActionMode mode) {
 
         actionList = null;
+    }
+
+    @Override
+    public void populateInsets(Rect insets) {
+        super.populateInsets(insets);
+
+        final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
+        getAdapterView().setPadding(
+                insets.left + spacing,
+                insets.top + spacing,
+                insets.right + spacing,
+                insets.bottom + spacing);
     }
 }

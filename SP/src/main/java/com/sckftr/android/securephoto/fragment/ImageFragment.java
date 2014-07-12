@@ -1,6 +1,5 @@
 package com.sckftr.android.securephoto.fragment;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,16 +9,13 @@ import android.widget.ImageView;
 
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
-import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.helper.ImageHelper;
 
-import by.deniotokiari.core.helpers.CursorHelper;
-import by.deniotokiari.core.utils.ContractUtils;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ImageFragment extends BaseFragment implements OnClickListener {
 
-	public static final String KEY_ARG_POS = "key:pos";
+	public static final String KEY_ARG_VALUE = "key:pos";
 	private ImageView mImageView;
     private PhotoViewAttacher mAttacher;
 
@@ -34,8 +30,7 @@ public class ImageFragment extends BaseFragment implements OnClickListener {
 		mImageView = (ImageView) view.findViewById(R.id.imageView);
 
 		if (getArguments() != null) {
-			int pos = getArguments().getInt(KEY_ARG_POS);
-			String[] uriKey = getUriKey(pos);
+            String[] uriKey = getArguments().getStringArray(KEY_ARG_VALUE);
 			if (uriKey.length > 0) {
 				mImageView.setOnClickListener(this);
 
@@ -45,18 +40,6 @@ public class ImageFragment extends BaseFragment implements OnClickListener {
                 mAttacher.update();
 			}
 		}
-	}
-
-	private String[] getUriKey(int pos) {
-        String[] strings = null;
-		Cursor cursor = getActivity().getContentResolver().query(ContractUtils.getUri(Contracts.ImageContract.class), null,null, null, null);
-
-		if (cursor!= null && cursor.moveToPosition(pos)) {
-
-            strings = new String[]{CursorHelper.get(cursor, Contracts.ImageContract.URI),CursorHelper.get(cursor, Contracts.ImageContract.KEY)};
-		}
-        CursorHelper.close(cursor);
-		return strings;
 	}
 
 	@Override

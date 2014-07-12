@@ -22,4 +22,9 @@
         <enum name="roboto_slab" value="5" />
     </attr>
 
+    <declare-styleable name="SPTheme">
+        <attr name="grey_shade" format="color|reference" />
+        <attr name="default_inset_color" format="color|reference" />
+    </declare-styleable>
+
 </resources>

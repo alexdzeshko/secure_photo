@@ -1,14 +1,13 @@
 package com.sckftr.android.securephoto.activity;
 
-import android.app.Activity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.helper.UserHelper;
 
@@ -18,7 +17,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.start_activity)
-public class StartActivity extends Activity implements TextWatcher {
+public class StartActivity extends BaseSPActivity implements TextWatcher {
 
     private static final String LOG_TAG = StartActivity.class.getSimpleName();
 

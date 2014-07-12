@@ -3,8 +3,10 @@
     <color name="background_alpha_black">#cc000000</color>
 
     <color name="bg_popup">#F0F0F0</color>
+
     <color name="primary">#549999</color>
     <color name="primary_dark">#1D6E6E</color>
+    <color name="primary_dark_60">#991D6E6E</color>
     <color name="primary_light">#BFE3E3</color>
 
     <color name="accent1">#FFD98C</color>
@@ -17,6 +19,10 @@
 
     <color name="chrome_background">#E6E6E6E6</color>
     <color name="chrome_custom_background_alpha">#E6FFFFFF</color>
+
+    <color name="dark_gray">#FF333333</color>
+    <color name="light_gray">#FFDDDDDD</color>
+    <color name="mid_gray">#FFAAAAAA</color>
 
     <color name="bg_white_transparent" >#40FFFFFF</color>
     <color name="bg_white_transparent90">#C8FFFFFF</color>

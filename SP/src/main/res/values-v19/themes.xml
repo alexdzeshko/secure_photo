@@ -7,13 +7,5 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <style name="Theme.SP" parent="Theme.SP.Base">
-        <item name="android:actionBarStyle">@style/Widget.SP.ActionBar</item>
-
-    </style>
-
-    <style name="Theme.SP.NoActionBar" parent="Theme.SP">
-
-    </style>
 
 </resources>
