@@ -1,6 +1,8 @@
 package com.sckftr.android.securephoto.data;
 
 import android.app.IntentService;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -117,6 +119,10 @@ public class DataApi implements AppConst {
         }
 
         API.db().delete(dbList);
+    }
+
+    public CursorLoader getImagesLoader(Context context) {
+        return new CursorLoader(context, ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, Contracts.ImageContract._ID+" DESC");
     }
 
     private enum CommandName {

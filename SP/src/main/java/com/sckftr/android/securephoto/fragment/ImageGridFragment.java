@@ -27,7 +27,6 @@ import org.androidannotations.annotations.EFragment;
 
 import java.util.ArrayList;
 
-import by.deniotokiari.core.helpers.CursorHelper;
 import by.deniotokiari.core.utils.ContractUtils;
 
 @EFragment(R.layout.images)
@@ -74,9 +73,14 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-        final String[] strings = {CursorHelper.get(cursor, Contracts.ImageContract.URI), CursorHelper.get(cursor, Contracts.ImageContract.KEY)};
-        showImageFragment(strings);
+//        Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+//        final String[] strings = {CursorHelper.get(cursor, Contracts.ImageContract.URI), CursorHelper.get(cursor, Contracts.ImageContract.KEY)};
+//        showImageFragment(strings);
+        Fragment fragment = new ImagePagerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ImagePagerFragment.KEY_POSITION, position);
+        fragment.setArguments(bundle);
+        getBaseActivity().addFragment(0, fragment, "gallery");
     }
 
     public static Fragment build() {

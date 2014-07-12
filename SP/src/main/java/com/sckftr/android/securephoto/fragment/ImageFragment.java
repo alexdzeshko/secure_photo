@@ -34,6 +34,7 @@ public class ImageFragment extends BaseFragment implements OnClickListener {
 			if (uriKey.length > 0) {
 				mImageView.setOnClickListener(this);
 
+                //FIXME heavy operation
 				ImageHelper.loadEncryptedFile(uriKey[1], uriKey[0], mImageView);
 
                 mAttacher = new PhotoViewAttacher(mImageView);
