@@ -37,10 +37,10 @@ public interface AppConst {
         String ID = PACKAGE + ".ID";
         String TYPE = PACKAGE + ".TYPE";
         String VALUES = PACKAGE + ".VALUES";
-        String CODE = PACKAGE+".CODE";
-        String PARAMS = PACKAGE+".PARAMS";
-        String RECEIVER = PACKAGE+".RECEIVER";
-        String RESULT = PACKAGE+".RESULT";
+        String CODE = PACKAGE + ".CODE";
+        String PARAMS = PACKAGE + ".PARAMS";
+        String RECEIVER = PACKAGE + ".RECEIVER";
+        String RESULT = PACKAGE + ".RESULT";
 
         String ACTION = PACKAGE + ".ACTION";
         String SELECTION = PACKAGE + ".SELECTION";
@@ -80,14 +80,14 @@ public interface AppConst {
         String LAST_NAME = PACKAGE + ".LAST_NAME";
         String PHONE = PACKAGE + ".PHONE";
         String EMAIL = PACKAGE + ".EMAIL";
-        String USER_INFO = PACKAGE+".USER_INFO";
-        String USER_KEY = PACKAGE+".USER_KEY";
-        String USER_LOGGED = PACKAGE+".USER_LOGGED";
-        String APP_PRIVATE_KEY = PACKAGE+".a.p.k.";
+        String USER_INFO = PACKAGE + ".USER_INFO";
+        String USER_KEY = PACKAGE + ".USER_KEY";
+        String USER_LOGGED = PACKAGE + ".USER_LOGGED";
+        String APP_PRIVATE_KEY = PACKAGE + ".a.p.k.";
 
-        String CURRENCY = PACKAGE+".CURRENCY";
-        String DISTANCE = PACKAGE+".DISTANCE";
-        String PRIVACY_PERMISSION = PACKAGE+".PRIVACY_PERMISSION";
+        String CURRENCY = PACKAGE + ".CURRENCY";
+        String DISTANCE = PACKAGE + ".DISTANCE";
+        String PRIVACY_PERMISSION = PACKAGE + ".PRIVACY_PERMISSION";
     }
 
 
@@ -111,7 +111,7 @@ public interface AppConst {
 
         private Gson gson;
 
-        public static Gson gson(){
+        public static Gson gson() {
             return get().gson();
         }
 
@@ -151,9 +151,14 @@ public interface AppConst {
 
         }
 
-        public static Drawable drawable(int resId){
+        public static Drawable drawable(int resId) {
             return get().drawable(resId);
         }
+    }
+
+    public static class REQUEST {
+        public static final int IMAGE_CAPTURE = 0x01;
+        public static final int IMAGE_GALLERY = 0x02;
     }
 
 
@@ -175,7 +180,7 @@ public interface AppConst {
          */
         public static void d(String tag, String template, Object... args) {
             if (ENABLED) {
-                if (args.length==0){
+                if (args.length == 0) {
                     android.util.Log.d(_t(tag), template);
                 } else {
                     android.util.Log.d(_t(tag), String.format(template, args));
@@ -192,6 +197,7 @@ public interface AppConst {
                 android.util.Log.v(_t(tag), String.format(template, args));
             }
         }
+
         public static void w(String tag, String template, Object... args) {
             if (ENABLED) {
                 android.util.Log.w(_t(tag), String.format(template, args));
@@ -209,7 +215,7 @@ public interface AppConst {
         }
 
         private static String _t(String tag) {
-            return tag==null ? LOG_TAG+":*" : LOG_TAG+":"+tag;
+            return tag == null ? LOG_TAG + ":*" : LOG_TAG + ":" + tag;
         }
     }
 

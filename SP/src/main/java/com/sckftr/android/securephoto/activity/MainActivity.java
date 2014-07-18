@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
@@ -15,94 +13,97 @@ import com.sckftr.android.securephoto.fragment.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.Procedure;
+import com.sckftr.android.utils.Storage;
+import com.sckftr.android.utils.Strings;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 
 import java.util.ArrayList;
 
 @EActivity
+@OptionsMenu(R.menu.main_menu)
 public class MainActivity extends BaseSPActivity {
 
-    private static final int MENU_CAM = R.id.menu_camera;
-    //    private static final int MENU_SHARE = R.id.menu_share;
-    private static final int MENU_ADD = R.id.menu_add_items;
+    private static final int MENU_CAM = R.id.camera;
+    //private static final int MENU_SHARE = R.id.menu_share;
+    private static final int MENU_ADD = R.id.add;
 
     private boolean saveLivingHint;
 
-    @AfterViews void init() {
-
+    @AfterViews
+    void init() {
         addFragment(ImageGridFragment.build());
     }
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
-        if (!UserHelper.isLogged())
+
+        if (!UserHelper.isLogged()) {
+
             StartActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-    }
 
-    @Override protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case MENU_CAM:
-
-                saveLivingHint = TakePhotoHelper.takePhotoFromCamera(this);
-
-                return saveLivingHint;
-
-            case MENU_ADD:
-
-                saveLivingHint = true;
-
-                TakePhotoHelper.takePhotoFromGallery(this);
-
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+        setIntent(intent);
+
+    }
+
+    @OptionsItem
+    void camera() {
+
+        saveLivingHint = TakePhotoHelper.takePhotoFromCamera(this);
+
+    }
+
+    @OptionsItem
+    void add() {
+
+        saveLivingHint = true;
+
+        TakePhotoHelper.takePhotoFromGallery(this);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         saveLivingHint = false;
 
-        Uri uri = null;
-        if (requestCode == TakePhotoHelper.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
-            uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
+        if (requestCode == REQUEST.IMAGE_CAPTURE) {
+
+            Uri uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
+
             if (uri != null) {
+
                 Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
+
+                // TODO remove
                 ArrayList<Image> images = new ArrayList<Image>();
+
                 images.add(image);
+
                 API.data().cryptonize(images, null);
             }
 
-        } else if (requestCode == TakePhotoHelper.REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST.IMAGE_GALLERY && resultCode == RESULT_OK) {
 
-            String originalContentId = null;
+            Object[] objects = Storage.resolveContent(data.getData());
 
-            Object[] objects = TakePhotoHelper.resolveContent(data.getData());
-            uri = (Uri) objects[0];
-            originalContentId = (String) objects[1];
+            Uri uri = (Uri) objects[0];
+            String originalContentId = (String) objects[1];
 
             Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
             image.setOriginalContentId(originalContentId);
+
+            // TODO remove
             ArrayList<Image> images = new ArrayList<Image>();
             images.add(image);
 
@@ -110,7 +111,8 @@ public class MainActivity extends BaseSPActivity {
             final Uri contentUri = data.getData();
 
             API.data().cryptonize(images, new Procedure<Object>() {
-                @Override public void apply(Object dialog) {
+                @Override
+                public void apply(Object dialog) {
                     API.db().delete(contentUri, BaseColumns._ID + "=" + contentId, null);
 //                    UI.showHint(MainActivity.this, "result received " + contentUri + " " + contentId);
                 }
@@ -127,7 +129,8 @@ public class MainActivity extends BaseSPActivity {
         if (!saveLivingHint) UserHelper.setIsLogged(false);
     }
 
-    @Override public void onBackPressed() {
+    @Override
+    public void onBackPressed() {
 
         super.onBackPressed();
 
