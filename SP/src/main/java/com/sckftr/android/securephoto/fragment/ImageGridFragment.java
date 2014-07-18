@@ -74,7 +74,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //        Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-//        final String[] strings = {CursorHelper.get(cursor, Contracts.ImageContract.URI), CursorHelper.get(cursor, Contracts.ImageContract.KEY)};
+//        final String[] strings = {CursorHelper.getString(cursor, Contracts.ImageContract.URI), CursorHelper.getString(cursor, Contracts.ImageContract.KEY)};
 //        showImageFragment(strings);
         Fragment fragment = new ImagePagerFragment();
         Bundle bundle = new Bundle();

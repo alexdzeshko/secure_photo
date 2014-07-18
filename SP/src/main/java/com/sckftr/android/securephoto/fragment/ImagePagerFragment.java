@@ -67,7 +67,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
         }
 
         @Override public Fragment getItem(Context context, Cursor cursor) {
-            final String[] strings = {CursorHelper.get(cursor, Contracts.ImageContract.URI), CursorHelper.get(cursor, Contracts.ImageContract.KEY)};
+            final String[] strings = {CursorHelper.getString(cursor, Contracts.ImageContract.URI), CursorHelper.getString(cursor, Contracts.ImageContract.KEY)};
             Fragment fragment = new ImageFragment();
             Bundle bundle = new Bundle();
             bundle.putStringArray(ImageFragment.KEY_ARG_VALUE, strings);
