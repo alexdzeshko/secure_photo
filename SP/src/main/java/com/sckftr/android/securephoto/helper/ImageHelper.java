@@ -41,45 +41,4 @@ public class ImageHelper implements AppConst {
 
         return inSampleSize;
     }
-
-
-    public static void loadEncryptedFile(String key, String uri, ImageView imageView) {
-
-        FileInputStream stream = null;
-        try {
-            //todo big refactor
-            stream = new FileInputStream(uri);
-            byte[] buffer = new byte[stream.available()];
-            stream.read(buffer);
-            byte[] decr = Cryptograph.decrypt(buffer, key);
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            options.inJustDecodeBounds = true;
-
-            BitmapFactory.decodeByteArray(decr, 0, decr.length, options);
-
-            options.inJustDecodeBounds = false;
-
-            options.inSampleSize = ImageHelper.calculateInSampleSize(options, imageView.getWidth(), imageView.getHeight());
-
-            options.inPurgeable = true;
-            options.inMutable = true;
-
-            Log.d(TAG, "inSampleSize=%s", options.inSampleSize);
-
-            Bitmap bitmap = BitmapFactory.decodeByteArray(decr, 0, decr.length, options);
-
-            imageView.setImageBitmap(bitmap);
-
-        } catch (Exception e) {
-
-            Log.e(TAG, "encrypted file load error", e);
-
-        } finally {
-
-            IO.close(stream);
-
-        }
-    }
 }

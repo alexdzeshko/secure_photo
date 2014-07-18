@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.sckftr.android.securephoto.AppConst;
@@ -29,15 +30,19 @@ public class ImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
 
     public static final String TAG = ImageAsyncTask.class.getSimpleName();
 
-    private CacheableImageView mImageView;
+    private ImageView mImageView;
+
+    private boolean mGetFromCache;
 
     AQuery aq;
 
-    public void start(CacheableImageView imageView, ProgressBar progressBar, String uri, String key) {
+    public void start(ImageView imageView, ProgressBar progressBar, String uri, String key, boolean getFromCache) {
 
         mImageView = imageView;
 
         aq = new AQuery(progressBar);
+
+        mGetFromCache = getFromCache; // TODO fix this
 
         executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, uri, key);
     }
@@ -64,18 +69,23 @@ public class ImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
 
         String key = params[1];
 
-        final BitmapLruCache bitmapCache = Application.get().getBitmapCache();
-        CacheableBitmapDrawable result = bitmapCache.get(url);
+        BitmapLruCache bitmapCache = null;
+
+        if (mGetFromCache) {
+
+            bitmapCache = Application.get().getBitmapCache();
+            CacheableBitmapDrawable result = bitmapCache.get(url);
+
+            if (result != null) {
+
+                AppConst.Log.d(TAG, "from cache: " + url);
+
+                return result.getBitmap();
+
+            }
+        }
 
         FileInputStream stream = null;
-
-        if (result != null) {
-
-            AppConst.Log.d(TAG, "from cache: " + url);
-
-            return result.getBitmap();
-
-        }
 
         try {
 
@@ -104,7 +114,11 @@ public class ImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
 
             AppConst.Log.d(TAG, "out width = %s, out height = %s, inSampleSize=%s", bitmap.getWidth(), bitmap.getHeight(), options.inSampleSize);
 
-            bitmapCache.put(url, bitmap);
+            if (bitmapCache != null) {
+
+                bitmapCache.put(url, bitmap);
+
+            }
 
             return bitmap;
 

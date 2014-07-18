@@ -50,7 +50,8 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
                 imageView, // target ImageView
                 progressBar, // progress to show
                 CursorHelper.getString(cursor, Contracts.ImageContract.URI), // image uri
-                CursorHelper.getString(cursor, Contracts.ImageContract.KEY)); // decrypt key);
+                CursorHelper.getString(cursor, Contracts.ImageContract.KEY),// decrypt key
+                false); // work with cache
 
     }
 

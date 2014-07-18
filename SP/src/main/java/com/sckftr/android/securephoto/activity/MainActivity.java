@@ -3,6 +3,7 @@ package com.sckftr.android.securephoto.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.view.MenuItem;
 

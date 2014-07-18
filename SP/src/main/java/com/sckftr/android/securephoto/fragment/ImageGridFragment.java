@@ -29,20 +29,23 @@ import java.util.ArrayList;
 
 import by.deniotokiari.core.utils.ContractUtils;
 
-@EFragment(R.layout.images)
+@EFragment
 public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesGridCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
 
     private ArrayList<Image> actionList;
 
-    @Override protected int layoutId() {
+    @Override
+    protected int layoutId() {
         return R.layout.images;
     }
 
-    @Override protected ImagesGridCursorAdapter createAdapter() {
+    @Override
+    protected ImagesGridCursorAdapter createAdapter() {
         return new ImagesGridCursorAdapter(getActivity());
     }
 
-    @AfterViews void init() {
+    @AfterViews
+    void init() {
 
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
@@ -50,25 +53,24 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         getLoaderManager().initLoader(123, null, this);
     }
 
-    @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, Contracts.ImageContract._ID+" DESC");
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        return new CursorLoader(getActivity(), ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, Contracts.ImageContract._ID + " DESC");
+
     }
 
-    @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
         getAdapter().swapCursor(data);
+
         setListShown(true);
     }
 
-    @Override public void onLoaderReset(Loader<Cursor> loader) {
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
         getAdapter().swapCursor(null);
-    }
-
-    private void showImageFragment(String[] value) {
-        Fragment fragment = new ImageFragment();
-        Bundle bundle = new Bundle();
-        bundle.putStringArray(ImageFragment.KEY_ARG_VALUE, value);
-        fragment.setArguments(bundle);
-        getBaseActivity().addFragment(0, fragment, "fullscreen");
     }
 
     @Override
@@ -76,11 +78,14 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 //        Cursor cursor = (Cursor) parent.getItemAtPosition(position);
 //        final String[] strings = {CursorHelper.getString(cursor, Contracts.ImageContract.URI), CursorHelper.getString(cursor, Contracts.ImageContract.KEY)};
 //        showImageFragment(strings);
-        Fragment fragment = new ImagePagerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(ImagePagerFragment.KEY_POSITION, position);
-        fragment.setArguments(bundle);
-        getBaseActivity().addFragment(0, fragment, "gallery");
+
+//        Fragment fragment = new ImagePagerFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(ImagePagerFragment.KEY_POSITION, position);
+//        fragment.setArguments(bundle);
+//        getBaseActivity().addFragment(0, fragment, "gallery");
+
+        getBaseActivity().addFragment(0, ImagePagerFragment.build(position), "gallery");
     }
 
     public static Fragment build() {
@@ -95,7 +100,8 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         actionList.add(new Image(cursor));
     }
 
-    @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
         mode.setTitle(API.string(R.string.cab_title_select_items));
 
@@ -110,11 +116,13 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         return true;
     }
 
-    @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         return false;
     }
 
-    @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_delete:
 
@@ -133,7 +141,8 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         }
     }
 
-    @Override public void onDestroyActionMode(ActionMode mode) {
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
 
         actionList = null;
     }
@@ -143,10 +152,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         super.populateInsets(insets);
 
         final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
-        getAdapterView().setPadding(
-                insets.left + spacing,
-                insets.top + spacing,
-                insets.right + spacing,
-                insets.bottom + spacing);
+
+        getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
     }
 }
