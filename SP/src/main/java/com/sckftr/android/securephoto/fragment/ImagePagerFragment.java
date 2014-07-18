@@ -48,7 +48,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
     }
 
     @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return API.data().getImagesLoader(getContext());
+        return API.data().getImagesCursorLoader(getContext());
     }
 
     @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

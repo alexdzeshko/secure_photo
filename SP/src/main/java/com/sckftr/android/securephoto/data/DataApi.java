@@ -39,16 +39,33 @@ public class DataApi implements AppConst {
 
     private static DataApi instance;
 
-    private void unlockFiles(ArrayList<Cryptonite> files) {
+    public static DataApi instance() {
+        if (instance == null) {
 
+            instance = new DataApi();
+
+        }
+
+        return instance;
+    }
+
+    private DataApi() {
+    }
+
+    private void unlockFiles(ArrayList<Cryptonite> files) {
         for (Cryptonite file : files) {
+
             unlockFile(file);
+
         }
     }
 
     private void unlockFile(Cryptonite item) {
+
         FileInputStream stream = null;
+
         FileOutputStream fileOutputStream = null;
+
         try {
 
             stream = new FileInputStream(item.getFileUri().toString());
@@ -71,7 +88,7 @@ public class DataApi implements AppConst {
             IOUtils.closeStream(fileOutputStream);
         }
 
-        API.db().delete(ContractUtils.getUri(Contracts.ImageContract.class),Contracts.ImageContract.URI + " = '" + item.getFileUri().toString() + "'", null);
+        API.db().delete(ContractUtils.getUri(Contracts.ImageContract.class), Contracts.ImageContract.URI + " = '" + item.getFileUri().toString() + "'", null);
 
     }
 
@@ -103,9 +120,8 @@ public class DataApi implements AppConst {
 
     }
 
-    public static DataApi instance() {
-        if (instance == null) instance = new DataApi();
-        return instance;
+    public static ImageAsyncTask images() {
+        return new ImageAsyncTask();
     }
 
     public void deleteFiles(ArrayList<? extends Cryptonite> files) {
@@ -121,8 +137,8 @@ public class DataApi implements AppConst {
         API.db().delete(dbList);
     }
 
-    public CursorLoader getImagesLoader(Context context) {
-        return new CursorLoader(context, ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, Contracts.ImageContract._ID+" DESC");
+    public CursorLoader getImagesCursorLoader(Context context) {
+        return new CursorLoader(context, ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, Contracts.ImageContract._ID + " DESC");
     }
 
     private enum CommandName {

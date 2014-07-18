@@ -14,6 +14,7 @@ import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.Application;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
+import com.sckftr.android.securephoto.data.DataApi;
 import com.sckftr.android.securephoto.helper.ImageHelper;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.IO;
@@ -45,10 +46,12 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
         final CacheableImageView imageView = (CacheableImageView) holder.getViewById(RES_ID_PHOTO);
         final ProgressBar progressBar = (ProgressBar) holder.getViewById(RES_ID_PROGRESS);
 
-        new ImageAsyncTask(imageView, progressBar).executeOnExecutor(
-                AsyncTask.THREAD_POOL_EXECUTOR, // executor type
+        DataApi.images().start(
+                imageView, // target ImageView
+                progressBar, // progress to show
                 CursorHelper.getString(cursor, Contracts.ImageContract.URI), // image uri
-                CursorHelper.getString(cursor, Contracts.ImageContract.KEY)); // decrypt key
+                CursorHelper.getString(cursor, Contracts.ImageContract.KEY)); // decrypt key);
+
     }
 
     @Override
@@ -59,110 +62,5 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
         return View.inflate(context, RES_LAYOUT, null);
-    }
-
-    private static class ImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
-
-        public static final String TAG = ImageAsyncTask.class.getSimpleName();
-
-        private final CacheableImageView mImageView;
-        private final ProgressBar mProgressBar;
-
-        private ImageAsyncTask(CacheableImageView imageView, ProgressBar progressBar) {
-
-            mImageView = imageView;
-
-            mProgressBar = progressBar;
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            mProgressBar.setVisibility(View.VISIBLE);
-
-            mImageView.setImageResource(R.drawable.placeholder);
-
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-
-            String url = params[0];
-
-            String key = params[1];
-
-            final BitmapLruCache bitmapCache = Application.get().getBitmapCache();
-            CacheableBitmapDrawable result = bitmapCache.get(url);
-
-            FileInputStream stream = null;
-
-            if (result != null) {
-
-                AppConst.Log.d(TAG, "from cache: " + url);
-
-                return result.getBitmap();
-
-            }
-
-            try {
-
-                stream = new FileInputStream(url);
-
-                byte[] buffer = new byte[stream.available()];
-
-                stream.read(buffer);
-
-                byte[] decr = Cryptograph.decrypt(buffer, key);
-
-                BitmapFactory.Options options = new BitmapFactory.Options();
-
-                options.inJustDecodeBounds = true;
-
-                BitmapFactory.decodeByteArray(decr, 0, decr.length, options);
-
-                options.inJustDecodeBounds = false;
-
-                options.inSampleSize = ImageHelper.calculateInSampleSize(options, mImageView.getWidth(), mImageView.getHeight());
-
-                options.inPurgeable = true;
-                options.inMutable = true;
-
-                Bitmap bitmap = BitmapFactory.decodeByteArray(decr, 0, decr.length, options);
-
-                AppConst.Log.d(TAG, "inSampleSize=%s", options.inSampleSize);
-
-                bitmapCache.put(url, bitmap);
-
-                return bitmap;
-
-            } catch (FileNotFoundException e) {
-
-                AppConst.Log.e(TAG, url, e);
-
-            } catch (IOException e) {
-
-                AppConst.Log.e(TAG, url, e);
-
-            } finally {
-
-                IO.close(stream);
-
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-
-            mProgressBar.setVisibility(View.GONE);
-
-            if (bitmap != null) {
-
-                mImageView.setImageBitmap(bitmap);
-
-            }
-        }
     }
 }
