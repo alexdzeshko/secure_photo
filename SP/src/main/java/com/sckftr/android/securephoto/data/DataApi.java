@@ -135,7 +135,7 @@ public class DataApi implements AppConst {
                     .setDiscCacheEnabled(false)
                     .setMemoryCacheEnabled(false)
                     .setPartOfAvailableMemoryCache(0.25f)
-                    .setCustomLoader(new CryptoBitmapLoader(context))
+                    .setCustomLoader(new CryptoBitmapLoader())
                     .build();
         }
 

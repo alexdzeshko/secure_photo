@@ -32,70 +32,38 @@ public class CryptoBitmapLoader extends BitmapLoader {
 
     public static final String BUNDLE_KEY = "KEY";
 
-    private final Context mContext;
-
-    public CryptoBitmapLoader(Context context) {
-        mContext = context;
-    }
-
     @Override
-    public Bitmap loadBitmap(String uri, int width, int height) throws IOException {
+    protected byte[] getBuffer(String url, int width, int height, BitmapFactory.Options options) {
 
         Bundle params = getParams();
 
-        if (params == null) return null;
+        String key = params == null ? null : params.getString(BUNDLE_KEY);
 
-        String key = params.getString(BUNDLE_KEY);
+        if (Strings.isEmpty(url) || Strings.isEmpty(key)) {
 
-        if (Strings.isEmpty(uri) || Strings.isEmpty(key)) {
-            // TODO
             return null;
 
         }
+
+        byte[] result = null;
 
         FileInputStream stream = null;
 
         try {
 
-            stream = new FileInputStream(uri);
+            stream = new FileInputStream(url);
 
             byte[] buffer = new byte[stream.available()];
 
             stream.read(buffer);
 
-            byte[] decrypted = Cryptograph.decrypt(buffer, key);
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            options.inJustDecodeBounds = true;
-
-            BitmapFactory.decodeByteArray(decrypted, 0, decrypted.length, options);
-
-            options.inJustDecodeBounds = false;
-
-            options.inSampleSize = ImageHelper.calculateInSampleSize(options, width, height);
-
-            if (options.outMimeType != null && !options.outMimeType.equals(GIF)) {
-
-                addInBitmapOptions(options);
-
-            }
+            result = Cryptograph.decrypt(buffer, key);
 
             options.inPurgeable = true;
 
-            Bitmap bitmap = BitmapFactory.decodeByteArray(decrypted, 0, decrypted.length, options);
+        } catch (IOException e) {
 
-            if (bitmap != null) {
-
-                AppConst.Log.d(TAG, "out width = %s, out height = %s, inSampleSize=%s", bitmap.getWidth(), bitmap.getHeight(), options.inSampleSize);
-
-            }
-
-            return bitmap;
-
-        } catch (FileNotFoundException e) {
-
-            AppConst.Log.e(TAG, uri, e);
+            AppConst.Log.e(TAG, url, e);
 
         } finally {
 
@@ -103,27 +71,7 @@ public class CryptoBitmapLoader extends BitmapLoader {
 
         }
 
-        return null;
-    }
-
-    private static void addInBitmapOptions(BitmapFactory.Options options) {
-
-        CacheHelper cache = SuperImageLoader.getCacheHelper();
-
-        options.inMutable = true;
-
-        if (cache != null) {
-
-            Bitmap inBitmap = cache.getBitmapFromReusableSet(options);
-
-            if (inBitmap != null) {
-
-                Log.d(TAG, "Found bitmap to use for inBitmap");
-
-                options.inBitmap = inBitmap;
-
-            }
-        }
+        return result;
     }
 
 }
