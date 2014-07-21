@@ -46,7 +46,7 @@ dependencies {
     compile 'com.android.support:support-v13:20.+'
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
-
+    compile project(':ImageLoader')
 }
 
 apt {

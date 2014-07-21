@@ -1,1 +1,2 @@
-include ':SP'
+include ':SP', ':MCRImageLoader', ':ImageLoader'
+project(':ImageLoader').projectDir = new File('MCRImageLoader/ImageLoader')

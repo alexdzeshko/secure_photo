@@ -1,0 +1,3 @@
+[submodule "MCRImageLoader"]
+	path = MCRImageLoader
+	url = https://github.com/McReader/MCRImageLoader.git

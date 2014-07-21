@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,10 +14,12 @@ import com.sckftr.android.app.ServiceConst;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.Application;
 import com.sckftr.android.securephoto.Application_;
+import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.BaseModel;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
+import com.sckftr.android.securephoto.image.SimpleImageLoader;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 
 import by.deniotokiari.core.utils.ContractUtils;
 import by.deniotokiari.core.utils.IOUtils;
+import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
 
 public class DataApi implements AppConst {
 
@@ -120,8 +124,22 @@ public class DataApi implements AppConst {
 
     }
 
-    public static ImageAsyncTask images() {
-        return new ImageAsyncTask();
+    private static SuperImageLoader superImageLoader;
+
+    public static SuperImageLoader images(Context context) {
+
+        if (superImageLoader == null) {
+            superImageLoader = new SuperImageLoader.ImageLoaderBuilder(context)
+                    .setLoadingImage(R.drawable.ic_blue_lock)
+                    .enableFadeIn(true)
+                    .setDiscCacheEnabled(false)
+                    .setMemoryCacheEnabled(true)
+                    .setPartOfAvailableMemoryCache(0.25f)
+                    .build();
+        }
+
+        return superImageLoader;
+
     }
 
     public void deleteFiles(ArrayList<? extends Cryptonite> files) {

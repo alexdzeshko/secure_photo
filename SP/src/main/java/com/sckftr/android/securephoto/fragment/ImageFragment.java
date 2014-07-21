@@ -35,7 +35,7 @@ public class ImageFragment extends BaseFragment {
             String[] uriKey = getArguments().getStringArray(KEY_ARG_VALUE);
             if (uriKey.length > 0) {
 
-                DataApi.images().start(mImageView, null, uriKey[0], uriKey[1], false);
+//                DataApi.images(getResources()).loadImage(mImageView, null, uriKey[0], uriKey[1], false);
 
                 mAttacher = new PhotoViewAttacher(mImageView);
                 mAttacher.update();

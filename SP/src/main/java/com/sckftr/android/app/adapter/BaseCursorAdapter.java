@@ -1,6 +1,4 @@
-package by.deniotokiari.core.adapter.cursor;
-
-import by.deniotokiari.core.adapter.ViewHolder;
+package com.sckftr.android.app.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,9 +8,7 @@ import android.view.ViewGroup;
 
 public abstract class BaseCursorAdapter extends CursorAdapter {
 
-    protected abstract void bindData(View view, Context context, Cursor cursor, ViewHolder holder);
-
-    protected abstract int[] getViewsIds();
+    protected abstract void bindData(View view, Context context, Cursor cursor);
 
     public BaseCursorAdapter(Context context, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);
@@ -33,10 +29,6 @@ public abstract class BaseCursorAdapter extends CursorAdapter {
 
             view = newView(mContext, mCursor, parent);
 
-            ViewHolder holder = new ViewHolder(view, getViewsIds());
-
-            view.setTag(holder);
-
         }
 
         bindView(view, mContext, mCursor);
@@ -46,10 +38,7 @@ public abstract class BaseCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-
-        ViewHolder holder = (ViewHolder) view.getTag();
-
-        bindData(view, context, cursor, holder);
+        bindData(view, context, cursor);
     }
 
 }
