@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -19,7 +18,7 @@ import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.BaseModel;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
-import com.sckftr.android.securephoto.image.SimpleImageLoader;
+import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
@@ -124,6 +123,7 @@ public class DataApi implements AppConst {
 
     }
 
+    // TODO init image loader on app start
     private static SuperImageLoader superImageLoader;
 
     public static SuperImageLoader images(Context context) {
@@ -131,10 +131,11 @@ public class DataApi implements AppConst {
         if (superImageLoader == null) {
             superImageLoader = new SuperImageLoader.ImageLoaderBuilder(context)
                     .setLoadingImage(R.drawable.ic_blue_lock)
-                    .enableFadeIn(true)
+                    .enableFadeIn(false)
                     .setDiscCacheEnabled(false)
-                    .setMemoryCacheEnabled(true)
+                    .setMemoryCacheEnabled(false)
                     .setPartOfAvailableMemoryCache(0.25f)
+                    .setCustomLoader(new CryptoBitmapLoader(context))
                     .build();
         }
 

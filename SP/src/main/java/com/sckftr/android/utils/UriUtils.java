@@ -42,4 +42,5 @@ public class UriUtils {
 		String ext = MimeTypeMap.getFileExtensionFromUrl(uri.getPath());
 		return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
 	}
+
 }

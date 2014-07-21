@@ -2,6 +2,8 @@ package com.sckftr.android.securephoto.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -10,8 +12,10 @@ import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.data.DataApi;
+import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
 
 import by.deniotokiari.core.helpers.CursorHelper;
+import by.grsu.mcreader.mcrimageloader.imageloader.callback.ImageLoaderCallback;
 import uk.co.senab.bitmapcache.CacheableImageView;
 
 public class ImagesGridCursorAdapter extends BaseCursorAdapter {
@@ -23,20 +27,29 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
     @Override
     protected void bindData(View view, Context context, Cursor cursor) {
 
-        final CacheableImageView imageView = (CacheableImageView) view.findViewById(R.id.image_view_grid);
+        CacheableImageView imageView = (CacheableImageView) view.findViewById(R.id.image_view_grid);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_grid);
 
+        Bundle params = new Bundle();
+        params.putString(CryptoBitmapLoader.BUNDLE_KEY, CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
 
-        DataApi.images(context).loadBitmap(imageView, "http://cdn.androidbeat.com/wp-content/uploads/2013/08/Paranoid-Android-Chat-Heads.jpg");
+        DataApi.images(context).loadBitmap(imageView, CursorHelper.getString(cursor, Contracts.ImageContract.URI), imageView.getWidth(), imageView.getHeight(), params, new ImageLoaderCallback() {
+            @Override
+            public void onLoadingStarted(String url) {
 
+            }
 
-//                imageView, // target ImageView
-//                progressBar, // progress to show
-//                CursorHelper.getString(cursor, Contracts.ImageContract.URI), // image uri
-//                CursorHelper.getString(cursor, Contracts.ImageContract.KEY),// decrypt key
-//                false); // work with cache
+            @Override
+            public void onLoadingError(Exception e, String url) {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLoadingFinished(BitmapDrawable drawable) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
-
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
