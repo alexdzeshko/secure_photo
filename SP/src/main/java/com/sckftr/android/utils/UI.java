@@ -38,7 +38,7 @@ import com.sckftr.android.utils.net.Network;
  *
  * @author Aliaksandr_Litskevic
  */
-public class UI implements AppConst{
+public class UI implements AppConst {
 
     public static final String NO_BACK_STACK = null;
 
@@ -90,14 +90,14 @@ public class UI implements AppConst{
         return (view == null) ? null : ((TextView) view).getText().toString();
     }
 
-	public static boolean setTextColor(View v, int color){
-		if (v instanceof TextView) {
-			((TextView) v).setTextColor(color);
-			return true;
-		}
+    public static boolean setTextColor(View v, int color) {
+        if (v instanceof TextView) {
+            ((TextView) v).setTextColor(color);
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     public static boolean setText(View view, CharSequence text) {
         if (view != null) {
@@ -206,12 +206,12 @@ public class UI implements AppConst{
         return (new Builder(activity)).setTitle(title == null ? Strings.EMPTY : title).setMessage(message == null ? Strings.EMPTY : message)
                 .setPositiveButton(positiveButtonCaption, new DialogInterface.OnClickListener() {
 
-	                @Override
-	                public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-		                dialog.dismiss();
-		                delegate.onClick(dialog, which);
-	                }
+                        dialog.dismiss();
+                        delegate.onClick(dialog, which);
+                    }
                 }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 
                     @Override
@@ -250,14 +250,6 @@ public class UI implements AppConst{
 
     public static void sendBroadcast(Context context, Intent intent) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    public static void displayImage(String uri, final ImageView icon, final int item_bg) {
-
-        icon.setImageResource(item_bg);
-
-        API.images().load(uri);
-
     }
 
 //    public static void displayImage(String url, View view) {

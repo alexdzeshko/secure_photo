@@ -20,14 +20,12 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader {
 
     private static final String TAG = CryptoBitmapSourceLoader.class.getSimpleName();
 
-    public static final String BUNDLE_KEY = "KEY";
-
     @Override
     protected byte[] getBitmapSource(String url, int width, int height, BitmapFactory.Options options) {
 
         Bundle params = getParams();
 
-        String key = params == null ? null : params.getString(BUNDLE_KEY);
+        String key = params == null ? null : params.getString(AppConst.EXTRA.IMAGE);
 
         if (Strings.isEmpty(url) || Strings.isEmpty(key)) {
 

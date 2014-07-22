@@ -14,9 +14,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sckftr.android.utils.UI;
 import com.sckftr.android.utils.net.Network;
-import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
+
+import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
 
 
 /**
@@ -28,8 +29,6 @@ import java.util.Locale;
 public class AppApi extends MutableContextWrapper implements AppConst {
 
     static final String ID_TYPE_STRING = "string";
-
-    private Picasso picasso;
 
     private Gson gson;
 
@@ -43,9 +42,8 @@ public class AppApi extends MutableContextWrapper implements AppConst {
 
     }
 
-    public Picasso images() {
-        if (picasso == null) picasso = Picasso.with(getApplicationContext());
-        return picasso;
+    public SuperImageLoader images() {
+        return Application.getImageLoader();
     }
 
     public String string(int resId, Object... args) {

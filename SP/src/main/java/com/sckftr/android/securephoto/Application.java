@@ -1,14 +1,20 @@
 package com.sckftr.android.securephoto;
 
+import android.app.ActivityManager;
+import android.content.Context;
+
+import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
+
 import org.androidannotations.annotations.EApplication;
 
 import by.deniotokiari.core.app.CoreApplication;
+import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
 import uk.co.senab.bitmapcache.BitmapLruCache;
 
 @EApplication
 public class Application extends CoreApplication {
 
-    private BitmapLruCache mCache;
+    private static SuperImageLoader mSuperImageLoader;
 
     @Override
     public void register() {
@@ -16,14 +22,21 @@ public class Application extends CoreApplication {
 
         AppConst.API.init(this);
 
-        BitmapLruCache.Builder builder = new BitmapLruCache.Builder(this);
-        builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
-        mCache = builder.build();
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        int memoryClass = am.getMemoryClass();
 
+        mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
+                .setLoadingImage(R.drawable.ic_blue_lock)
+                .enableFadeIn(false)
+                .setDiscCacheEnabled(false)
+                .setMemoryCacheEnabled(true)
+                .setMemoryCacheSize((memoryClass * 1024 * 1024) / 4) // 0.25 of memory
+                .setCustomLoader(new CryptoBitmapSourceLoader())
+                .build();
     }
 
-    public BitmapLruCache getBitmapCache() {
-        return mCache;
+    public static SuperImageLoader getImageLoader() {
+        return mSuperImageLoader;
     }
 
     public static Application get() {

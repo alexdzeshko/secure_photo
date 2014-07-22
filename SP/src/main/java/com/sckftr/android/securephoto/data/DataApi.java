@@ -1,5 +1,6 @@
 package com.sckftr.android.securephoto.data;
 
+import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -120,26 +121,6 @@ public class DataApi implements AppConst {
         } else
             return false;
 
-
-    }
-
-    // TODO init image loader on app start
-    private static SuperImageLoader superImageLoader;
-
-    public static SuperImageLoader images(Context context) {
-
-        if (superImageLoader == null) {
-            superImageLoader = new SuperImageLoader.ImageLoaderBuilder(context)
-                    .setLoadingImage(R.drawable.ic_blue_lock)
-                    .enableFadeIn(false)
-                    .setDiscCacheEnabled(false)
-                    .setMemoryCacheEnabled(true)
-                    .setMemoryCacheSize(10 * 1024 * 1024) // TODO get 0.25 part of app memory
-                    .setCustomLoader(new CryptoBitmapSourceLoader())
-                    .build();
-        }
-
-        return superImageLoader;
 
     }
 
