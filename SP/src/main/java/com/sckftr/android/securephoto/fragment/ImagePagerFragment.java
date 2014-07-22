@@ -75,6 +75,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
         super.onPause();
 
         getActivity().getWindow().setBackgroundDrawable(mWindowDrawable);
+
     }
 
     @Override

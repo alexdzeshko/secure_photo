@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
+import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 import com.sckftr.android.securephoto.contract.Contracts;
@@ -28,11 +29,15 @@ import org.androidannotations.annotations.EFragment;
 import java.util.ArrayList;
 
 import by.deniotokiari.core.utils.ContractUtils;
+import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
+import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
 
 @EFragment
 public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesGridCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
 
     private ArrayList<Image> actionList;
+
+    private SuperImageLoader imageLoader;
 
     @Override
     protected int layoutId() {
@@ -47,10 +52,21 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @AfterViews
     void init() {
 
+        imageLoader = AppConst.API.images();
+
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
 
+        getAdapterView().setOnScrollListener(new PauseScrollListener(imageLoader));
+
         getLoaderManager().initLoader(123, null, this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        imageLoader.setPauseWork(false);
     }
 
     @Override

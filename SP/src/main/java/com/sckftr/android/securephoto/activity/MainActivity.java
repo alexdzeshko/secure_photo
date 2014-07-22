@@ -33,7 +33,11 @@ public class MainActivity extends BaseSPActivity {
 
     @AfterViews
     void init() {
+
         addFragment(ImageGridFragment.build());
+
+        getActionBar().setBackgroundDrawable(null);
+
     }
 
     @Override
@@ -49,9 +53,7 @@ public class MainActivity extends BaseSPActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-
         setIntent(intent);
-
     }
 
     @OptionsItem

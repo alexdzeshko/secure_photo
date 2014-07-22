@@ -9,12 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.sckftr.android.app.adapter.BaseCursorAdapter;
-import com.sckftr.android.securephoto.AppApi;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
-import com.sckftr.android.securephoto.data.DataApi;
-import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 import com.sckftr.android.utils.UI;
 
 import by.deniotokiari.core.helpers.CursorHelper;

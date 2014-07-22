@@ -52,7 +52,7 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader {
             AppConst.Log.e(TAG, url, e);
 
         } finally {
-
+        
             IOUtils.closeStream(stream);
 
         }
