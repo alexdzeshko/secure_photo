@@ -7,17 +7,17 @@ import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 
 import org.androidannotations.annotations.EApplication;
 
-import by.deniotokiari.core.app.CoreApplication;
 import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
-import uk.co.senab.bitmapcache.BitmapLruCache;
 
 @EApplication
-public class Application extends CoreApplication {
+public class Application extends android.app.Application {
 
     private static SuperImageLoader mSuperImageLoader;
 
     @Override
-    public void register() {
+    public void onCreate() {
+        super.onCreate();
+
         // PLUGINS
 
         AppConst.API.init(this);

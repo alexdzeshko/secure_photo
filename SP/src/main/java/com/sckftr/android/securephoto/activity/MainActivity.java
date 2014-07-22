@@ -3,9 +3,7 @@ package com.sckftr.android.securephoto.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
@@ -15,7 +13,6 @@ import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
-import com.sckftr.android.utils.Strings;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -78,7 +75,7 @@ public class MainActivity extends BaseSPActivity {
         saveLivingHint = false;
 
 
-        if (requestCode == REQUEST.IMAGE_CAPTURE) {
+        if (requestCode == REQUESTS.IMAGE_CAPTURE) {
 
             Uri uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
 
@@ -94,7 +91,7 @@ public class MainActivity extends BaseSPActivity {
                 API.data().cryptonize(images, null);
             }
 
-        } else if (requestCode == REQUEST.IMAGE_GALLERY && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUESTS.IMAGE_GALLERY && resultCode == RESULT_OK) {
 
             Object[] objects = Storage.resolveContent(data.getData());
 

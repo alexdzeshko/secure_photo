@@ -36,7 +36,7 @@ public class TakePhotoHelper {
 
                     sCurrentUri = uri;
 
-                    AppConst.API.get().camera(activity, AppConst.REQUEST.IMAGE_CAPTURE, uri);
+                    AppConst.API.get().camera(activity, AppConst.REQUESTS.IMAGE_CAPTURE, uri);
 
                 } else {
 
@@ -51,7 +51,7 @@ public class TakePhotoHelper {
 
     public static void takePhotoFromGallery(Activity activity) {
 
-        AppConst.API.get().gallery(activity, AppConst.REQUEST.IMAGE_GALLERY);
+        AppConst.API.get().gallery(activity, AppConst.REQUESTS.IMAGE_GALLERY);
 
     }
 
@@ -64,6 +64,6 @@ public class TakePhotoHelper {
             return null;
         }
 
-        return requestCode == AppConst.REQUEST.IMAGE_CAPTURE ? sCurrentUri : null;
+        return requestCode == AppConst.REQUESTS.IMAGE_CAPTURE ? sCurrentUri : null;
     }
 }

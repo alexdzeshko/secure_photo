@@ -14,7 +14,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import androidkeystore.android.security.KeyStoreManager;
-import by.deniotokiari.core.context.ContextHolder;
 
 public class Cryptograph {
 
@@ -52,11 +51,9 @@ public class Cryptograph {
     }
 
 
-    public static boolean encrypt(Uri fileUri, String key) {
+    public static boolean encrypt(Context context, Uri fileUri, String key) {
 
         boolean result;
-
-        Context context = ContextHolder.getInstance().getContext();
 
         InputStream inputStream = null;
         FileOutputStream fileOutputStream = null;
@@ -92,7 +89,8 @@ public class Cryptograph {
 
 
         KeyStoreManager.put(alias, key, new Procedure<String>() {
-            @Override public void apply(String result) {
+            @Override
+            public void apply(String result) {
                 if (result != null && result.equals(KeyStoreManager.ERROR_LOCKED)) {
 
                     AppConst.API.get().putPreference(alias, key);
@@ -106,7 +104,8 @@ public class Cryptograph {
     public void getKey(final String alias, final Procedure<String> resultCallback) {
 
         KeyStoreManager.get(alias, new Procedure<String>() {
-            @Override public void apply(String result) {
+            @Override
+            public void apply(String result) {
 
                 if (result != null && result.equals(KeyStoreManager.ERROR_LOCKED)) {
 

@@ -11,8 +11,6 @@ import com.sckftr.android.utils.Strings;
 import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
 
 public interface AppConst {
-    int ASCENDING = 1;
-    int DESCENDING = -1;
 
     String EMPTY = Strings.EMPTY;
 
@@ -22,14 +20,6 @@ public interface AppConst {
     // Application package id.
     String PACKAGE = "com.sckftr.android.securephoto";
 
-    String PR = "com.sckftr.android.securephoto";
-
-    // Entity kind key.
-    String KEY_KIND = "_kind";
-    // Entity PK key.
-    String KEY_PK = "_pk";
-    // Entity TIMESTAMP key.
-    String KEY_TIMESTAMP = "_timestamp";
 
     // Common extras keys.
     public static interface EXTRA {
@@ -46,6 +36,10 @@ public interface AppConst {
         String USER_LOGGED = PACKAGE + ".USER_LOGGED";
     }
 
+    public static class REQUESTS {
+        public static final int IMAGE_CAPTURE = 0x01;
+        public static final int IMAGE_GALLERY = 0x02;
+    }
 
     public enum ERROR {
         UNKNOWN,
@@ -111,12 +105,6 @@ public interface AppConst {
             return get().drawable(resId);
         }
     }
-
-    public static class REQUEST {
-        public static final int IMAGE_CAPTURE = 0x01;
-        public static final int IMAGE_GALLERY = 0x02;
-    }
-
 
     /**
      * Logging API.

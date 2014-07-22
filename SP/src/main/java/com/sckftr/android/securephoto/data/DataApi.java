@@ -1,6 +1,5 @@
 package com.sckftr.android.securephoto.data;
 
-import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -14,12 +13,10 @@ import com.sckftr.android.app.ServiceConst;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.Application;
 import com.sckftr.android.securephoto.Application_;
-import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.BaseModel;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
-import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
@@ -37,7 +34,6 @@ import java.util.ArrayList;
 
 import by.deniotokiari.core.utils.ContractUtils;
 import by.deniotokiari.core.utils.IOUtils;
-import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
 
 public class DataApi implements AppConst {
 
@@ -56,15 +52,15 @@ public class DataApi implements AppConst {
     private DataApi() {
     }
 
-    private void unlockFiles(ArrayList<Cryptonite> files) {
+    private void unlockFiles(Context context, ArrayList<Cryptonite> files) {
         for (Cryptonite file : files) {
 
-            unlockFile(file);
+            unlockFile(context, file);
 
         }
     }
 
-    private void unlockFile(Cryptonite item) {
+    private void unlockFile(Context context, Cryptonite item) {
 
         FileInputStream stream = null;
 
@@ -81,7 +77,7 @@ public class DataApi implements AppConst {
             fileOutputStream = new FileOutputStream(publicFile);
             fileOutputStream.write(decrypted);
 
-            Storage.scanFile(Uri.fromFile(publicFile));
+            Storage.scanFile(context, Uri.fromFile(publicFile));
 
         } catch (FileNotFoundException e) {
             Log.e("unlock", item.getFileUri().toString(), e);
@@ -96,19 +92,19 @@ public class DataApi implements AppConst {
 
     }
 
-    private void lockFiles(ArrayList<Cryptonite> files) {
+    private void lockFiles(Context context, ArrayList<Cryptonite> files) {
 
         for (Cryptonite file : files) {
-            lockFile(file);
+            lockFile(context, file);
         }
     }
 
-    private boolean lockFile(Cryptonite file) {
+    private boolean lockFile(Context context, Cryptonite file) {
 
         Uri uri = file.getFileUri();
         String key = file.getKey();
 
-        if (Cryptograph.encrypt(uri, key)) {
+        if (Cryptograph.encrypt(context, uri, key)) {
 
             Storage.deleteFileIfPublic(uri);
 
@@ -162,11 +158,11 @@ public class DataApi implements AppConst {
             switch (commandName) {
                 case unlockFile:
                     ArrayList<Cryptonite> files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
-                    API.data().unlockFiles(files);
+                    API.data().unlockFiles(getBaseContext(), files);
                     break;
                 case lockFile:
                     files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
-                    API.data().lockFiles(files);
+                    API.data().lockFiles(getBaseContext(), files);
                     resultingBundle = createSingleEntryBundle("ok");
                     break;
                 case deleteFiles:

@@ -1,5 +1,6 @@
 package com.sckftr.android.utils;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -14,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import by.deniotokiari.core.context.ContextHolder;
 import by.deniotokiari.core.helpers.CursorHelper;
 
 public class Storage {
@@ -142,8 +142,8 @@ public class Storage {
         }
     }
 
-    public static void scanFile(Uri uri) {
-        MediaScannerConnection.scanFile(ContextHolder.getInstance().getContext(), new String[]{uri.getPath()}, null,
+    public static void scanFile(Context context, Uri uri) {
+        MediaScannerConnection.scanFile(context, new String[]{uri.getPath()}, null,
                 new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
                         AppConst.Log.d(TAG, "Scanned " + path + ":");

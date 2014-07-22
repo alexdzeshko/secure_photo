@@ -37,6 +37,7 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
         Bundle params = new Bundle(context.getClassLoader());
         params.putString(AppConst.EXTRA.IMAGE, CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
 
+        // TODO move to UI class
         AppConst.API.images().loadBitmap(imageView, CursorHelper.getString(cursor, Contracts.ImageContract.URI), imageView.getWidth(), imageView.getHeight(), params, new ImageLoaderCallback() {
             @Override
             public void onLoadingStarted(String url) {
