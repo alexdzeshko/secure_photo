@@ -31,6 +31,8 @@ import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.utils.net.Network;
 
+import by.grsu.mcreader.mcrimageloader.imageloader.callback.ImageLoaderCallback;
+
 /**
  * Bundle of UI-related helper methods.
  * <p/>
@@ -252,57 +254,11 @@ public class UI implements AppConst {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-//    public static void displayImage(String url, View view) {
-//        displayImage(url, (ImageView) view, null);
-//    }
+    public static void displayImage(ImageView imageView, String url, int widthInPx, int heightInPx, Bundle params, ImageLoaderCallback callback) {
 
-//    public static void displayImage(final String uri, final ImageView icon, final ProgressBar progress) {
-//
-//        if (uri == null) {
-//            icon.setImageResource(R.drawable.logo);
-//            return;
-//        }
-//
-//        STAConst.API.images().displayImage(uri, icon, new ImageLoadingListener() {
-//            @Override
-//            public void onLoadingStarted(String imageUri, View view) {
-//
-//                setVisible(progress, true);
-//
-//            }
-//
-//            @Override
-//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//
-//                setVisible(progress, false);
-//
-//                ImagesData.Size lower = ImagesData.Size.lower(imageUri);
-//
-//                if (lower != null) {
-//
-//                    displayImage(UiUtil.resizedImageUrl(uri, lower), icon, progress);
-//
-//                } else {
-//
-//                    icon.setImageResource(R.drawable.logo);
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//
-//                setVisible(progress, false);
-//
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String imageUri, View view) {
-//            }
-//        });
-//
-//    }
+        AppConst.API.images().loadBitmap(imageView, url, widthInPx, heightInPx, params, callback);
 
+    }
 
     public static void sendBroadcast(Context context, String action, Parcelable result) {
         final Intent intent = new Intent(action);

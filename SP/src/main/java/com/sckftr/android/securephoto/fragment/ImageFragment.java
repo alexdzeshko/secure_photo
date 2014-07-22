@@ -1,46 +1,64 @@
 package com.sckftr.android.securephoto.fragment;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
-import com.sckftr.android.securephoto.data.DataApi;
-import com.sckftr.android.securephoto.helper.ImageHelper;
+import com.sckftr.android.utils.UI;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
+
+import by.grsu.mcreader.mcrimageloader.imageloader.callback.ImageLoaderCallback;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
+@EFragment(R.layout.image)
 public class ImageFragment extends BaseFragment {
 
-    public static final String KEY_ARG_VALUE = "key:pos";
-    private ImageView mImageView;
-    private PhotoViewAttacher mAttacher;
+    @FragmentArg
+    String url, key;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.view_image, container, false);
+    @AfterViews
+    void onAfterViews() {
+
+        View view = getView();
+
+        if (view != null) {
+
+            ImageView mImageView = (ImageView) view.findViewById(R.id.imageView);
+
+            Bundle params = new Bundle(getBaseActivity().getClassLoader());
+            params.putString(EXTRA.IMAGE, key);
+
+            UI.displayImage(mImageView, url, mImageView.getWidth(), mImageView.getHeight(), params, new ImageLoaderCallback() {
+                @Override
+                public void onLoadingStarted(String url) {
+
+                }
+
+                @Override
+                public void onLoadingError(Exception e, String url) {
+
+                }
+
+                @Override
+                public void onLoadingFinished(BitmapDrawable drawable) {
+
+                }
+            });
+
+            new PhotoViewAttacher(mImageView).update();
+        }
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public static ImageFragment build(String url, String key) {
 
-        mImageView = (ImageView) view.findViewById(R.id.imageView);
+        return ImageFragment_.builder().url(url).key(key).build();
 
-        if (getArguments() != null) {
-            String[] uriKey = getArguments().getStringArray(KEY_ARG_VALUE);
-            if (uriKey.length > 0) {
-
-//                DataApi.images(getResources()).loadImage(mImageView, null, uriKey[0], uriKey[1], false);
-
-                mAttacher = new PhotoViewAttacher(mImageView);
-                mAttacher.update();
-            }
-        }
     }
 
 }

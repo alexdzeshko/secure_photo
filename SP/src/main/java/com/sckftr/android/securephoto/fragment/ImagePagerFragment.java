@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.sckftr.android.app.adapter.CursorFragmentPagerAdapter;
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.adapter.ViewPagerFragmentAdapter;
 import com.sckftr.android.securephoto.contract.Contracts;
 
 import org.androidannotations.annotations.AfterViews;
@@ -28,9 +29,7 @@ import by.deniotokiari.core.helpers.CursorHelper;
 @EFragment
 public class ImagePagerFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String KEY_POSITION = "KEY_POSITION";
-
-    private ImagePagerAdapter pagerAdapter;
+    private ViewPagerFragmentAdapter pagerAdapter;
     private ViewPager viewPager;
 
     private Drawable mWindowDrawable;
@@ -44,9 +43,10 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
         View view = getView();
 
         if (view != null) {
+
             viewPager = (ViewPager) view.findViewById(R.id.pager);
 
-            pagerAdapter = new ImagePagerAdapter(getContext(), getFragmentManager(), null);
+            pagerAdapter = new ViewPagerFragmentAdapter(getContext(), getFragmentManager(), null);
 
             viewPager.setAdapter(pagerAdapter);
 
@@ -54,12 +54,14 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
             viewPager.setBackgroundDrawable(new ColorDrawable(R.color.background_alpha_black));
 
             getLoaderManager().initLoader(0, null, this);
+
         }
 
     }
 
     @Override
     public void onResume() {
+
         super.onResume();
 
         mWindowDrawable = mWindowDrawable == null ? getActivity().getWindow().getDecorView().getBackground() : mWindowDrawable;
@@ -99,29 +101,5 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
 
         return ImagePagerFragment_.builder().position(position).build();
 
-    }
-
-    class ImagePagerAdapter extends CursorFragmentPagerAdapter {
-
-
-        public ImagePagerAdapter(Context context, FragmentManager fm, Cursor cursor) {
-            super(context, fm, cursor);
-        }
-
-        @Override
-        public Fragment getItem(Context context, Cursor cursor) {
-
-            final String[] strings = {CursorHelper.getString(cursor, Contracts.ImageContract.URI), CursorHelper.getString(cursor, Contracts.ImageContract.KEY)};
-
-            Fragment fragment = new ImageFragment();
-
-            Bundle bundle = new Bundle();
-
-            bundle.putStringArray(ImageFragment.KEY_ARG_VALUE, strings);
-
-            fragment.setArguments(bundle);
-
-            return fragment;
-        }
     }
 }
