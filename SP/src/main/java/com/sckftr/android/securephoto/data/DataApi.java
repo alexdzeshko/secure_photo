@@ -18,7 +18,7 @@ import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.BaseModel;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
-import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
+import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
@@ -133,9 +133,9 @@ public class DataApi implements AppConst {
                     .setLoadingImage(R.drawable.ic_blue_lock)
                     .enableFadeIn(false)
                     .setDiscCacheEnabled(false)
-                    .setMemoryCacheEnabled(false)
-                    .setPartOfAvailableMemoryCache(0.25f)
-                    .setCustomLoader(new CryptoBitmapLoader())
+                    .setMemoryCacheEnabled(true)
+                    .setMemoryCacheSize(10 * 1024 * 1024) // TODO get 0.25 part of app memory
+                    .setCustomLoader(new CryptoBitmapSourceLoader())
                     .build();
         }
 

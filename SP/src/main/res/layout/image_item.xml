@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/column_width"
         android:layout_centerInParent="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/placeholder" />
+        android:scaleType="centerCrop" />
 
     <ProgressBar
         android:id="@+id/progress_bar_grid"

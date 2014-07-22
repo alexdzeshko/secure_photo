@@ -12,7 +12,7 @@ import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.data.DataApi;
-import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
+import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 
 import by.deniotokiari.core.helpers.CursorHelper;
 import by.grsu.mcreader.mcrimageloader.imageloader.callback.ImageLoaderCallback;
@@ -30,8 +30,8 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
         CacheableImageView imageView = (CacheableImageView) view.findViewById(R.id.image_view_grid);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_grid);
 
-        Bundle params = new Bundle();
-        params.putString(CryptoBitmapLoader.BUNDLE_KEY, CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
+        Bundle params = new Bundle(context.getClassLoader());
+        params.putString(CryptoBitmapSourceLoader.BUNDLE_KEY, CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
 
         DataApi.images(context).loadBitmap(imageView, CursorHelper.getString(cursor, Contracts.ImageContract.URI), imageView.getWidth(), imageView.getHeight(), params, new ImageLoaderCallback() {
             @Override
