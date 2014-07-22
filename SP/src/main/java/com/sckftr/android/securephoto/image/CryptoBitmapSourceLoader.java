@@ -10,20 +10,20 @@ import com.sckftr.android.utils.Strings;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.BitmapSourceLoader;
+import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapSourceLoader;
 import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
 
 /**
  * Created by dzianis_roi on 21.07.2014.
  */
-public class CryptoBitmapSourceLoader extends BitmapSourceLoader {
+public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader {
 
     private static final String TAG = CryptoBitmapSourceLoader.class.getSimpleName();
 
     public static final String BUNDLE_KEY = "KEY";
 
     @Override
-    protected byte[] getBuffer(String url, int width, int height, BitmapFactory.Options options) {
+    protected byte[] getBitmapSource(String url, int width, int height, BitmapFactory.Options options) {
 
         Bundle params = getParams();
 
