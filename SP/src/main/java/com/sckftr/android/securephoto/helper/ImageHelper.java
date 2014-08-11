@@ -19,7 +19,7 @@ public class ImageHelper implements AppConst {
     public static final String TAG = ImageHelper.class.getSimpleName();
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
+        // Raw height and width of view_pager_item
         final int height = options.outHeight;
         final int width = options.outWidth;
 
@@ -34,7 +34,7 @@ public class ImageHelper implements AppConst {
 
             // Choose the smallest ratio as inSampleSize value, this will
             // guarantee
-            // a final image with both dimensions larger than or equal to the
+            // a final view_pager_item with both dimensions larger than or equal to the
             // requested height and width.
             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
         }

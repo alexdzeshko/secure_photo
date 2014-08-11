@@ -7,8 +7,11 @@ import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.Strings;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapSourceLoader;
 import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
@@ -16,48 +19,41 @@ import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
 /**
  * Created by dzianis_roi on 21.07.2014.
  */
-public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader {
+public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream> {
 
     private static final String TAG = CryptoBitmapSourceLoader.class.getSimpleName();
 
     @Override
-    protected byte[] getBitmapSource(String url, int width, int height, BitmapFactory.Options options) {
+    protected InputStream getSource(String url, BitmapFactory.Options options) {
 
         Bundle params = getParams();
 
         String key = params == null ? null : params.getString(AppConst.EXTRA.IMAGE);
 
-        if (Strings.isEmpty(url) || Strings.isEmpty(key)) {
+        if (Strings.isEmpty(url) || Strings.isEmpty(key)) return null;
 
-            return null;
-
-        }
-
-        byte[] result = null;
-
-        FileInputStream stream = null;
+        FileInputStream fis = null;
 
         try {
 
-            stream = new FileInputStream(url);
+            fis = new FileInputStream(url);
 
-            byte[] buffer = new byte[stream.available()];
+            byte[] buffer = new byte[fis.available()];
 
-            stream.read(buffer);
+            fis.read(buffer);
 
-            result = Cryptograph.decrypt(buffer, key);
+            return new ByteArrayInputStream(Cryptograph.decrypt(buffer, key));
 
         } catch (IOException e) {
 
             AppConst.Log.e(TAG, url, e);
 
         } finally {
-        
-            IOUtils.closeStream(stream);
+
+            IOUtils.closeStream(fis);
 
         }
 
-        return result;
+        return null;
     }
-
 }

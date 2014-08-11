@@ -8,86 +8,149 @@ import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
+import com.sckftr.android.utils.Strings;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import androidkeystore.android.security.KeyStoreManager;
+import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
 
 public class Cryptograph {
 
     public static final String TAG = Cryptograph.class.getSimpleName();
 
-    //MAIN XOR METHOD
-    private static byte[] encrypt(byte[] arr, String keyWord) {
+    public static boolean encrypt(Context ctx, Uri source, String key) {
 
-        keyWord = getKey(keyWord);
+        if (ctx == null || source == null || Strings.isEmpty(key))
+            throw new IllegalArgumentException("Encryption is impossible!!");
 
-        byte[] keyarr = keyWord.getBytes();
-        byte[] result = new byte[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            result[i] = (byte) (arr[i] ^ keyarr[i % keyarr.length]);
-        }
-        return result;
-    }
+        InputStream is = null;
 
-    //MAIN XOR METHOD
-    public static byte[] decrypt(byte[] text, String keyWord) {
-
-        keyWord = getKey(keyWord);
-
-        byte[] result = new byte[text.length];
-        byte[] keyarr = keyWord.getBytes();
-        for (int i = 0; i < text.length; i++) {
-            result[i] = (byte) (text[i] ^ keyarr[i % keyarr.length]);
-        }
-        return result;
-    }
-
-    public static String getKey(String keyWord) {
-        keyWord += UserHelper.getUserHash();
-        return keyWord;
-    }
-
-
-    public static boolean encrypt(Context context, Uri fileUri, String key) {
-
-        boolean result;
-
-        InputStream inputStream = null;
-        FileOutputStream fileOutputStream = null;
+        FileOutputStream fos = null;
 
         try {
-            inputStream = context.getContentResolver().openInputStream(fileUri);
 
-            byte[] buffer = new byte[inputStream.available()];
-            inputStream.read(buffer);
+            is = ctx.getContentResolver().openInputStream(source);
 
-            byte[] encryptedData = encrypt(buffer, key);
+            byte[] buffer = new byte[is.available()];
 
-            Uri secureUri = Storage.Images.getPrivateUri(fileUri);//todo storage images
+            is.read(buffer);
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, getSecretKeySpec(key));
+
+            Uri secureUri = Storage.Images.getPrivateUri(source);//todo storage images
 
             File file = new File(secureUri.getPath());
 
-            fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(encryptedData);
-            result = true;
+            fos = new FileOutputStream(file);
 
-        } catch (Exception e) {
-            AppConst.Log.e(TAG, "when encrypt", e);
-            result = false;
+            fos.write(cipher.doFinal(buffer));
+
+        } catch (IOException e) {
+            AppConst.Log.e(TAG, "Encrypt", e);
+            return false;
+        } catch (IllegalBlockSizeException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (InvalidKeyException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (BadPaddingException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (NoSuchAlgorithmException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (NoSuchPaddingException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (NoSuchProviderException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
         } finally {
-            IO.close(inputStream);
-            IO.close(fileOutputStream);
+            IO.close(is);
+            IO.close(fos);
         }
 
-        return result;
+        return true;
+    }
+
+    public static byte[] decrypt(byte[] encodedBytes, String key) {
+
+        if (encodedBytes == null || encodedBytes.length <= 0 || Strings.isEmpty(key))
+            throw new IllegalArgumentException("Decryption is impossible!!");
+
+        try {
+
+            Cipher cipher = Cipher.getInstance("AES");
+
+            cipher.init(Cipher.DECRYPT_MODE, getSecretKeySpec(key));
+
+            return cipher.doFinal(encodedBytes);
+
+        } catch (IllegalBlockSizeException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (InvalidKeyException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (BadPaddingException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (NoSuchAlgorithmException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (NoSuchPaddingException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (NoSuchProviderException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (UnsupportedEncodingException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        }
+
+        return null;
+    }
+
+    private static SecretKeySpec getSecretKeySpec(String key) throws NoSuchProviderException, NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        byte[] keyStart = key.getBytes("UTF-8");
+
+        KeyGenerator generator = KeyGenerator.getInstance("AES");
+
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
+
+        sr.setSeed(keyStart);
+
+        generator.init(128, sr);
+
+        SecretKey skey = generator.generateKey();
+
+        return new SecretKeySpec(skey.getEncoded(), "AES");
+
     }
 
     public void storeKey(final String alias, final String key) {
-
-
         KeyStoreManager.put(alias, key, new Procedure<String>() {
             @Override
             public void apply(String result) {
@@ -118,7 +181,6 @@ public class Cryptograph {
 
             }
         });
-
     }
 
     public void deleteKey(String alias) {
@@ -128,39 +190,4 @@ public class Cryptograph {
         AppConst.API.get().putPreference(alias, null);
     }
 
-
-//    public static boolean encrypt(Bitmap bitmap, Uri fileUri, String key) {
-//
-//        if (bitmap == null || key == null || fileUri == null) {
-//            AppConst.Log.w(TAG, "encrypt with null: bitmap-%s, uri-%s, key-%s", bitmap == null, fileUri == null, key == null);
-//            return false;
-//        }
-//
-//        boolean result;
-//        Context context = ContextHolder.getInstance().getContext();
-//
-//        ByteArrayOutputStream baos = null;
-//        FileOutputStream fileOutputStream = null;
-//        try {
-//            baos = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-//            bitmap.recycle();
-//            byte[] b = baos.toByteArray();
-//
-//            byte[] encryptedData = encrypt(b, key);
-//
-//            File file = new File(fileUri.getPath());
-//            fileOutputStream = new FileOutputStream(file);
-//            fileOutputStream.write(encryptedData);
-//            result = true;
-//        } catch (Exception e) {
-//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-//            result = false;
-//        } finally {
-//            IO.close(baos);
-//            IO.close(fileOutputStream);
-//        }
-//
-//        return result;
-//    }
 }

@@ -260,6 +260,13 @@ public class UI implements AppConst {
 
     }
 
+    public static void displayImage(ImageView imageView, String url, int widthInPx, int heightInPx, ImageLoaderCallback callback) {
+
+        AppConst.API.images().loadBitmap(imageView, url, widthInPx, heightInPx, callback);
+
+    }
+
+
     public static void sendBroadcast(Context context, String action, Parcelable result) {
         final Intent intent = new Intent(action);
         intent.putExtra(EXTRA.RESULT, result);

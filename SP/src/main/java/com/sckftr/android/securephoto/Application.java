@@ -18,19 +18,18 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
 
-        // PLUGINS
-
         AppConst.API.init(this);
 
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        int memoryClass = am.getMemoryClass();
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        // Use 1/8th of the available memory for this memory cache.
+        final int cacheSize = maxMemory / 8;
 
         mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
                 .setLoadingImage(R.drawable.ic_blue_lock)
                 .enableFadeIn(false)
                 .setDiscCacheEnabled(false)
                 .setMemoryCacheEnabled(true)
-                .setMemoryCacheSize((memoryClass * 1024 * 1024) / 4) // 0.25 of memory
+                .setMemoryCacheSize(cacheSize) // 0.25 of memory
                 .setCustomLoader(new CryptoBitmapSourceLoader())
                 .build();
     }

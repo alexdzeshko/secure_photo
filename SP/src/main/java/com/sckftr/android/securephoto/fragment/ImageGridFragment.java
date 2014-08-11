@@ -37,8 +37,6 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     private ArrayList<Image> actionList;
 
-    private SuperImageLoader imageLoader;
-
     @Override
     protected int layoutId() {
         return R.layout.images;
@@ -52,12 +50,10 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @AfterViews
     void init() {
 
-        imageLoader = AppConst.API.images();
-
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
 
-        getAdapterView().setOnScrollListener(new PauseScrollListener(imageLoader));
+        getAdapterView().setOnScrollListener(new PauseScrollListener(API.images()));
 
         getLoaderManager().initLoader(123, null, this);
     }
@@ -66,7 +62,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     public void onPause() {
         super.onPause();
 
-        imageLoader.setPauseWork(false);
+        API.images().setPauseWork(false);
     }
 
     @Override
@@ -91,17 +87,9 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-//        final String[] strings = {CursorHelper.getString(cursor, Contracts.ImageContract.URI), CursorHelper.getString(cursor, Contracts.ImageContract.KEY)};
-//        showImageFragment(strings);
-
-//        Fragment fragment = new ImagePagerFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(ImagePagerFragment.KEY_POSITION, position);
-//        fragment.setArguments(bundle);
-//        getBaseActivity().addFragment(0, fragment, "gallery");
 
         getBaseActivity().addFragment(0, ImagePagerFragment.build(position), "gallery");
+
     }
 
     public static Fragment build() {

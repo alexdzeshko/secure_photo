@@ -7,7 +7,7 @@ import android.database.Cursor;
 
 import com.sckftr.android.app.adapter.CursorFragmentPagerAdapter;
 import com.sckftr.android.securephoto.contract.Contracts;
-import com.sckftr.android.securephoto.fragment.ImageFragment;
+import com.sckftr.android.securephoto.fragment.ViewPagerItemFragment;
 
 import by.deniotokiari.core.helpers.CursorHelper;
 
@@ -23,7 +23,7 @@ public class ViewPagerFragmentAdapter extends CursorFragmentPagerAdapter {
     @Override
     public Fragment getItem(Context context, Cursor cursor) {
 
-        return ImageFragment.build(CursorHelper.getString(cursor, Contracts.ImageContract.URI), CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
+        return ViewPagerItemFragment.build(CursorHelper.getString(cursor, Contracts.ImageContract.URI), CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
 
     }
 }

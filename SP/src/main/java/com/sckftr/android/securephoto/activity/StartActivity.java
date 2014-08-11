@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.luminous.pick.GalleryActivity;
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.helper.UserHelper;
@@ -21,13 +22,17 @@ public class StartActivity extends BaseSPActivity implements TextWatcher {
 
     private static final String LOG_TAG = StartActivity.class.getSimpleName();
 
-    @ViewById EditText passwordInput;
+    @ViewById
+    EditText passwordInput;
 
-    @ViewById TextView passwordCaption;
+    @ViewById
+    TextView passwordCaption;
 
-    @ViewById Button commitButton;
+    @ViewById
+    Button commitButton;
 
-    @AfterViews void init() {
+    @AfterViews
+    void init() {
 
         if (UserHelper.isFirstLogin()) {
 
@@ -71,7 +76,8 @@ public class StartActivity extends BaseSPActivity implements TextWatcher {
 
     }
 
-    @Click(R.id.commitButton) void commitClicked() {
+    @Click(R.id.commitButton)
+    void commitClicked() {
 
         String newPassword = passwordInput.getText().toString();
         UserHelper.logIn("userName", newPassword); // todo manage with user name

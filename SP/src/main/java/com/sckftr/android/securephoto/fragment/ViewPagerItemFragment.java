@@ -16,8 +16,8 @@ import org.androidannotations.annotations.FragmentArg;
 import by.grsu.mcreader.mcrimageloader.imageloader.callback.ImageLoaderCallback;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-@EFragment(R.layout.image)
-public class ImageFragment extends BaseFragment {
+@EFragment(R.layout.view_pager_item)
+public class ViewPagerItemFragment extends BaseFragment {
 
     @FragmentArg
     String url, key;
@@ -55,9 +55,9 @@ public class ImageFragment extends BaseFragment {
         }
     }
 
-    public static ImageFragment build(String url, String key) {
+    public static ViewPagerItemFragment build(String url, String key) {
 
-        return ImageFragment_.builder().url(url).key(key).build();
+        return ViewPagerItemFragment_.builder().url(url).key(key).build();
 
     }
 
