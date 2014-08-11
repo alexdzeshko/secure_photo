@@ -1,5 +1,8 @@
 package com.sckftr.android.securephoto.activity;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +11,7 @@ import android.provider.BaseColumns;
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.db.Image;
+import com.sckftr.android.securephoto.fragment.GalleryFragment;
 import com.sckftr.android.securephoto.fragment.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
@@ -25,16 +29,18 @@ import java.util.ArrayList;
 @OptionsMenu(R.menu.main_menu)
 public class MainActivity extends BaseSPActivity {
 
-    private static final int MENU_CAM = R.id.camera;
-    //private static final int MENU_SHARE = R.id.menu_share;
-    private static final int MENU_ADD = R.id.add;
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    public static final String IMAGES_FRAGMENT_TAG = "IMAGES";
+    public static final String SYSTEM_GALLERY_FRAGMENT_TAG = "SYSTEM_GALLERY";
+    public static final String DETAIL_IMAGE_FRAGMENT_TAG = "DETAIL_IMAGE";
 
     private boolean saveLivingHint;
 
     @AfterViews
     void init() {
 
-        addFragment(ImageGridFragment.build());
+        loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
         getActionBar().setBackgroundDrawable(null);
 
@@ -67,9 +73,44 @@ public class MainActivity extends BaseSPActivity {
     @OptionsItem
     void add() {
 
-        saveLivingHint = true;
+        if (getFragmentManager().findFragmentByTag(SYSTEM_GALLERY_FRAGMENT_TAG) == null) {
 
-        TakePhotoHelper.takePhotoFromGallery(this);
+            loadFragment(GalleryFragment.build(), true, SYSTEM_GALLERY_FRAGMENT_TAG);
+
+        } else {
+
+            loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+
+        }
+    }
+
+    public void loadFragment(Fragment fragment, boolean addToBackStack, String name) {
+
+        FragmentManager fragmentManager = getFragmentManager();
+
+        // workaround that clear all stack
+        if (!addToBackStack) {
+
+            while (fragmentManager.getBackStackEntryCount() > 0) {
+
+                fragmentManager.popBackStackImmediate();
+
+            }
+        }
+
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+
+        ft.replace(R.id.frame, fragment, name);
+
+        if (addToBackStack) ft.addToBackStack(name);
+
+        ft.commit();
+    }
+
+    public void secureNewPhotos(ArrayList<Image> images) {
+        for (Image image : images) {
+            Log.d(TAG, image.getFileUri() + ", id = " + image.get_id());
+        }
     }
 
     @Override
@@ -119,7 +160,6 @@ public class MainActivity extends BaseSPActivity {
                 }
             });
         }
-
     }
 
     @Override

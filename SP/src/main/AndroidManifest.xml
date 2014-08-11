@@ -32,16 +32,9 @@
             android:launchMode="singleTask"
             android:label="@string/app_name" />
 
-        <activity
-            android:name="com.luminous.pick.GalleryActivity_"
-            android:launchMode="singleTask"
-            android:label="@string/app_name" />
-
         <service android:name=".data.DataApi$DataAsyncEnforcerService" />
 
         <service android:name=".db.DbService" />
-
-        <service android:name="by.deniotokiari.core.service.SourceService" />
 
         <provider
             android:name=".provider.ImagesProvider"

@@ -1,12 +1,12 @@
 package com.sckftr.android.securephoto.fragment;
 
-import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,13 +17,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
-import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
-import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
-import com.sckftr.android.securephoto.contract.Contracts;
+import com.sckftr.android.securephoto.adapter.GalleryAdapter;
 import com.sckftr.android.securephoto.db.Image;
-import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 import com.sckftr.android.securephoto.image.FileBitmapSourceLoader;
 
 import org.androidannotations.annotations.AfterViews;
@@ -31,12 +28,13 @@ import org.androidannotations.annotations.EFragment;
 
 import java.util.ArrayList;
 
-import by.deniotokiari.core.utils.ContractUtils;
-import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
 import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
 
+/**
+ * Created by Dzianis_Roi on 11.08.2014.
+ */
 @EFragment
-public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesGridCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
+public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
 
     private ArrayList<Image> actionList;
 
@@ -46,8 +44,8 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     }
 
     @Override
-    protected ImagesGridCursorAdapter createAdapter() {
-        return new ImagesGridCursorAdapter(getActivity());
+    protected GalleryAdapter createAdapter() {
+        return new GalleryAdapter(getActivity());
     }
 
     @AfterViews
@@ -60,7 +58,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
         getLoaderManager().initLoader(123, null, this);
 
-        API.images().setBitmapSourceLoader(new CryptoBitmapSourceLoader());
+        API.images().setBitmapSourceLoader(new FileBitmapSourceLoader());
     }
 
     @Override
@@ -73,8 +71,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        return API.data().getEncryptedImagesCursorLoader(getContext());
-
+        return API.data().getGalleryImagesCursorLoader(getContext());
     }
 
     @Override
@@ -93,19 +90,17 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        ((MainActivity) getBaseActivity()).loadFragment(ImagePagerFragment.build(position, false), true, MainActivity.DETAIL_IMAGE_FRAGMENT_TAG);
+        ((MainActivity) getBaseActivity()).loadFragment(ImagePagerFragment.build(position, true), true, MainActivity.DETAIL_IMAGE_FRAGMENT_TAG);
 
-    }
-
-    public static Fragment build() {
-        return ImageGridFragment_.builder().build();
     }
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 
         mode.setSubtitle(API.qstring(R.plurals.selected_items, getAdapterView().getCheckedItemCount()));
+
         Cursor cursor = (Cursor) getAdapter().getItem(position);
+
         actionList.add(new Image(cursor));
     }
 
@@ -120,7 +115,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
         if (inflater == null) return false;
 
-        inflater.inflate(R.menu.cab_image_list, menu);
+        inflater.inflate(R.menu.gallery_menu, menu);
 
         return true;
     }
@@ -133,22 +128,17 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_delete:
+            case R.id.menu_done:
 
-                API.data().deleteFiles(actionList);
-                mode.finish();
-                return true;
+                ((MainActivity) getBaseActivity()).secureNewPhotos(actionList);
 
-            case R.id.menu_unlock:
-
-                API.data().uncryptonize(actionList, null);
-                mode.finish();
                 return true;
 
             default:
                 return false;
         }
     }
+
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
@@ -163,5 +153,9 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
 
         getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
+    }
+
+    public static GalleryFragment build() {
+        return GalleryFragment_.builder().build();
     }
 }

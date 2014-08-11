@@ -11,10 +11,6 @@ public class CheckableRelativeLayout extends RelativeLayout implements Checkable
 
     private boolean mChecked;
 
-    public CheckableRelativeLayout(Context context) {
-        super(context);
-    }
-
     public CheckableRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

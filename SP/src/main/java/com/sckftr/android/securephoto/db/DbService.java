@@ -37,7 +37,8 @@ public class DbService extends IntentService implements ServiceConst {
         delete
     }
 
-    @Override protected void onHandleIntent(Intent intent) {
+    @Override
+    protected void onHandleIntent(Intent intent) {
 
         DbOperation operation = (DbOperation) intent.getSerializableExtra(PARAM_IN_COMMAND_NAME);
         DbModel[] objects = dataFromIntent(intent);
@@ -59,7 +60,7 @@ public class DbService extends IntentService implements ServiceConst {
                 for (int i = 0; i < objects.length; i++) {
                     ids[i] = objects[i].get_id();
                 }
-                getContentResolver().delete(uri, String.format(Contracts._ID+" IN (%s)", Strings.joinBy(Strings.COMMA, ids)), null);
+                getContentResolver().delete(uri, String.format(Contracts._ID + " IN (%s)", Strings.joinBy(Strings.COMMA, ids)), null);
                 break;
 
         }
@@ -96,21 +97,22 @@ public class DbService extends IntentService implements ServiceConst {
         delete(files.toArray(new DbModel[files.size()]));
     }
 
-    public void delete(final Uri uri, final String where, final String[] whereArgs){
+    public void delete(final Uri uri, final String where, final String[] whereArgs) {
         new Thread(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 Application.get().getContentResolver().delete(uri, where, whereArgs);
             }
         }).start();
     }
 
-    public Cursor query(Uri uri, String[] projection, String where, String[] whereArgs, String sortOrder){
+    public Cursor query(Uri uri, String[] projection, String where, String[] whereArgs, String sortOrder) {
 
         return Application.get().getContentResolver().query(uri, projection, where, whereArgs, sortOrder);
 
     }
 
-    public Cursor query(final Uri uri, String[] projection){
+    public Cursor query(final Uri uri, String[] projection) {
 
         return query(uri, projection, null, null, null);
 

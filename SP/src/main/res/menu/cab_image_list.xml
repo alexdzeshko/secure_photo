@@ -5,10 +5,10 @@
         android:id="@+id/menu_unlock"
         android:icon="@drawable/ic_action_not_secure"
         android:showAsAction="always"
-        android:title="Make unsecure"/>
+        android:title="@string/unsecure" />
     <item
         android:id="@+id/menu_delete"
         android:icon="@drawable/ic_action_discard"
         android:showAsAction="always"
-        android:title="Delete"/>
+        android:title="@string/delete" />
 </menu>

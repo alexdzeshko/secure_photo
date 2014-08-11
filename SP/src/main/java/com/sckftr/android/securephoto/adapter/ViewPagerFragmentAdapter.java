@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.MediaStore;
 
 import com.sckftr.android.app.adapter.CursorFragmentPagerAdapter;
 import com.sckftr.android.securephoto.contract.Contracts;
@@ -16,14 +17,19 @@ import by.deniotokiari.core.helpers.CursorHelper;
  */
 public class ViewPagerFragmentAdapter extends CursorFragmentPagerAdapter {
 
-    public ViewPagerFragmentAdapter(Context ctx, FragmentManager fm, Cursor c) {
+    private boolean mFromSystemGallery;
+
+    public ViewPagerFragmentAdapter(Context ctx, FragmentManager fm, Cursor c, boolean fromSystemGallery) {
         super(ctx, fm, c);
+
+        mFromSystemGallery = fromSystemGallery;
     }
 
     @Override
     public Fragment getItem(Context context, Cursor cursor) {
 
-        return ViewPagerItemFragment.build(CursorHelper.getString(cursor, Contracts.ImageContract.URI), CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
+        return ViewPagerItemFragment.build(CursorHelper.getString(cursor, mFromSystemGallery ? MediaStore.Images.Media.DATA : Contracts.ImageContract.URI),
+                mFromSystemGallery ? null : CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
 
     }
 }

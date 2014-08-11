@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.luminous.pick.GalleryActivity;
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.helper.UserHelper;

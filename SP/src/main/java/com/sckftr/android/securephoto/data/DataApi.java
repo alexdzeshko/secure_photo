@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
+import android.provider.MediaStore;
 
 import com.sckftr.android.app.ServiceConst;
 import com.sckftr.android.securephoto.AppConst;
@@ -133,8 +134,13 @@ public class DataApi implements AppConst {
         API.db().delete(dbList);
     }
 
-    public CursorLoader getImagesCursorLoader(Context context) {
+    public CursorLoader getEncryptedImagesCursorLoader(Context context) {
         return new CursorLoader(context, ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, Contracts.ImageContract._ID + " DESC");
+    }
+
+    public CursorLoader getGalleryImagesCursorLoader(Context context) {
+        return new CursorLoader(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID}, null, null, MediaStore.Images.Media._ID + " DESC");
+
     }
 
     private enum CommandName {
