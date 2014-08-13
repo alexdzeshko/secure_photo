@@ -70,6 +70,8 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         API.images().setBitmapSourceLoader(new CryptoBitmapSourceLoader());
 
         setHidingView(camera);
+
+        setTitle(R.string.secured);
     }
 
     @Override

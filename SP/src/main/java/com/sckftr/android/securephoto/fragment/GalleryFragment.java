@@ -71,6 +71,8 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
         getLoaderManager().initLoader(123, null, this);
 
         API.images().setBitmapSourceLoader(new FileBitmapSourceLoader());
+
+        setTitle(R.string.gallery);
     }
 
     @Override

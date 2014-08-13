@@ -126,7 +126,7 @@ public class FileAsyncTask extends AsyncTask<Bundle, Void, Bundle> {
 
         if (tempFile == null || !tempFile.exists()) {
 
-            error = AppConst.API.string(R.string.cant_create_new_file);
+            error = AppConst.API.string(R.string.ERR_CREATE_FILE);
 
         } else {
 

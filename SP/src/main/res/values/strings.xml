@@ -6,7 +6,6 @@
     <string name="input_password">Input password</string>
     <string name="commit_new_password">Commit new password</string>
     <string name="choose_new_password">Choose your new password</string>
-    <string name="cant_create_new_file">Can\'t create new file!</string>
 
     <!--==========   MENU   ===========-->
     <string name="unsecure">Make unsecure</string>
@@ -19,5 +18,8 @@
         <item quantity="other">%d items selected</item>
     </plurals>
 
+    <!--========= TITLES ==========-->
+    <string name="secured">Secured</string>
+    <string name="gallery">Gallery</string>
 
 </resources>
