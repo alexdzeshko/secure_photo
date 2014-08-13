@@ -1,8 +1,5 @@
 package com.sckftr.android.securephoto;
 
-import android.app.ActivityManager;
-import android.content.Context;
-
 import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 
 import org.androidannotations.annotations.EApplication;
@@ -21,8 +18,8 @@ public class Application extends android.app.Application {
         AppConst.API.init(this);
 
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        // Use 1/8th of the available memory for this memory cache.
-        final int cacheSize = maxMemory / 8;
+        // Use 1/4th of the available memory for this memory cache.
+        final int cacheSize = maxMemory / 4;
 
         mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
                 .setLoadingImage(R.drawable.ic_blue_lock)

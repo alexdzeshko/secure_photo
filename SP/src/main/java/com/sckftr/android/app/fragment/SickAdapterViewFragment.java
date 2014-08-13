@@ -19,8 +19,6 @@ import com.sckftr.android.app.listener.HideViewScrollListener;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.utils.Procedure;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
-
 public abstract class SickAdapterViewFragment<T extends AbsListView, A extends BaseAdapter> extends
         BaseFragment implements OnScrollListener, OnItemClickListener {
 

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.sckftr.android.securephoto.fragment.GalleryFragment;
 import com.sckftr.android.securephoto.fragment.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
+import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
+import com.sckftr.android.securephoto.image.FileBitmapSourceLoader;
 import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.Procedure;
 
@@ -42,18 +45,21 @@ public class MainActivity extends BaseSPActivity {
     public static final String SYSTEM_GALLERY_FRAGMENT_TAG = "SYSTEM_GALLERY";
     public static final String DETAIL_IMAGE_FRAGMENT_TAG = "DETAIL_IMAGE";
 
+    private FileBitmapSourceLoader mFileSourceLoader;
+    private CryptoBitmapSourceLoader mCryptoSourceLoader;
+
     @Bean
     TakePhotoHelper photoHelper;
 
     private boolean saveLivingHint;
 
-    @AfterViews
-    void init() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
         getActionBar().setBackgroundDrawable(null);
-
     }
 
     @Override
@@ -87,9 +93,13 @@ public class MainActivity extends BaseSPActivity {
 
         if (getFragmentManager().findFragmentByTag(SYSTEM_GALLERY_FRAGMENT_TAG) == null) {
 
+            API.images().setBitmapSourceLoader(mFileSourceLoader == null ? new FileBitmapSourceLoader() : mFileSourceLoader);
+
             loadFragment(GalleryFragment.build(), true, SYSTEM_GALLERY_FRAGMENT_TAG);
 
         } else {
+
+            API.images().setBitmapSourceLoader(mCryptoSourceLoader == null ? new CryptoBitmapSourceLoader() : mCryptoSourceLoader);
 
             loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
