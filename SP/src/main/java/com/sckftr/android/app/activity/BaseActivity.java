@@ -2,6 +2,8 @@ package com.sckftr.android.app.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.PopupWindow;
 
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.securephoto.R;
 import com.sckftr.android.utils.AQuery;
 import com.sckftr.android.utils.Platform;
 import com.sckftr.android.utils.UI;
@@ -118,14 +121,26 @@ public class BaseActivity extends Activity implements AppConst {
     // Fragments
     // ----------------------
 
-    public int addFragment(int id, Fragment fragment, String key) {
+    public int loadFragment(int id, Fragment fragment, boolean addToBackStack, String name) {
 
-        return UI.addFragment(getFragmentManager(), id, fragment, key);
+        return UI.loadFragment(getFragmentManager(), id, addToBackStack, fragment, name);
     }
 
-    public void addFragment(Fragment fragment) {
+    public int loadFragment(Fragment fragment, boolean addToBackStack, String name) {
 
-        addFragment(0, fragment, UI.NO_BACK_STACK);
+        return loadFragment(0, fragment, addToBackStack, name);
+    }
+
+    public void loadFragment(Fragment fragment, boolean addToBackStack) {
+
+        loadFragment(0, fragment, addToBackStack, null);
+
+    }
+
+    public void loadFragment(Fragment fragment) {
+
+        loadFragment(0, fragment, true, null);
+
     }
 
     // ----------------------

@@ -48,23 +48,35 @@ public class UI implements AppConst {
             LayoutParams.MATCH_PARENT);
 
 
-    public static int addFragment(FragmentManager fragmentManager, int id, Fragment fragment, String key) {
+    public static int loadFragment(FragmentManager fragmentManager, int id, boolean addToBackStack, Fragment fragment, String name) {
 
-        if (id == 0) {
-            id = R.id.frame;
+        // workaround that clear all stack
+        if (!addToBackStack) {
+
+            while (fragmentManager.getBackStackEntryCount() > 0) {
+
+                fragmentManager.popBackStackImmediate();
+
+            }
         }
 
-        if (key == NO_BACK_STACK) {
-            return fragmentManager.beginTransaction().add(id, fragment).commit();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+
+        if (Strings.isEmpty(name)) {
+
+            ft.replace(id <= 0 ? R.id.frame : id, fragment);
+
+        } else {
+
+            ft.replace(id <= 0 ? R.id.frame : id, fragment, name);
+
         }
 
-        fragmentManager.popBackStack(key, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (addToBackStack) ft.addToBackStack(name);
 
-        return fragmentManager.beginTransaction()
-                .add(id, fragment, key).addToBackStack(key)
-                .commit();
-
+        return ft.commit();
     }
+
 
     public static void showHint(Context context, String s) {
         Toast.makeText(context, s, Toast.LENGTH_SHORT).show();

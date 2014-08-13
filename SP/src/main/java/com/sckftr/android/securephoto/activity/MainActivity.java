@@ -96,29 +96,6 @@ public class MainActivity extends BaseSPActivity {
         }
     }
 
-    public void loadFragment(Fragment fragment, boolean addToBackStack, String name) {
-
-        FragmentManager fragmentManager = getFragmentManager();
-
-        // workaround that clear all stack
-        if (!addToBackStack) {
-
-            while (fragmentManager.getBackStackEntryCount() > 0) {
-
-                fragmentManager.popBackStackImmediate();
-
-            }
-        }
-
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-
-        ft.replace(R.id.frame, fragment, name);
-
-        if (addToBackStack) ft.addToBackStack(name);
-
-        ft.commit();
-    }
-
     public void secureNewPhotos(ArrayList<Integer> positions, Cursor cursor) {
 
         if (cursor == null || positions == null) {

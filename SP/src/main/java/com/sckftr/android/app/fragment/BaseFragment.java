@@ -178,10 +178,6 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
         getActionBar().setCustomView(view);
     }
 
-    public int addFragment(int id, Fragment fragment, String key) {
-        return UI.addFragment(getFragmentManager(), id, fragment, key);
-    }
-
     protected void d(String msg) {
         Log.d("fragment", msg);
     }

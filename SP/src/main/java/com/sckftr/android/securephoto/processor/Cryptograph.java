@@ -43,6 +43,7 @@ public class Cryptograph {
 
     private static final String TAG = Cryptograph.class.getSimpleName();
 
+    // TODO add user hash
     public static boolean encrypt(Context ctx, Uri source, String key) {
 
         if (ctx == null || source == null || Strings.isEmpty(key))
@@ -102,6 +103,7 @@ public class Cryptograph {
         return true;
     }
 
+    // TODO add user hash
     public static byte[] decrypt(byte[] encodedBytes, String key) {
 
         if (encodedBytes == null || encodedBytes.length <= 0 || Strings.isEmpty(key))
