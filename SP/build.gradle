@@ -51,7 +51,7 @@ dependencies {
 apt {
     arguments {
         androidManifestFile variant.processResources.manifestFile
-        resourcePackageName android.defaultConfig.packageName
+        resourcePackageName android.defaultConfig.applicationId
 
         // You can set optional annotation processing options here, like these commented options:
         // logLevel 'INFO'

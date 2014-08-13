@@ -62,7 +62,6 @@ public class DbService extends IntentService implements ServiceConst {
                 }
                 getContentResolver().delete(uri, String.format(Contracts._ID + " IN (%s)", Strings.joinBy(Strings.COMMA, ids)), null);
                 break;
-
         }
 
     }

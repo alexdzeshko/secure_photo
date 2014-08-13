@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.sckftr.android.app.view.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/column_width"
-    android:layout_height="@dimen/column_width">
+    android:layout_height="@dimen/column_width"
+    android:padding="@dimen/unit.5">
 
     <by.grsu.mcreader.mcrimageloader.imageloader.view.RecyclingImageView
         android:id="@+id/image_view_grid"

@@ -1,29 +1,36 @@
 package com.sckftr.android.securephoto.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.provider.MediaStore;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.GalleryFragment;
 import com.sckftr.android.securephoto.fragment.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
+import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @EActivity
 @OptionsMenu(R.menu.main_menu)
@@ -34,6 +41,9 @@ public class MainActivity extends BaseSPActivity {
     public static final String IMAGES_FRAGMENT_TAG = "IMAGES";
     public static final String SYSTEM_GALLERY_FRAGMENT_TAG = "SYSTEM_GALLERY";
     public static final String DETAIL_IMAGE_FRAGMENT_TAG = "DETAIL_IMAGE";
+
+    @Bean
+    TakePhotoHelper photoHelper;
 
     private boolean saveLivingHint;
 
@@ -59,19 +69,24 @@ public class MainActivity extends BaseSPActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+
         super.onNewIntent(intent);
+
         setIntent(intent);
+
     }
 
     @OptionsItem
     void camera() {
 
-        saveLivingHint = TakePhotoHelper.takePhotoFromCamera(this);
+        saveLivingHint = photoHelper.takePhotoFromCamera(this);
 
     }
 
     @OptionsItem
     void add() {
+
+//        photoHelper.takePhotoFromGallery(this);
 
         if (getFragmentManager().findFragmentByTag(SYSTEM_GALLERY_FRAGMENT_TAG) == null) {
 
@@ -107,10 +122,42 @@ public class MainActivity extends BaseSPActivity {
         ft.commit();
     }
 
-    public void secureNewPhotos(ArrayList<Image> images) {
-        for (Image image : images) {
-            Log.d(TAG, image.getFileUri() + ", id = " + image.get_id());
+    public void secureNewPhotos(ArrayList<Integer> positions, Cursor cursor) {
+
+        if (cursor == null || positions == null) {
+            // TODO
+            return;
         }
+
+        final ArrayList<Image> images = new ArrayList<Image>(positions.size());
+
+        for (int position : positions) {
+
+            if (!cursor.moveToPosition(position)) continue;
+
+            String path = "file://" + CursorUtils.getString(MediaStore.Images.Media.DATA, cursor);
+
+            Image image = new Image(String.valueOf(System.currentTimeMillis()),
+                    path,
+                    CursorUtils.getString(BaseColumns._ID, cursor));
+
+            images.add(image);
+
+        }
+
+        CursorUtils.close(cursor);
+
+        loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+
+        API.data().cryptonize(images, new Procedure<Object>() {
+            @Override
+            public void apply(Object dialog) {
+
+                for (Image image : images)
+                    API.db().delete(Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + image.getOriginalContentId()), null, null);
+
+            }
+        });
     }
 
     @Override
@@ -118,47 +165,27 @@ public class MainActivity extends BaseSPActivity {
 
         saveLivingHint = false;
 
-
         if (requestCode == REQUESTS.IMAGE_CAPTURE) {
 
-            Uri uri = TakePhotoHelper.getImageUri(requestCode, resultCode);
+            Uri uri = photoHelper.getCapturedPhotoUri();
 
             if (uri != null) {
 
+                if (resultCode != Activity.RESULT_OK) {
+
+                    new FileAsyncTask().deleteFile(uri);
+
+                    return;
+                }
+
                 Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
 
-                // TODO remove
-                ArrayList<Image> images = new ArrayList<Image>();
+                ArrayList<Image> images = new ArrayList<Image>(1);
 
                 images.add(image);
 
                 API.data().cryptonize(images, null);
             }
-
-        } else if (requestCode == REQUESTS.IMAGE_GALLERY && resultCode == RESULT_OK) {
-
-            Object[] objects = Storage.resolveContent(data.getData());
-
-            Uri uri = (Uri) objects[0];
-            String originalContentId = (String) objects[1];
-
-            Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
-            image.setOriginalContentId(originalContentId);
-
-            // TODO remove
-            ArrayList<Image> images = new ArrayList<Image>();
-            images.add(image);
-
-            final String contentId = originalContentId;
-            final Uri contentUri = data.getData();
-
-            API.data().cryptonize(images, new Procedure<Object>() {
-                @Override
-                public void apply(Object dialog) {
-                    API.db().delete(contentUri, BaseColumns._ID + "=" + contentId, null);
-//                    UI.showHint(MainActivity.this, "result received " + contentUri + " " + contentId);
-                }
-            });
         }
     }
 

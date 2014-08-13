@@ -41,24 +41,26 @@ import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
 
 public class Cryptograph {
 
-    public static final String TAG = Cryptograph.class.getSimpleName();
+    private static final String TAG = Cryptograph.class.getSimpleName();
 
     public static boolean encrypt(Context ctx, Uri source, String key) {
 
         if (ctx == null || source == null || Strings.isEmpty(key))
             throw new IllegalArgumentException("Encryption is impossible!!");
 
-        InputStream is = null;
+        FileInputStream fis = null;
 
         FileOutputStream fos = null;
 
         try {
 
-            is = ctx.getContentResolver().openInputStream(source);
+//            is = ctx.getContentResolver().openInputStream(source);
 
-            byte[] buffer = new byte[is.available()];
+            fis = new FileInputStream(source.getPath());
 
-            is.read(buffer);
+            byte[] buffer = new byte[fis.available()];
+
+            fis.read(buffer);
 
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKeySpec(key));
@@ -93,7 +95,7 @@ public class Cryptograph {
             AppConst.Log.e(TAG, "Encrypt: ", e);
             return false;
         } finally {
-            IO.close(is);
+            IO.close(fis);
             IO.close(fos);
         }
 

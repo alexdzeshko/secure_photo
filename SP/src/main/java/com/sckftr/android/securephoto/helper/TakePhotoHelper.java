@@ -3,67 +3,57 @@ package com.sckftr.android.securephoto.helper;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.widget.Toast;
 
 import com.sckftr.android.securephoto.AppConst;
-import com.sckftr.android.securephoto.data.FileThread;
-import com.sckftr.android.utils.IO;
+import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.utils.Platform;
+import com.sckftr.android.utils.Procedure;
+import com.sckftr.android.utils.Storage;
+import com.sckftr.android.utils.Strings;
 
+import org.androidannotations.annotations.EBean;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+@EBean
 public class TakePhotoHelper {
 
     private static final String TAG = TakePhotoHelper.class.getSimpleName();
 
-    private static Uri sCurrentUri;
+    private Uri mCapturedPhotoUri;
 
-    public static boolean takePhotoFromCamera(final Activity activity) {
+    public boolean takePhotoFromCamera(final Activity activity) {
 
         if (!Platform.hasCamera(activity)) return false;
 
-        new FileThread(new Handler() {
+        new FileAsyncTask(new Procedure<Bundle>() {
             @Override
-            public void handleMessage(Message msg) {
+            public void apply(Bundle params) {
 
-                if (msg.what == FileThread.MESSAGE_SUCCESS) {
+                String error = params.getString(FileAsyncTask.FILE_ERROR);
 
-                    Bundle data = msg.getData();
+                if (Strings.isEmpty(error)) {
 
-                    String s = data.getString(FileThread.CREATE_FILE_RESULT);
+                    Uri uri = params.getParcelable(FileAsyncTask.FILE_URI);
 
-                    Uri uri = Uri.parse(s);
-
-                    sCurrentUri = uri;
+                    mCapturedPhotoUri = uri;
 
                     AppConst.API.get().camera(activity, AppConst.REQUESTS.IMAGE_CAPTURE, uri);
 
                 } else {
 
-                    Toast.makeText(activity, "Can't create new photo!!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, error, Toast.LENGTH_LONG).show();
 
                 }
             }
-        }, FileThread.Task.CREATE_TEMP_FILE).start();
+        }).createTempFile(new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()) + "_", ".jpg", Storage.Images.getPrivateFolder());
 
         return true;
     }
 
-    public static void takePhotoFromGallery(Activity activity) {
-
-        AppConst.API.get().gallery(activity, AppConst.REQUESTS.IMAGE_GALLERY);
-
-    }
-
-    public static Uri getImageUri(int requestCode, int resultCode) {
-
-        if (resultCode != Activity.RESULT_OK) {
-
-            IO.delete(sCurrentUri);
-
-            return null;
-        }
-
-        return requestCode == AppConst.REQUESTS.IMAGE_CAPTURE ? sCurrentUri : null;
+    public Uri getCapturedPhotoUri() {
+        return mCapturedPhotoUri;
     }
 }

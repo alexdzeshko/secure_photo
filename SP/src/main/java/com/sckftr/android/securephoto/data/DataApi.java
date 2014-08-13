@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
 import com.sckftr.android.app.ServiceConst;
@@ -19,7 +20,6 @@ import com.sckftr.android.securephoto.db.BaseModel;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
 import com.sckftr.android.securephoto.processor.Cryptograph;
-import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
 
@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import by.deniotokiari.core.utils.ContractUtils;
 import by.deniotokiari.core.utils.IOUtils;
@@ -41,11 +42,8 @@ public class DataApi implements AppConst {
     private static DataApi instance;
 
     public static DataApi instance() {
-        if (instance == null) {
 
-            instance = new DataApi();
-
-        }
+        if (instance == null) instance = new DataApi();
 
         return instance;
     }
@@ -53,12 +51,10 @@ public class DataApi implements AppConst {
     private DataApi() {
     }
 
-    private void unlockFiles(Context context, ArrayList<Cryptonite> files) {
-        for (Cryptonite file : files) {
+    private void unlockFiles(Context context, List<Cryptonite> files) {
 
-            unlockFile(context, file);
+        for (Cryptonite file : files) unlockFile(context, file);
 
-        }
     }
 
     private void unlockFile(Context context, Cryptonite item) {
@@ -93,11 +89,10 @@ public class DataApi implements AppConst {
 
     }
 
-    private void lockFiles(Context context, ArrayList<Cryptonite> files) {
+    private void lockFiles(Context context, List<Cryptonite> files) {
 
-        for (Cryptonite file : files) {
-            lockFile(context, file);
-        }
+        for (Cryptonite file : files) lockFile(context, file);
+
     }
 
     private boolean lockFile(Context context, Cryptonite file) {
@@ -121,13 +116,20 @@ public class DataApi implements AppConst {
 
     }
 
-    public void deleteFiles(ArrayList<? extends Cryptonite> files) {
+    public void deleteFiles(List<? extends Cryptonite> files) {
+
         ArrayList<DbModel> dbList = null;
+
         for (Cryptonite image : files) {
-            IO.delete(image.getFileUri());
+
+            Storage.deleteFileSync(image.getFileUri());
+
             if (image instanceof DbModel) {
+
                 if (dbList == null) dbList = new ArrayList<DbModel>();
+
                 dbList.add((DbModel) image);
+
             }
         }
 
@@ -135,12 +137,22 @@ public class DataApi implements AppConst {
     }
 
     public CursorLoader getEncryptedImagesCursorLoader(Context context) {
-        return new CursorLoader(context, ContractUtils.getUri(Contracts.ImageContract.class), null, null, null, Contracts.ImageContract._ID + " DESC");
+        return new CursorLoader(context,
+                ContractUtils.getUri(Contracts.ImageContract.class),
+                null,
+                null,
+                null,
+                Contracts.ImageContract._ID + " DESC");
     }
 
     public CursorLoader getGalleryImagesCursorLoader(Context context) {
-        return new CursorLoader(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID}, null, null, MediaStore.Images.Media._ID + " DESC");
-
+        return new CursorLoader(
+                context,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media.DATA, BaseColumns._ID},
+                null,
+                null,
+                MediaStore.Images.Media._ID + " DESC");
     }
 
     private enum CommandName {
@@ -157,23 +169,34 @@ public class DataApi implements AppConst {
 
         @Override
         protected void onHandleIntent(Intent intent) {
+
             final CommandName commandName = (CommandName) intent.getSerializableExtra(PARAM_IN_COMMAND_NAME);
             final ResultReceiver receiver = intent.getParcelableExtra(PARAM_IN_CALLBACK);
+            final ArrayList<Cryptonite> files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
+
+            files.trimToSize();
+
             Bundle resultingBundle = null;
 
             switch (commandName) {
-                case unlockFile:
-                    ArrayList<Cryptonite> files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
+                case unlockFile: {
+
                     API.data().unlockFiles(getBaseContext(), files);
+
                     break;
-                case lockFile:
-                    files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
+                }
+                case lockFile: {
+
                     API.data().lockFiles(getBaseContext(), files);
+
                     resultingBundle = createSingleEntryBundle("ok");
+
                     break;
+                }
                 case deleteFiles:
-                    files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
+
                     API.data().deleteFiles(files);
+
                 default:
                     break;
 

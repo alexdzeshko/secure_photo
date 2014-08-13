@@ -20,11 +20,17 @@ public class Image extends BaseModel implements Cryptonite {
         this.uri = uri;
     }
 
+    public Image(String key, String uri, String originalContentId) {
+        this.key = key;
+        this.uri = uri;
+        this.originalContentId = originalContentId;
+    }
+
     public Image(String key, Uri uri) {
         this(key, uri.toString());
     }
 
-    public Image(Cursor cursor){
+    public Image(Cursor cursor) {
         _id = CursorUtils.getString(Contracts._ID, cursor);
         key = CursorUtils.getString(Contracts.ImageContract.KEY, cursor);
         uri = CursorUtils.getString(Contracts.ImageContract.URI, cursor);
@@ -35,11 +41,13 @@ public class Image extends BaseModel implements Cryptonite {
         return key;
     }
 
-    @Override public String get_id() {
+    @Override
+    public String get_id() {
         return _id;
     }
 
-    @Override public Uri getContentUri() {
+    @Override
+    public Uri getContentUri() {
         return ContractUtils.getUri(Contracts.ImageContract.class);
     }
 
@@ -52,9 +60,11 @@ public class Image extends BaseModel implements Cryptonite {
     }
 
     public Image(Parcel in) {
+
         _id = in.readString();
         key = in.readString();
         uri = in.readString();
+
     }
 
     public String getOriginalContentId() {
@@ -65,31 +75,39 @@ public class Image extends BaseModel implements Cryptonite {
         this.originalContentId = originalContentId;
     }
 
-    @Override public int describeContents() {
+    public ContentValues getContentValues() {
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(Contracts.ImageContract.KEY, key);
+
+        contentValues.put(Contracts.ImageContract.URI, Storage.Images.getPrivateUri(getFileUri()).getPath());
+
+        return contentValues;
+    }
+
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(_id);
         dest.writeString(key);
         dest.writeString(uri);
     }
 
-    public static final Creator CREATOR = new Creator(){
+    public static final Creator CREATOR = new Creator() {
 
-        @Override public Image createFromParcel(Parcel source) {
+        @Override
+        public Image createFromParcel(Parcel source) {
             return new Image(source);
         }
 
-        @Override public Image[] newArray(int size) {
+        @Override
+        public Image[] newArray(int size) {
             return new Image[0];
         }
     };
-
-    public ContentValues getContentValues() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Contracts.ImageContract.KEY, key);
-        contentValues.put(Contracts.ImageContract.URI, Storage.Images.getPrivateUri(getFileUri()).getPath());
-        return contentValues;
-    }
 }

@@ -1,6 +1,7 @@
 package com.sckftr.android.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -21,23 +22,29 @@ public class Storage {
 
     private static final String TAG = Storage.class.getSimpleName();
 
-
     public static final String NOMEDIA = ".nomedia";
 
-    private static File createDir(File dir, String path, boolean includeNomedia) {
-        File file = new File(dir, path);
-        return createIfNotExists(file, includeNomedia);
+    private static File createDir(File dir, String path, boolean includeNoMedia) {
+
+        return createIfNotExists(new File(dir, path), includeNoMedia);
+
     }
 
-    private static File createIfNotExists(File file, boolean includeNomedia) {
+    private static File createIfNotExists(File file, boolean includeNoMedia) {
+
         if (!file.exists()) {
+
             if (!file.mkdirs()) {
-                AppConst.Log.e("STORAGE", "Directory not created");
-            } else if (includeNomedia) {
-                File nomedia = new File(file, NOMEDIA);
-                nomedia.mkdir();
+
+                AppConst.Log.e(TAG, "Directory not created");
+
+            } else if (includeNoMedia) {
+
+                new File(file, NOMEDIA).mkdir();
+
             }
         }
+
         return file;
     }
 
@@ -68,17 +75,28 @@ public class Storage {
         return content;
     }
 
-
     public static void deleteFileIfPublic(Uri uri) {
+
         Uri secureUri = Images.getPrivateUri(uri);//todo storage images
-        AppConst.Log.d(Cryptograph.TAG, "orig_uri: %s, sec_uri: %s", uri, secureUri);
+
+        AppConst.Log.d(TAG, "orig_uri: %s, sec_uri: %s", uri, secureUri);
 
         if (!secureUri.equals(uri)) {
 
-            IO.delete(uri);
+            deleteFileSync(uri);
 
-//            scanFile(uri);
+            //scanFile(uri);
 
+        }
+    }
+
+    public static void deleteFileSync(Uri uri) {
+
+        if (uri != null) {
+
+            File f = new File(uri.getPath());
+
+            if (f.exists()) f.delete();
         }
     }
 
@@ -143,13 +161,17 @@ public class Storage {
     }
 
     public static void scanFile(Context context, Uri uri) {
-        MediaScannerConnection.scanFile(context, new String[]{uri.getPath()}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                        AppConst.Log.d(TAG, "Scanned " + path + ":");
-                        AppConst.Log.d(TAG, "-> uri=" + uri);
-                    }
-                }
-        );
+//        MediaScannerConnection.scanFile(context, new String[]{uri.getPath()}, null,
+//                new MediaScannerConnection.OnScanCompletedListener() {
+//                    public void onScanCompleted(String path, Uri uri) {
+//                        AppConst.Log.d(TAG, "Scanned " + path + ":");
+//                        AppConst.Log.d(TAG, "-> uri=" + uri);
+//                    }
+//                }
+//        );
+
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        mediaScanIntent.setData(uri);
+        context.sendBroadcast(mediaScanIntent);
     }
 }

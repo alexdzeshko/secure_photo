@@ -43,7 +43,7 @@ public class IO {
 
     }
 
-    public static File getExternalDir(){
+    public static File getExternalDir() {
         return Environment.getExternalStorageDirectory();
 //        return ContextHolder.getInstance().getContext().getExternalFilesDir(null);
     }
@@ -52,15 +52,5 @@ public class IO {
         File publicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         publicDirectory.mkdirs();
         return publicDirectory;
-    }
-
-    public static void delete(Uri uri) {
-        File file = new File(uri.getPath());
-        if (file.exists()) {
-            AppConst.Log.d(TAG, "file: %s, deleted: %s ", uri, file.delete());
-
-        } else {
-            AppConst.Log.w(TAG, "file does not exist: " + uri);
-        }
     }
 }

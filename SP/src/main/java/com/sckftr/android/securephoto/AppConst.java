@@ -38,7 +38,6 @@ public interface AppConst {
 
     public static class REQUESTS {
         public static final int IMAGE_CAPTURE = 0x01;
-        public static final int IMAGE_GALLERY = 0x02;
     }
 
     public enum ERROR {

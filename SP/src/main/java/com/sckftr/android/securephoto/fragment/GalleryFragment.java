@@ -6,6 +6,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -27,6 +28,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
 
@@ -36,7 +38,7 @@ import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
 @EFragment
 public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
 
-    private ArrayList<Image> actionList;
+    private List<Integer> actionList;
 
     @Override
     protected int layoutId() {
@@ -99,9 +101,7 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
         mode.setSubtitle(API.qstring(R.plurals.selected_items, getAdapterView().getCheckedItemCount()));
 
-        Cursor cursor = (Cursor) getAdapter().getItem(position);
-
-        actionList.add(new Image(cursor));
+        actionList.add(position);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
         mode.setTitle(API.string(R.string.cab_title_select_items));
 
-        actionList = new ArrayList<Image>();
+        actionList = new ArrayList<Integer>();
 
         MenuInflater inflater = mode.getMenuInflater();
 
@@ -130,7 +130,7 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
         switch (item.getItemId()) {
             case R.id.menu_done:
 
-                ((MainActivity) getBaseActivity()).secureNewPhotos(actionList);
+                ((MainActivity) getBaseActivity()).secureNewPhotos((ArrayList<Integer>) actionList, (Cursor) getAdapter().getItem(0));
 
                 return true;
 
@@ -148,6 +148,7 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
     @Override
     public void populateInsets(Rect insets) {
+
         super.populateInsets(insets);
 
         final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
