@@ -1,6 +1,5 @@
 package com.sckftr.android.app.fragment;
 
-import android.animation.ObjectAnimator;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,13 +11,15 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.sckftr.android.app.listener.HideViewScrollListener;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.utils.Procedure;
+
+import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
 
 public abstract class SickAdapterViewFragment<T extends AbsListView, A extends BaseAdapter> extends
         BaseFragment implements OnScrollListener, OnItemClickListener {
@@ -33,6 +34,8 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
     boolean mListShown;
 
     Rect mInsets;
+
+    private HideViewScrollListener mHideScrollListener;
 
     /**
      * The current activated item position. Only used on tablets.
@@ -128,10 +131,6 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
         super.onDestroyView();
     }
 
-    protected void onScrolledBottom() {
-        // NOOP
-    }
-
     /**
      * Provide the cursor for the list view.
      */
@@ -203,7 +202,11 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
     }
 
     public void setEmptyAction(final String s, final Procedure<View> procedure) {
-        // TODO: implement with dynamic create viewsF
+        // TODO: implement with dynamic create views
+    }
+
+    public void setHidingView(View v) {
+        mHideScrollListener = new HideViewScrollListener(getActivity(), v, null);
     }
 
     /**
@@ -276,8 +279,6 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
 
         mAdapterView.setAdapter(getAdapter());
 
-        mAdapterView.setOnScrollListener(this);
-
         setActivatedPosition(mActivatedPosition);
     }
 
@@ -299,6 +300,7 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
         mAdapterView = (T) rawListView;
         mAdapterView.setEmptyView(mEmptyView);
         mAdapterView.setOnItemClickListener(this);
+        mAdapterView.setOnScrollListener(this);
 
         setEmptyText(mEmptyText);
 
@@ -316,12 +318,21 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        //NOOP
+        if (mHideScrollListener != null) {
+
+            mHideScrollListener.onScrollStateChanged(view, scrollState);
+
+        }
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        //NOOP
+
+        if (mHideScrollListener != null) {
+
+            mHideScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+
+        }
     }
 
     @Override

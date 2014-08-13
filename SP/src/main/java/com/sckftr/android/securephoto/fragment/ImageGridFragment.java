@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
@@ -25,6 +26,7 @@ import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,10 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     private ArrayList<Image> actionList;
 
+    private PauseScrollListener mPauseScrollListener;
+
+    @ViewById
+    Button camera;
 
     @Override
     protected int layoutId() {
@@ -46,17 +52,24 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         return new ImagesGridCursorAdapter(getActivity());
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mPauseScrollListener = new PauseScrollListener(API.images());
+    }
+
     @AfterViews
     void init() {
 
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
 
-        getAdapterView().setOnScrollListener(new PauseScrollListener(API.images()));
-
         getLoaderManager().initLoader(123, null, this);
 
         API.images().setBitmapSourceLoader(new CryptoBitmapSourceLoader());
+
+        setHidingView(camera);
     }
 
     @Override
@@ -89,8 +102,22 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        ((MainActivity) getBaseActivity()).loadFragment(ImagePagerFragment.build(position, false), true, MainActivity.DETAIL_IMAGE_FRAGMENT_TAG);
+        getBaseActivity().loadFragment(ImagePagerFragment.build(position, false), true, MainActivity.DETAIL_IMAGE_FRAGMENT_TAG);
 
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+
+        mPauseScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        super.onScrollStateChanged(view, scrollState);
+
+        mPauseScrollListener.onScrollStateChanged(view, scrollState);
     }
 
     public static Fragment build() {

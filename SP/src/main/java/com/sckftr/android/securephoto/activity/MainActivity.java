@@ -52,7 +52,7 @@ public class MainActivity extends BaseSPActivity {
 
         loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
-        getActionBar().setBackgroundDrawable(null);
+//        getActionBar().setBackgroundDrawable(null);
 
     }
 

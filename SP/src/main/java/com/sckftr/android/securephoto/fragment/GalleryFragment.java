@@ -40,6 +40,8 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
     private List<Integer> actionList;
 
+    private PauseScrollListener mPauseScrollListener;
+
     @Override
     protected int layoutId() {
         return R.layout.images;
@@ -50,6 +52,14 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
         return new GalleryAdapter(getActivity());
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mPauseScrollListener = new PauseScrollListener(API.images());
+    }
+
     @AfterViews
     void init() {
 
@@ -57,8 +67,6 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
-
-        getAdapterView().setOnScrollListener(new PauseScrollListener(API.images()));
 
         getLoaderManager().initLoader(123, null, this);
 
@@ -94,8 +102,22 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        ((MainActivity) getBaseActivity()).loadFragment(ImagePagerFragment.build(position, true), true, MainActivity.DETAIL_IMAGE_FRAGMENT_TAG);
+        getBaseActivity().loadFragment(ImagePagerFragment.build(position, true), true, MainActivity.DETAIL_IMAGE_FRAGMENT_TAG);
 
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+
+        mPauseScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        super.onScrollStateChanged(view, scrollState);
+
+        mPauseScrollListener.onScrollStateChanged(view, scrollState);
     }
 
     @Override
