@@ -24,10 +24,10 @@
     <color name="light_gray">#FFDDDDDD</color>
     <color name="mid_gray">#FFAAAAAA</color>
 
-    <color name="bg_white_transparent" >#40FFFFFF</color>
+    <color name="bg_white_transparent">#40FFFFFF</color>
     <color name="bg_white_transparent90">#C8FFFFFF</color>
 
-    <color name="bg_semitransparent" >#40F3F3F2</color>
+    <color name="bg_semitransparent">#40F3F3F2</color>
 
     <color name="bg_light">#EBEBEA</color>
     <color name="bg_active">#00AED2</color>
@@ -58,4 +58,6 @@
     <color name="bg_dark_disabled">#aaa</color>
     <color name="bg_dark_unavailable">#888</color>
     <color name="sky_blue">#00aed1</color>
+
+    <color name="alpha_black">#6000</color>
 </resources>

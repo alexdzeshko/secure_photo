@@ -103,12 +103,12 @@ public class BaseActivity extends Activity implements AppConst {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK) {
-            Bundle params = data.getExtras();
-            if (params != null) {
-                onActivityResultParams(requestCode, params);
-            }
-        }
+//        if (resultCode == RESULT_OK) {
+//            Bundle params = data.getExtras();
+//            if (params != null) {
+//                onActivityResultParams(requestCode, params);
+//            }
+//        }
     }
 
     protected void onActivityResultParams(int requestCode, Bundle params) {

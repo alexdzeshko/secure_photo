@@ -2,7 +2,6 @@ package com.sckftr.android.securephoto.fragment;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Rect;
@@ -17,28 +16,25 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
-import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
-import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
-import com.sckftr.android.securephoto.image.FileBitmapSourceLoader;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 
 import java.util.ArrayList;
 
-import by.deniotokiari.core.utils.ContractUtils;
-import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
 import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
 
 @EFragment
 public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesGridCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
 
     private ArrayList<Image> actionList;
+
 
     @Override
     protected int layoutId() {
@@ -154,6 +150,13 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     public void onDestroyActionMode(ActionMode mode) {
 
         actionList = null;
+    }
+
+    @Click
+    void camera() {
+
+        ((MainActivity) getActivity()).startCamera();
+
     }
 
     @Override

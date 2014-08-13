@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.view.View;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
@@ -21,16 +22,15 @@ import com.sckftr.android.securephoto.helper.TakePhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.Procedure;
-import com.sckftr.android.utils.Storage;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @EActivity
 @OptionsMenu(R.menu.main_menu)
@@ -76,8 +76,7 @@ public class MainActivity extends BaseSPActivity {
 
     }
 
-    @OptionsItem
-    void camera() {
+    public void startCamera() {
 
         saveLivingHint = photoHelper.takePhotoFromCamera(this);
 
@@ -85,8 +84,6 @@ public class MainActivity extends BaseSPActivity {
 
     @OptionsItem
     void add() {
-
-//        photoHelper.takePhotoFromGallery(this);
 
         if (getFragmentManager().findFragmentByTag(SYSTEM_GALLERY_FRAGMENT_TAG) == null) {
 

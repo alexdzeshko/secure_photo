@@ -9,8 +9,7 @@ import android.provider.MediaStore;
 import com.sckftr.android.app.adapter.CursorFragmentPagerAdapter;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.fragment.ViewPagerItemFragment;
-
-import by.deniotokiari.core.helpers.CursorHelper;
+import com.sckftr.android.utils.CursorUtils;
 
 /**
  * Created by dzianis_roi on 22.07.2014.
@@ -28,8 +27,8 @@ public class ViewPagerFragmentAdapter extends CursorFragmentPagerAdapter {
     @Override
     public Fragment getItem(Context context, Cursor cursor) {
 
-        return ViewPagerItemFragment.build(CursorHelper.getString(cursor, mFromSystemGallery ? MediaStore.Images.Media.DATA : Contracts.ImageContract.URI),
-                mFromSystemGallery ? null : CursorHelper.getString(cursor, Contracts.ImageContract.KEY));
+        return ViewPagerItemFragment.build(CursorUtils.getString(mFromSystemGallery ? MediaStore.Images.Media.DATA : Contracts.ImageContract.URI, cursor),
+                mFromSystemGallery ? null : CursorUtils.getString(Contracts.ImageContract.KEY, cursor));
 
     }
 }

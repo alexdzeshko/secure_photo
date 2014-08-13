@@ -2,21 +2,14 @@ package com.sckftr.android.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.BaseColumns;
-import android.provider.MediaStore;
 
 import com.sckftr.android.securephoto.AppConst;
-import com.sckftr.android.securephoto.processor.Cryptograph;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import by.deniotokiari.core.helpers.CursorHelper;
 
 public class Storage {
 
@@ -46,33 +39,6 @@ public class Storage {
         }
 
         return file;
-    }
-
-    public static Object[] resolveContent(Uri uri) {
-
-        Object[] content = new Object[2];
-
-        String[] proj = {MediaStore.Images.Media.DATA, BaseColumns._ID};
-
-        Cursor cursor = AppConst.API.db().query(uri, proj);
-
-        if (cursor == null) return null;
-
-        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-        cursor.moveToFirst();
-
-        final String path = cursor.getString(columnIndex);
-
-        content[0] = Uri.parse("file://" + path);
-
-        AppConst.Log.d(TAG, "gallery img uri: %s, path: %s", uri, content[0]);
-
-        content[1] = CursorUtils.getString(BaseColumns._ID, cursor);
-
-        CursorHelper.close(cursor);
-
-        return content;
     }
 
     public static void deleteFileIfPublic(Uri uri) {
@@ -161,17 +127,6 @@ public class Storage {
     }
 
     public static void scanFile(Context context, Uri uri) {
-//        MediaScannerConnection.scanFile(context, new String[]{uri.getPath()}, null,
-//                new MediaScannerConnection.OnScanCompletedListener() {
-//                    public void onScanCompleted(String path, Uri uri) {
-//                        AppConst.Log.d(TAG, "Scanned " + path + ":");
-//                        AppConst.Log.d(TAG, "-> uri=" + uri);
-//                    }
-//                }
-//        );
-
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(uri);
-        context.sendBroadcast(mediaScanIntent);
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).setData(uri));
     }
 }

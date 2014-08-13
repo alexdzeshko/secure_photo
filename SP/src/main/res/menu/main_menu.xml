@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/camera"
-        android:icon="@drawable/ic_action_camera"
-        android:showAsAction="always"
-        android:title="@string/capture_photo"/>
     <item
         android:id="@+id/add"
         android:icon="@drawable/ic_action_new_picture"
         android:showAsAction="always"
-        android:title="@string/add_from_gallery"/>
+        android:title="@string/add_from_gallery" />
     <!--<item
         android:id="@+id/menu_share"
         android:icon="@drawable/ic_action_share"

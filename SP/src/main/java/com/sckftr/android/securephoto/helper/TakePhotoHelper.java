@@ -48,7 +48,7 @@ public class TakePhotoHelper {
 
                 }
             }
-        }).createTempFile(new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()) + "_", ".jpg", Storage.Images.getPrivateFolder());
+        }).createTempFile("JPEG_" + new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()) + "_", ".jpg", Storage.Images.getPrivateFolder());
 
         return true;
     }

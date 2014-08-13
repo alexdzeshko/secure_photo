@@ -1,4 +1,4 @@
-package by.deniotokiari.core.helpers;
+package com.sckftr.android.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

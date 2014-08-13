@@ -9,9 +9,8 @@ import android.widget.ImageView;
 
 import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.UI;
-
-import by.deniotokiari.core.helpers.CursorHelper;
 
 public class GalleryAdapter extends BaseCursorAdapter {
 
@@ -28,7 +27,7 @@ public class GalleryAdapter extends BaseCursorAdapter {
 
         ImageView imageView = (ImageView) view.findViewById(R.id.image_view_grid);
 
-        UI.displayImage(imageView, CursorHelper.getString(cursor, MediaStore.Images.Media.DATA), imageSize, imageSize, null);
+        UI.displayImage(imageView, CursorUtils.getString(MediaStore.Images.Media.DATA, cursor), imageSize, imageSize, null);
     }
 
     @Override

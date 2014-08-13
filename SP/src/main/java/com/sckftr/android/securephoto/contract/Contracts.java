@@ -12,7 +12,7 @@ public class Contracts implements BaseContract {
 
     private static final String TYPE = "vnd.android.cursor.dir/";
 
-    private static final String URI = "content://"+ AppConst.PACKAGE+".provider.";
+    private static final String URI = "content://" + AppConst.PACKAGE + ".provider.";
 
     @DBContract
     @DBTableName(tableName = "IMAGES")

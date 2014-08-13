@@ -53,6 +53,8 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
     @AfterViews
     void init() {
 
+        aq.id(R.id.camera).gone();
+
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
 
