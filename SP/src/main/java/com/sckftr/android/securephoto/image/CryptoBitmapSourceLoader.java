@@ -5,9 +5,7 @@ import android.os.Bundle;
 
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.processor.Cryptograph;
-import com.sckftr.android.utils.Strings;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,9 +26,17 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream
 
         Bundle params = getParams();
 
-        String key = params == null ? null : params.getString(AppConst.EXTRA.IMAGE);
+        String key = null;
 
-        if (Strings.isEmpty(url) || Strings.isEmpty(key)) return null;
+        Integer orientation = null;
+
+        if (params != null) {
+
+            key = params.getString(AppConst.EXTRA.IMAGE);
+
+            orientation = params.getInt(AppConst.EXTRA.ORIENTATION, 0);
+
+        }
 
         FileInputStream fis = null;
 
@@ -41,6 +47,8 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream
             byte[] buffer = new byte[fis.available()];
 
             fis.read(buffer);
+
+            setRotationDegree(orientation);
 
             return new ByteArrayInputStream(Cryptograph.decrypt(buffer, key));
 

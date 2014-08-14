@@ -24,9 +24,11 @@ public interface AppConst {
     // Common extras keys.
     public static interface EXTRA {
 
+        String IMAGE = PACKAGE + ".IMAGE";
+        String ORIENTATION = PACKAGE + ".ORIENTATION";
+
         String VALUES = PACKAGE + ".VALUES";
         String RESULT = PACKAGE + ".RESULT";
-        String IMAGE = PACKAGE + ".IMAGE";
 
     }
 

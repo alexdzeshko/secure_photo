@@ -37,4 +37,5 @@
 
 
     <string name="ERR_CREATE_FILE">Can\'t create new file!</string>
+    <string name="ERR_secure_photos">Secure photos error!</string>
 </resources>

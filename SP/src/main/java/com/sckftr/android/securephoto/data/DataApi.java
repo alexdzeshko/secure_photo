@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -19,9 +20,12 @@ import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.BaseModel;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
+import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.processor.Cryptograph;
+import com.sckftr.android.utils.ExifUtil;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
+import com.sckftr.android.utils.UI;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -90,30 +94,43 @@ public class DataApi implements AppConst {
     }
 
     private void lockFiles(Context context, List<Cryptonite> files) {
-
         for (Cryptonite file : files) lockFile(context, file);
-
     }
 
     private boolean lockFile(Context context, Cryptonite file) {
 
         Uri uri = file.getFileUri();
+
         String key = file.getKey();
+
+        if (file instanceof Image) {
+            try {
+
+                ((Image) file).appendImageMeta();
+
+            } catch (IOException e) {
+
+                UI.showHint(context, e.getMessage());
+
+            }
+        }
 
         if (Cryptograph.encrypt(context, uri, key)) {
 
             Storage.deleteFileIfPublic(uri);
 
             if (file instanceof BaseModel) {
+
                 BaseModel model = (BaseModel) file;
+
                 API.db().insert(model);
+
             }
+
             return true;
+        }
 
-        } else
-            return false;
-
-
+        return false;
     }
 
     public void deleteFiles(List<? extends Cryptonite> files) {

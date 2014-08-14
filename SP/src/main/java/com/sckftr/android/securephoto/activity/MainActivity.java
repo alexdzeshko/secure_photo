@@ -1,17 +1,12 @@
 package com.sckftr.android.securephoto.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.view.View;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
@@ -25,10 +20,9 @@ import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 import com.sckftr.android.securephoto.image.FileBitmapSourceLoader;
 import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.Procedure;
+import com.sckftr.android.utils.UI;
 
-import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
@@ -93,27 +87,37 @@ public class MainActivity extends BaseSPActivity {
 
         if (getFragmentManager().findFragmentByTag(SYSTEM_GALLERY_FRAGMENT_TAG) == null) {
 
-            API.images().setBitmapSourceLoader(mFileSourceLoader == null ? new FileBitmapSourceLoader() : mFileSourceLoader);
-
             loadFragment(GalleryFragment.build(), true, SYSTEM_GALLERY_FRAGMENT_TAG);
 
         } else {
-
-            API.images().setBitmapSourceLoader(mCryptoSourceLoader == null ? new CryptoBitmapSourceLoader() : mCryptoSourceLoader);
 
             loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
         }
     }
 
-    public void secureNewPhotos(ArrayList<Integer> positions, Cursor cursor) {
+    public void toggleSourceLoader(boolean secured) {
+
+        API.images().setBitmapSourceLoader(secured ?
+                mCryptoSourceLoader == null ? new CryptoBitmapSourceLoader() : mCryptoSourceLoader :
+                mFileSourceLoader == null ? new FileBitmapSourceLoader() : mFileSourceLoader);
+
+    }
+
+    public void secureNewPhotos(ArrayList<Integer> positions, final Cursor cursor) {
 
         if (cursor == null || positions == null) {
-            // TODO
+
+            UI.showHint(this, R.string.ERR_secure_photos);
+
             return;
         }
 
-        final ArrayList<Image> images = new ArrayList<Image>(positions.size());
+        int size = positions.size(), index = 0;
+
+        final ArrayList<Image> images = new ArrayList<Image>(size);
+
+        final String[] originalContentIds = new String[size];
 
         for (int position : positions) {
 
@@ -121,24 +125,23 @@ public class MainActivity extends BaseSPActivity {
 
             String path = "file://" + CursorUtils.getString(MediaStore.Images.Media.DATA, cursor);
 
-            Image image = new Image(String.valueOf(System.currentTimeMillis()),
-                    path,
-                    CursorUtils.getString(BaseColumns._ID, cursor));
+            Image image = new Image(String.valueOf(System.currentTimeMillis()), path);
 
             images.add(image);
 
+            originalContentIds[index++] = CursorUtils.getString(MediaStore.Images.Media._ID, cursor);
         }
 
         CursorUtils.close(cursor);
 
         loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
-        API.data().cryptonize(images, new Procedure<Object>() {
+        encrypt(images, new Procedure<String>() {
             @Override
-            public void apply(Object dialog) {
+            public void apply(String dialog) {
 
-                for (Image image : images)
-                    API.db().delete(Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + image.getOriginalContentId()), null, null);
+                for (String id : originalContentIds)
+                    API.db().delete(Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + id), null, null);
 
             }
         });
@@ -151,7 +154,7 @@ public class MainActivity extends BaseSPActivity {
 
         if (requestCode == REQUESTS.IMAGE_CAPTURE) {
 
-            Uri uri = photoHelper.getCapturedPhotoUri();
+            final Uri uri = photoHelper.getCapturedPhotoUri();
 
             if (uri != null) {
 
@@ -162,15 +165,19 @@ public class MainActivity extends BaseSPActivity {
                     return;
                 }
 
-                Image image = new Image(String.valueOf(System.currentTimeMillis()), uri);
+                Image image = new Image(String.valueOf(System.currentTimeMillis()), uri.toString());
 
                 ArrayList<Image> images = new ArrayList<Image>(1);
 
                 images.add(image);
 
-                API.data().cryptonize(images, null);
+                encrypt(images, null);
             }
         }
+    }
+
+    private void encrypt(ArrayList<Image> images, Procedure<String> p) {
+        API.data().cryptonize(images, p);
     }
 
     @Override

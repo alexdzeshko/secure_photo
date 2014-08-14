@@ -1,44 +1,70 @@
 package com.sckftr.android.securephoto.db;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Parcel;
 
+import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.utils.CursorUtils;
+import com.sckftr.android.utils.ExifUtil;
 import com.sckftr.android.utils.Storage;
+import com.sckftr.android.utils.UI;
+
+import java.io.IOException;
 
 import by.deniotokiari.core.utils.ContractUtils;
 
 public class Image extends BaseModel implements Cryptonite {
 
-    private String key, uri, _id, originalContentId;
+    private String _id, key, uri;
+
+    private int orientation;
 
     public Image(String key, String uri) {
         this.key = key;
         this.uri = uri;
     }
 
-    public Image(String key, String uri, String originalContentId) {
-        this.key = key;
-        this.uri = uri;
-        this.originalContentId = originalContentId;
-    }
-
-    public Image(String key, Uri uri) {
-        this(key, uri.toString());
-    }
 
     public Image(Cursor cursor) {
         _id = CursorUtils.getString(Contracts._ID, cursor);
         key = CursorUtils.getString(Contracts.ImageContract.KEY, cursor);
         uri = CursorUtils.getString(Contracts.ImageContract.URI, cursor);
+        orientation = CursorUtils.getInteger(Contracts.ImageContract.ORIENTATION, cursor);
     }
 
+    public Image(Parcel in) {
+        _id = in.readString();
+        key = in.readString();
+        uri = in.readString();
+        orientation = in.readInt();
+    }
+
+    public Uri getFileUri() {
+        return Uri.parse(uri);
+    }
 
     public String getKey() {
         return key;
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void appendImageMeta() throws IOException {
+
+        // TODO append more metadata
+
+        Uri path = Uri.parse(uri);
+
+        String value = ExifUtil.getAttributeValue(path.getPath(), ExifInterface.TAG_ORIENTATION);
+
+        orientation = ExifUtil.convertMetaOrientationToDegrees(value);
     }
 
     @Override
@@ -51,41 +77,23 @@ public class Image extends BaseModel implements Cryptonite {
         return ContractUtils.getUri(Contracts.ImageContract.class);
     }
 
-    public String getFileUriString() {
-        return uri;
-    }
-
-    public Uri getFileUri() {
-        return Uri.parse(uri);
-    }
-
-    public Image(Parcel in) {
-
-        _id = in.readString();
-        key = in.readString();
-        uri = in.readString();
-
-    }
-
-    public String getOriginalContentId() {
-        return originalContentId;
-    }
-
-    public void setOriginalContentId(String originalContentId) {
-        this.originalContentId = originalContentId;
-    }
-
+    @Override
     public ContentValues getContentValues() {
 
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(Contracts.ImageContract.KEY, key);
-
         contentValues.put(Contracts.ImageContract.URI, Storage.Images.getPrivateUri(getFileUri()).getPath());
+        contentValues.put(Contracts.ImageContract.ORIENTATION, orientation);
 
         return contentValues;
     }
 
+    /**
+     * ******************************************************
+     * <p/> Parcelable
+     * ******************************************************
+     */
     @Override
     public int describeContents() {
         return 0;
@@ -96,6 +104,7 @@ public class Image extends BaseModel implements Cryptonite {
         dest.writeString(_id);
         dest.writeString(key);
         dest.writeString(uri);
+        dest.writeInt(orientation);
     }
 
     public static final Creator CREATOR = new Creator() {

@@ -73,6 +73,13 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!isDetached()) ((MainActivity) getBaseActivity()).toggleSourceLoader(true);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
 

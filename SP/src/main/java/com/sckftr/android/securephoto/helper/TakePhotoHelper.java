@@ -1,12 +1,14 @@
 package com.sckftr.android.securephoto.helper;
 
 import android.app.Activity;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
+import com.sckftr.android.utils.ExifUtil;
 import com.sckftr.android.utils.Platform;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
@@ -14,6 +16,7 @@ import com.sckftr.android.utils.Strings;
 
 import org.androidannotations.annotations.EBean;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

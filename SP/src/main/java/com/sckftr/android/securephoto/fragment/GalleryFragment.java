@@ -60,6 +60,13 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
         mPauseScrollListener = new PauseScrollListener(API.images());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!isDetached()) ((MainActivity) getBaseActivity()).toggleSourceLoader(false);
+    }
+
     @AfterViews
     void init() {
 

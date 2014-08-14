@@ -30,15 +30,17 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
         ImageView imageView = (ImageView) view.findViewById(R.id.image_view_grid);
 
         Bundle params = new Bundle(context.getClassLoader());
+
         params.putString(AppConst.EXTRA.IMAGE, CursorUtils.getString(Contracts.ImageContract.KEY, cursor));
+        params.putInt(AppConst.EXTRA.ORIENTATION, CursorUtils.getInteger(Contracts.ImageContract.ORIENTATION, cursor));
+
+        AppConst.Log.d("TAG", CursorUtils.getInteger(Contracts.ImageContract.ORIENTATION, cursor) + "");
 
         UI.displayImage(imageView, CursorUtils.getString(Contracts.ImageContract.URI, cursor), imageSize, imageSize, params, null);
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-
         return View.inflate(context, R.layout.image_item, null);
-
     }
 }

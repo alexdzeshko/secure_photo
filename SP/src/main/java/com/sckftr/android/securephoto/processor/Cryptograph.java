@@ -1,10 +1,14 @@
 package com.sckftr.android.securephoto.processor;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.util.Log;
 
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.helper.UserHelper;
+import com.sckftr.android.utils.ExifUtil;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
@@ -55,6 +59,11 @@ public class Cryptograph {
 
         try {
 
+            ExifInterface exifInterface = new ExifInterface(source.getPath());
+
+            String orientation = exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
+
+            Log.d("EXIF", "Input orientation = " + orientation);
 //            is = ctx.getContentResolver().openInputStream(source);
 
             fis = new FileInputStream(source.getPath());
@@ -73,6 +82,9 @@ public class Cryptograph {
             fos = new FileOutputStream(file);
 
             fos.write(cipher.doFinal(buffer));
+
+            Log.d("Encode", "Output orientation = " + ExifUtil.copy(secureUri.getPath(), exifInterface).getAttribute(ExifInterface.TAG_DATETIME));
+            Log.d("Encode", "SecurePath = " + secureUri.getPath());
 
         } catch (IOException e) {
             AppConst.Log.e(TAG, "Encrypt", e);
