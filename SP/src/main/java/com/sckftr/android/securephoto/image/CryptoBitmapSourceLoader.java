@@ -28,13 +28,9 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream
 
         String key = null;
 
-        Integer orientation = null;
-
         if (params != null) {
 
             key = params.getString(AppConst.EXTRA.IMAGE);
-
-            orientation = params.getInt(AppConst.EXTRA.ORIENTATION, 0);
 
         }
 
@@ -47,8 +43,6 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream
             byte[] buffer = new byte[fis.available()];
 
             fis.read(buffer);
-
-            setRotationDegree(orientation);
 
             return new ByteArrayInputStream(Cryptograph.decrypt(buffer, key));
 
@@ -63,5 +57,12 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream
         }
 
         return null;
+    }
+
+    @Override
+    protected int getRotationDegree(String url) {
+        Bundle params = getParams();
+
+        return params == null ? -1 : params.getInt(AppConst.EXTRA.ORIENTATION);
     }
 }
