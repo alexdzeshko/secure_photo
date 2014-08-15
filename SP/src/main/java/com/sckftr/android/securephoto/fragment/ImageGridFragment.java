@@ -15,13 +15,13 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 import com.sckftr.android.securephoto.db.Image;
-import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -59,8 +59,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         mPauseScrollListener = new PauseScrollListener(API.images());
     }
 
-    @AfterViews
-    void init() {
+    @AfterViews void init() {
 
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
@@ -186,8 +185,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         actionList = null;
     }
 
-    @Click
-    void camera() {
+    @Click void camera() {
 
         ((MainActivity) getActivity()).startCamera();
 
@@ -198,7 +196,14 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         super.populateInsets(insets);
 
         final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
+        final int margin = getResources().getDimensionPixelSize(R.dimen.unit3);
 
         getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
+
+        final Button button = aq.id(R.id.camera).getButton();
+        final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
+        layoutParams.bottomMargin = insets.bottom + margin;
+        layoutParams.rightMargin = insets.right + margin;
+        button.setLayoutParams(layoutParams);
     }
 }

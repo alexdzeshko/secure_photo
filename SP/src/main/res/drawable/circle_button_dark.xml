@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item>
+    <item >
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval">
 
-            <solid android:color="@color/primary_dark" />
+            <solid android:color="@color/accent1" />
 
             <stroke
                 android:color="@android:color/transparent"

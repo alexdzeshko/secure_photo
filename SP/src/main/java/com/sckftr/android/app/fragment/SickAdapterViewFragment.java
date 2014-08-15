@@ -342,7 +342,7 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
 
     }
 
-    private void updateInsets(Rect insets) {
+    protected void updateInsets(Rect insets) {
 
         final T view = getAdapterView();
 

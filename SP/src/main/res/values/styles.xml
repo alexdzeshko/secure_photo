@@ -6,7 +6,7 @@
     </style>
 
     <style name="TextAppearance.SP.Widget.ActionBar.Title" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/accent1_light</item>
+        <item name="android:textColor">@color/text_white</item>
     </style>
 
     <style name="panel">

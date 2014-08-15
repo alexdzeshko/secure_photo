@@ -3,6 +3,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
 
-    <solid android:color="@color/bg_active_transparent"/>
+    <solid android:color="@color/primary_inverse"/>
 
 </shape>

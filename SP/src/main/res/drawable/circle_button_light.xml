@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+    <item >
+        <shape
             android:shape="oval">
 
-            <solid android:color="@color/primary_dark_60" />
+            <solid android:color="@color/accent1_light"/>
 
         </shape>
     </item>
@@ -13,7 +13,7 @@
     <item>
         <bitmap
             android:src="@android:drawable/ic_menu_camera"
-            android:gravity="center" />
+            android:gravity="center"/>
     </item>
 
 </layer-list>
