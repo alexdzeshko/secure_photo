@@ -1,8 +1,8 @@
-package by.deniotokiari.core.utils;
+package com.sckftr.android.utils;
 
-import by.deniotokiari.core.annotations.ContractInfo;
-import by.deniotokiari.core.annotations.db.DBContract;
-import by.deniotokiari.core.annotations.db.DBTableName;
+import com.sckftr.android.securephoto.db.base.annotations.ContractInfo;
+import com.sckftr.android.securephoto.db.base.annotations.db.DBContract;
+import com.sckftr.android.securephoto.db.base.annotations.db.DBTableName;
 import android.net.Uri;
 
 public class ContractUtils {

@@ -59,7 +59,8 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         mPauseScrollListener = new PauseScrollListener(API.images());
     }
 
-    @AfterViews void init() {
+    @AfterViews
+    void init() {
 
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
@@ -181,14 +182,12 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-
         actionList = null;
     }
 
-    @Click void camera() {
-
+    @Click
+    void camera() {
         ((MainActivity) getActivity()).startCamera();
-
     }
 
     @Override

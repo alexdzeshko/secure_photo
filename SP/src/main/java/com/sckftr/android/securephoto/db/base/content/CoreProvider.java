@@ -1,12 +1,13 @@
-package by.deniotokiari.core.content;
+package com.sckftr.android.securephoto.db.base.content;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import by.deniotokiari.core.helpers.UriHelper;
-import by.deniotokiari.core.utils.ContractUtils;
+import com.sckftr.android.utils.UriUtils;
+
+import com.sckftr.android.utils.ContractUtils;
 
 abstract public class CoreProvider extends ContentProvider {
 
@@ -31,7 +32,7 @@ abstract public class CoreProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int result = mDataBase.deleteItems(getContract(), selection,
                 selectionArgs);
-        if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+        if (!UriUtils.isHasKey(uri, IS_NO_NOTIFAED)) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return result;
@@ -40,7 +41,7 @@ abstract public class CoreProvider extends ContentProvider {
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
         int inserted = mDataBase.addItems(getContract(), values);
-        if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+        if (!UriUtils.isHasKey(uri, IS_NO_NOTIFAED)) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return inserted;
@@ -51,7 +52,7 @@ abstract public class CoreProvider extends ContentProvider {
         long id = mDataBase.addItem(getContract(), value);
         Uri itemUri = Uri.parse(uri + "/" + id);
         if (id > 0) {
-            if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+            if (!UriUtils.isHasKey(uri, IS_NO_NOTIFAED)) {
                 getContext().getContentResolver().notifyChange(itemUri, null);
             }
         }
@@ -61,7 +62,7 @@ abstract public class CoreProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor items = mDataBase.getItems(getContract(), selection, selectionArgs, sortOrder);
-        if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+        if (!UriUtils.isHasKey(uri, IS_NO_NOTIFAED)) {
             items.setNotificationUri(getContext().getContentResolver(), uri);
         }
         return items;
@@ -75,7 +76,7 @@ abstract public class CoreProvider extends ContentProvider {
 
     public Cursor rawQuery(Uri uri, String sql, String[] selectionArgs) {
         Cursor items = mDataBase.rawQuery(getContract(), sql, selectionArgs);
-        if (!UriHelper.isHasKey(uri, IS_NO_NOTIFAED)) {
+        if (!UriUtils.isHasKey(uri, IS_NO_NOTIFAED)) {
             items.setNotificationUri(getContext().getContentResolver(), uri);
         }
         return items;

@@ -2,12 +2,12 @@ package com.sckftr.android.securephoto.contract;
 
 import com.sckftr.android.securephoto.AppConst;
 
-import by.deniotokiari.core.annotations.ContractInfo;
-import by.deniotokiari.core.annotations.db.DBContract;
-import by.deniotokiari.core.annotations.db.DBTableName;
-import by.deniotokiari.core.annotations.db.types.DBInteger;
-import by.deniotokiari.core.annotations.db.types.DBVarchar;
-import by.deniotokiari.core.content.BaseContract;
+import com.sckftr.android.securephoto.db.base.annotations.ContractInfo;
+import com.sckftr.android.securephoto.db.base.annotations.db.DBContract;
+import com.sckftr.android.securephoto.db.base.annotations.db.DBTableName;
+import com.sckftr.android.securephoto.db.base.annotations.db.types.DBInteger;
+import com.sckftr.android.securephoto.db.base.annotations.db.types.DBVarchar;
+import com.sckftr.android.securephoto.db.base.content.BaseContract;
 
 public class Contracts implements BaseContract {
 

@@ -84,6 +84,12 @@ public class DbService extends IntentService implements ServiceConst {
         }
     }
 
+    public void insert(ArrayList<? extends DbModel> files) {
+
+        if (files != null && !files.isEmpty()) insert(files.toArray(new DbModel[files.size()]));
+
+    }
+
     public void delete(DbModel... objects) {
         if (objects != null && objects.length > 0) {
 

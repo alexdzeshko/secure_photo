@@ -1,4 +1,4 @@
-package by.deniotokiari.core.annotations.db;
+package com.sckftr.android.securephoto.db.base.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface DBPrimaryKey {
+@Target(ElementType.TYPE)
+public @interface ContractInfo {
 
+	String uri();
+	
+	String type();
+	
 }

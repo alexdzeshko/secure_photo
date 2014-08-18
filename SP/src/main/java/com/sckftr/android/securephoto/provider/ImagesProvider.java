@@ -2,7 +2,7 @@ package com.sckftr.android.securephoto.provider;
 
 import com.sckftr.android.securephoto.contract.Contracts;
 
-import by.deniotokiari.core.content.CoreProvider;
+import com.sckftr.android.securephoto.db.base.content.CoreProvider;
 
 public class ImagesProvider extends CoreProvider {
 

@@ -1,22 +1,19 @@
 package com.sckftr.android.securephoto.db;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Parcel;
 
-import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.ExifUtil;
 import com.sckftr.android.utils.Storage;
-import com.sckftr.android.utils.UI;
 
 import java.io.IOException;
 
-import by.deniotokiari.core.utils.ContractUtils;
+import com.sckftr.android.utils.ContractUtils;
 
 public class Image extends BaseModel implements Cryptonite {
 
