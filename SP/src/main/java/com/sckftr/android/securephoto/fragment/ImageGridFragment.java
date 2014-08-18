@@ -6,11 +6,13 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -69,7 +71,11 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
         setHidingView(camera);
 
+        setSwipeRefreshEnabled(false);
+
         setTitle(R.string.secured);
+
+        setRefreshing(true);
     }
 
     @Override
@@ -88,6 +94,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        setRefreshing(true);
 
         return API.data().getEncryptedImagesCursorLoader(getContext());
 
@@ -95,6 +102,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        setRefreshing(false);
 
         getAdapter().swapCursor(data);
 
@@ -103,6 +111,8 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        setRefreshing(false);
+
         getAdapter().swapCursor(null);
     }
 
@@ -165,14 +175,22 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         switch (item.getItemId()) {
             case R.id.menu_delete:
 
+                setRefreshing(true);
+
                 API.data().deleteFiles(actionList);
+
                 mode.finish();
+
                 return true;
 
             case R.id.menu_unlock:
 
+                setRefreshing(true);
+
                 API.data().uncryptonize(actionList, null);
+
                 mode.finish();
+
                 return true;
 
             default:
@@ -200,9 +218,18 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
 
         final Button button = aq.id(R.id.camera).getButton();
-        final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
+
         layoutParams.bottomMargin = insets.bottom + margin;
         layoutParams.rightMargin = insets.right + margin;
+
         button.setLayoutParams(layoutParams);
+
+        final SwipeRefreshLayout layout = (SwipeRefreshLayout) aq.id(R.id.refreshContainer).getView();
+        layoutParams = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+
+        layoutParams.topMargin = insets.top;
+
+        layout.setLayoutParams(layoutParams);
     }
 }

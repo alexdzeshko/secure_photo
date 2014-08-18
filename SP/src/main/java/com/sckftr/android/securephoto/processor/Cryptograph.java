@@ -40,6 +40,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import androidkeystore.Crypto;
 import androidkeystore.android.security.KeyStoreManager;
 import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
 
@@ -58,12 +59,6 @@ public class Cryptograph {
         FileOutputStream fos = null;
 
         try {
-
-            ExifInterface exifInterface = new ExifInterface(source.getPath());
-
-            String orientation = exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
-
-            Log.d("EXIF", "Input orientation = " + orientation);
 //            is = ctx.getContentResolver().openInputStream(source);
 
             fis = new FileInputStream(source.getPath());
@@ -83,7 +78,6 @@ public class Cryptograph {
 
             fos.write(cipher.doFinal(buffer));
 
-            Log.d("Encode", "Output orientation = " + ExifUtil.copy(secureUri.getPath(), exifInterface).getAttribute(ExifInterface.TAG_DATETIME));
             Log.d("Encode", "SecurePath = " + secureUri.getPath());
 
         } catch (IOException e) {

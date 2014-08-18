@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
 import com.sckftr.android.securephoto.R;
@@ -60,13 +62,6 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
         mPauseScrollListener = new PauseScrollListener(API.images());
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (!isDetached()) ((MainActivity) getBaseActivity()).toggleSourceLoader(false);
-    }
-
     @AfterViews
     void init() {
 
@@ -79,24 +74,53 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
         API.images().setBitmapSourceLoader(new FileBitmapSourceLoader());
 
+        setSwipeRefreshEnabled(false);
+
         setTitle(R.string.gallery);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!isDetached()) {
+
+            MainActivity mainActivity = (MainActivity) getBaseActivity();
+
+            mainActivity.toggleSourceLoader(false);
+
+            mainActivity.showAddMenuItem(false);
+
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        API.images().setPauseWork(false);
+        if (!isDetached()) {
+
+            MainActivity mainActivity = (MainActivity) getBaseActivity();
+
+            mainActivity.showAddMenuItem(true);
+
+            API.images().setPauseWork(false);
+
+            getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        setRefreshing(true);
 
         return API.data().getGalleryImagesCursorLoader(getContext());
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        setRefreshing(false);
 
         getAdapter().swapCursor(data);
 
@@ -105,6 +129,8 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        setRefreshing(false);
+
         getAdapter().swapCursor(null);
     }
 
@@ -134,7 +160,11 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
         mode.setSubtitle(API.qstring(R.plurals.selected_items, getAdapterView().getCheckedItemCount()));
 
-        actionList.add(position);
+        if (checked) {
+            actionList.add(position);
+        } else {
+            actionList.remove(new Integer(position));
+        }
     }
 
     @Override
@@ -143,12 +173,6 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
         mode.setTitle(API.string(R.string.cab_title_select_items));
 
         actionList = new ArrayList<Integer>();
-
-        MenuInflater inflater = mode.getMenuInflater();
-
-        if (inflater == null) return false;
-
-        inflater.inflate(R.menu.gallery_menu, menu);
 
         return true;
     }
@@ -160,21 +184,16 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_done:
-
-                ((MainActivity) getBaseActivity()).secureNewPhotos((ArrayList<Integer>) actionList, (Cursor) getAdapter().getItem(0));
-
-                return true;
-
-            default:
-                return false;
-        }
+        return false;
     }
 
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+
+        if (actionList != null) {
+            ((MainActivity) getBaseActivity()).secureNewPhotos((ArrayList<Integer>) actionList, (Cursor) getAdapter().getItem(0));
+        }
 
         actionList = null;
     }
@@ -187,6 +206,13 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
         final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
 
         getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
+
+        final SwipeRefreshLayout layout = (SwipeRefreshLayout) aq.id(R.id.refreshContainer).getView();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+
+        layoutParams.topMargin = insets.top;
+
+        layout.setLayoutParams(layoutParams);
     }
 
     public static GalleryFragment build() {

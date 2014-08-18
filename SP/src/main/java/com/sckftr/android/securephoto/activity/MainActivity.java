@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
@@ -26,6 +27,7 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.OptionsMenuItem;
 
 import java.util.ArrayList;
 
@@ -39,11 +41,14 @@ public class MainActivity extends BaseSPActivity {
     public static final String SYSTEM_GALLERY_FRAGMENT_TAG = "SYSTEM_GALLERY";
     public static final String DETAIL_IMAGE_FRAGMENT_TAG = "DETAIL_IMAGE";
 
-    private FileBitmapSourceLoader mFileSourceLoader;
-    private CryptoBitmapSourceLoader mCryptoSourceLoader;
+    private FileBitmapSourceLoader mFileLoader;
+    private CryptoBitmapSourceLoader mCryptoLoader;
 
     @Bean
     TakePhotoHelper photoHelper;
+
+    @OptionsMenuItem
+    MenuItem add;
 
     private boolean saveLivingHint;
 
@@ -60,32 +65,40 @@ public class MainActivity extends BaseSPActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!UserHelper.isLogged()) {
-
-            StartActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
-
-        }
+        if (!UserHelper.isLogged()) StartActivity.start(this);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-
         super.onNewIntent(intent);
 
         setIntent(intent);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+
+                loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+
+                return true;
+            }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void startCamera() {
-
         saveLivingHint = photoHelper.takePhotoFromCamera(this);
-
     }
 
     @OptionsItem
     void add() {
 
-        if (getFragmentManager().findFragmentByTag(SYSTEM_GALLERY_FRAGMENT_TAG) == null) {
+        if (!hasFragment(SYSTEM_GALLERY_FRAGMENT_TAG)) {
 
             loadFragment(GalleryFragment.build(), true, SYSTEM_GALLERY_FRAGMENT_TAG);
 
@@ -97,11 +110,19 @@ public class MainActivity extends BaseSPActivity {
     }
 
     public void toggleSourceLoader(boolean secured) {
+        if (secured) {
 
-        API.images().setBitmapSourceLoader(secured ?
-                mCryptoSourceLoader == null ? new CryptoBitmapSourceLoader() : mCryptoSourceLoader :
-                mFileSourceLoader == null ? new FileBitmapSourceLoader() : mFileSourceLoader);
+            mCryptoLoader = mCryptoLoader == null ? new CryptoBitmapSourceLoader() : mCryptoLoader;
 
+            API.images().setBitmapSourceLoader(mCryptoLoader);
+
+        } else {
+
+            mFileLoader = mFileLoader == null ? new FileBitmapSourceLoader() : mFileLoader;
+
+            API.images().setBitmapSourceLoader(mFileLoader);
+
+        }
     }
 
     public void secureNewPhotos(ArrayList<Integer> positions, final Cursor cursor) {
@@ -147,6 +168,10 @@ public class MainActivity extends BaseSPActivity {
         });
     }
 
+    public void showAddMenuItem(boolean show) {
+        add.setVisible(show);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -182,7 +207,6 @@ public class MainActivity extends BaseSPActivity {
 
     @Override
     protected void onUserLeaveHint() {
-
         super.onUserLeaveHint();
 
         if (!saveLivingHint) UserHelper.setIsLogged(false);
@@ -190,11 +214,9 @@ public class MainActivity extends BaseSPActivity {
 
     @Override
     public void onBackPressed() {
-
         super.onBackPressed();
 
         if (isFinishing()) UserHelper.setIsLogged(false);
-
     }
 
     public static void start(Context context) {

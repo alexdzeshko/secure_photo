@@ -125,6 +125,8 @@ public class DataApi implements AppConst {
 
                     UI.showHint(context, e.getMessage());
 
+                    e.printStackTrace();
+
                 }
 
                 if (Cryptograph.encrypt(context, uri, key)) {
@@ -224,78 +226,105 @@ public class DataApi implements AppConst {
         }
 
         private Bundle createSingleEntryBundle(Serializable value) {
+
             Bundle resultingBundle = new Bundle(1);
+
             resultingBundle.putSerializable(PARAM_OUT_MSG, value);
+
             return resultingBundle;
         }
 
         private Bundle createSingleEntryBundle(Parcelable value) {
+
             Bundle resultingBundle = new Bundle(1);
+
             resultingBundle.putParcelable(PARAM_OUT_MSG, value);
+
             return resultingBundle;
         }
 
     }
 
     public void uncryptonize(ArrayList<? extends Cryptonite> cryptonite, Procedure<? extends Object> callback) {
+
         final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.UNLOCK_FILE, createResultReceiver(callback));
+
         intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
+
         dispatchServiceCall(intent);
     }
 
     public void cryptonize(ArrayList<? extends Cryptonite> cryptonite, Procedure<? extends Object> callback) {
+
         final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.LOCK_FILE, createResultReceiver(callback));
+
         intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
+
         dispatchServiceCall(intent);
     }
 
     public void delete(ArrayList<? extends Cryptonite> cryptonite, Procedure<Integer> callback) {
+
         final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.DELETE_FILES, createResultReceiver(callback));
+
         intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
+
         dispatchServiceCall(intent);
     }
 
     private <T extends Serializable> Intent createBaseIntentForAsyncEnforcer(final CommandName commandName, final ResultReceiver resultReceiver) {
-        Application app = Application_.getInstance();
-        Intent msgIntent = new Intent(app, DataAsyncEnforcerService.class);
+
+        Intent msgIntent = new Intent(Application.get(), DataAsyncEnforcerService.class);
+
         msgIntent.putExtra(DataAsyncEnforcerService.PARAM_IN_COMMAND_NAME, commandName);
+
         if (resultReceiver != null) {
             msgIntent.putExtra(DataAsyncEnforcerService.PARAM_IN_CALLBACK, resultReceiver);
         }
+
         return msgIntent;
     }
 
     private void dispatchServiceCall(final Intent intent) {
-        Application_.getInstance().startService(intent);
+        Application.get().startService(intent);
     }
 
 
     private <T> ResultReceiver createResultReceiver(final Procedure<T> callback) {
-        if (callback == null) {
-            return null;
-        }
+        if (callback == null) return null;
 
         return new ResultReceiver(null) {
-
             @Override
             protected void onReceiveResult(int resultCode, Bundle msg) {
+
                 Object result;
                 if (isOutputParcelable(callback)) {
+
                     result = msg.getParcelable(DataAsyncEnforcerService.PARAM_OUT_MSG);
+
                 } else {
+
                     result = msg.getSerializable(DataAsyncEnforcerService.PARAM_OUT_MSG);
+
                 }
+
                 callback.apply((T) result);
             }
         };
     }
 
     private <T> boolean isOutputParcelable(final Procedure<T> callback) {
+
         Type[] types = callback.getClass().getGenericInterfaces();
+
         if (types.length == 0 || !(types[0] instanceof ParameterizedType)) {
+
             return false;
+
         }
+
         Type[] argumentsTypes = ((ParameterizedType) types[0]).getActualTypeArguments();
+
         return !(argumentsTypes.length == 0 || !(argumentsTypes[0] instanceof Class)) && Parcelable.class.isAssignableFrom((Class<?>) argumentsTypes[0]);
     }
 }

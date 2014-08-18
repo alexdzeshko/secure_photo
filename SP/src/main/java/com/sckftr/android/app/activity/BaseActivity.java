@@ -67,25 +67,6 @@ public class BaseActivity extends Activity implements AppConst {
         super.onDestroy();
     }
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        return MenuUtils.apply(this, menu) && super.onCreateOptionsMenu(menu);
-//    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void finish() {
 
@@ -106,12 +87,12 @@ public class BaseActivity extends Activity implements AppConst {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-//        if (resultCode == RESULT_OK) {
-//            Bundle params = data.getExtras();
-//            if (params != null) {
-//                onActivityResultParams(requestCode, params);
-//            }
-//        }
+        if (resultCode == RESULT_OK) {
+            Bundle params = data.getExtras();
+            if (params != null) {
+                onActivityResultParams(requestCode, params);
+            }
+        }
     }
 
     protected void onActivityResultParams(int requestCode, Bundle params) {
@@ -141,6 +122,16 @@ public class BaseActivity extends Activity implements AppConst {
 
         loadFragment(0, fragment, true, null);
 
+    }
+
+    public Fragment findFragmentByTag(String tag) {
+
+        return getFragmentManager().findFragmentByTag(tag);
+
+    }
+
+    public boolean hasFragment(String tag) {
+        return findFragmentByTag(tag) != null;
     }
 
     // ----------------------

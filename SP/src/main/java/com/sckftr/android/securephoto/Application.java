@@ -23,10 +23,10 @@ public class Application extends android.app.Application {
 
         mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
                 .setLoadingImage(R.drawable.ic_blue_lock)
-                .enableFadeIn(false)
+                .enableFadeIn(true)
                 .setDiscCacheEnabled(false)
                 .setMemoryCacheEnabled(true)
-                .setMemoryCacheSize(cacheSize) // 0.25 of memory
+                .setMemoryCacheSize(cacheSize)
                 .setCustomLoader(new CryptoBitmapSourceLoader())
                 .build();
     }

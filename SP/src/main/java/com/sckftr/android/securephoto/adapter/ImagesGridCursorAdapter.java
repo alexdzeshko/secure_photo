@@ -34,8 +34,6 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
         params.putString(AppConst.EXTRA.IMAGE, CursorUtils.getString(Contracts.ImageContract.KEY, cursor));
         params.putInt(AppConst.EXTRA.ORIENTATION, CursorUtils.getInteger(Contracts.ImageContract.ORIENTATION, cursor));
 
-        AppConst.Log.d("TAG", CursorUtils.getInteger(Contracts.ImageContract.ORIENTATION, cursor) + "");
-
         UI.displayImage(imageView, CursorUtils.getString(Contracts.ImageContract.URI, cursor), imageSize, imageSize, params, null);
     }
 

@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,13 @@ import android.view.WindowManager;
 import com.sckftr.android.app.BroadcastHandler;
 import com.sckftr.android.app.activity.BaseActivity;
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.securephoto.R;
 import com.sckftr.android.utils.AQuery;
 import com.sckftr.android.utils.Function;
 import com.sckftr.android.utils.Platform;
 import com.sckftr.android.utils.UI;
 
-public abstract class BaseFragment extends InsetAwareFragment implements AppConst {
+public abstract class BaseFragment extends InsetAwareFragment implements AppConst, SwipeRefreshLayout.OnRefreshListener {
 
     protected final Handler mHandler = new Handler();
 
@@ -63,6 +65,8 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
         broadcastHandler = new BroadcastHandler(getContext());
 
         aq = new AQuery(view);
+
+        initRefreshContainer();
     }
 
     protected <T extends Parcelable> void registerReceiver(String action, final Function<T, Boolean> function) {
@@ -191,6 +195,61 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
 
         UI.getInputManager(getContext()).hideSoftInputFromWindow(view.getWindowToken(), 0);
 
+    }
+
+    /**
+     * ******************************************************
+     * /** Refresh Container
+     * /********************************************************
+     */
+
+    protected void initRefreshContainer() {
+
+        if (getView() == null) return;
+
+        SwipeRefreshLayout refreshContainer = (SwipeRefreshLayout) getView().findViewById(R.id.refreshContainer);
+
+        if (refreshContainer != null) {
+
+            refreshContainer.setOnRefreshListener(this);
+
+            refreshContainer.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        }
+    }
+
+    public void setRefreshing(boolean b) {
+
+        View view = getView();
+
+        if (view == null) {
+            return;
+        }
+
+        SwipeRefreshLayout refreshContainer = (SwipeRefreshLayout) view.findViewById(R.id.refreshContainer);
+
+        if (refreshContainer != null) {
+
+            refreshContainer.setRefreshing(b);
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+
+        setRefreshing(false);
+    }
+
+    public void setSwipeRefreshEnabled(boolean b) {
+        if (getView() == null) return;
+
+//        SwipeRefreshLayout refreshContainer = (SwipeRefreshLayout) getView().findViewById(R.id.refreshContainer);
+
+        aq.id(R.id.refreshContainer).enabled(b);
+
+//        if (refreshContainer != null) {
+//
+//            refreshContainer.setEnabled(b);
+//        }
     }
 
 }

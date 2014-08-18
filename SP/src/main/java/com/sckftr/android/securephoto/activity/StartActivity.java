@@ -1,5 +1,7 @@
 package com.sckftr.android.securephoto.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -84,6 +86,10 @@ public class StartActivity extends BaseSPActivity implements TextWatcher {
         UserHelper.setFirstLogin(false);
         MainActivity.start(this);
         finish();
+    }
+
+    public static void start(Context context) {
+        StartActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
     }
 
 }
