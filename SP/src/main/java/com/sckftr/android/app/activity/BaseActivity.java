@@ -124,6 +124,23 @@ public class BaseActivity extends Activity implements AppConst {
 
     }
 
+    public void detatchFragment(String tag) {
+
+        Fragment preInitializedFragment = findFragmentByTag(tag);
+
+        if (preInitializedFragment != null) {
+
+            getFragmentManager().beginTransaction().detach(preInitializedFragment).commit();
+
+        }
+    }
+
+    public void attachFragment(Fragment fragment) {
+
+        getFragmentManager().beginTransaction().attach(fragment).commit();
+
+    }
+
     public Fragment findFragmentByTag(String tag) {
 
         return getFragmentManager().findFragmentByTag(tag);

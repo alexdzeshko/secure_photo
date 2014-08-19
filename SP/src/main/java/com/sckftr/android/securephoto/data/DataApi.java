@@ -123,9 +123,7 @@ public class DataApi implements AppConst {
 
                 } catch (IOException e) {
 
-                    UI.showHint(context, e.getMessage());
-
-                    e.printStackTrace();
+                    Log.e(TAG, "lockFiles: ", e);
 
                 }
 

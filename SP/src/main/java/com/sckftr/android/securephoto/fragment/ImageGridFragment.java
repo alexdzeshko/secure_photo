@@ -59,6 +59,8 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         super.onCreate(savedInstanceState);
 
         mPauseScrollListener = new PauseScrollListener(API.images());
+
+        getLoaderManager().initLoader(1, null, this);
     }
 
     @AfterViews
@@ -67,15 +69,11 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
 
-        getLoaderManager().initLoader(123, null, this);
-
         setHidingView(camera);
 
         setSwipeRefreshEnabled(false);
 
         setTitle(R.string.secured);
-
-        setRefreshing(true);
     }
 
     @Override
@@ -96,12 +94,16 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         setRefreshing(true);
 
+        Log.d("Loader", "onCreateLoader");
+
         return API.data().getEncryptedImagesCursorLoader(getContext());
 
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d("Loader", "onLoadFinished");
+
         setRefreshing(false);
 
         getAdapter().swapCursor(data);

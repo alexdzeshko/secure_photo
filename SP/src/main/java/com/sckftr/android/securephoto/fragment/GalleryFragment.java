@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,7 +71,7 @@ public class GalleryFragment extends SickAdapterViewFragment<GridView, GalleryAd
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
 
-        getLoaderManager().initLoader(123, null, this);
+        getLoaderManager().initLoader(1, null, this);
 
         API.images().setBitmapSourceLoader(new FileBitmapSourceLoader());
 

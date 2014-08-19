@@ -1,6 +1,8 @@
 package com.sckftr.android.securephoto.activity;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +12,7 @@ import android.provider.MediaStore;
 import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
+import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
@@ -81,7 +84,7 @@ public class MainActivity extends BaseSPActivity {
         switch (item.getItemId()) {
             case android.R.id.home: {
 
-                loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+                back();
 
                 return true;
             }
@@ -98,15 +101,18 @@ public class MainActivity extends BaseSPActivity {
     @OptionsItem
     void add() {
 
-        if (!hasFragment(SYSTEM_GALLERY_FRAGMENT_TAG)) {
+        Fragment fragment = findFragmentByTag(SYSTEM_GALLERY_FRAGMENT_TAG);
 
-            loadFragment(GalleryFragment.build(), true, SYSTEM_GALLERY_FRAGMENT_TAG);
+        loadFragment(fragment != null ? fragment : GalleryFragment.build(), true, SYSTEM_GALLERY_FRAGMENT_TAG);
 
-        } else {
+    }
 
-            loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+    private void back() {
 
-        }
+        Fragment fragment = findFragmentByTag(IMAGES_FRAGMENT_TAG);
+
+        loadFragment(fragment != null ? fragment : ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+
     }
 
     public void toggleSourceLoader(boolean secured) {
@@ -155,7 +161,7 @@ public class MainActivity extends BaseSPActivity {
 
         CursorUtils.close(cursor);
 
-        loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+        back();
 
         encrypt(images, new Procedure<String>() {
             @Override
