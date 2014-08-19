@@ -2,29 +2,23 @@ package com.sckftr.android.securephoto.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
-import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.GalleryFragment;
-import com.sckftr.android.securephoto.fragment.ImageGridFragment;
-import com.sckftr.android.securephoto.helper.TakePhotoHelper;
+import com.sckftr.android.securephoto.fragment.SecuredFragment;
+import com.sckftr.android.securephoto.helper.PhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
 import com.sckftr.android.securephoto.image.FileBitmapSourceLoader;
-import com.sckftr.android.utils.CursorUtils;
-import com.sckftr.android.utils.Procedure;
-import com.sckftr.android.utils.UI;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -48,7 +42,7 @@ public class MainActivity extends BaseSPActivity {
     private CryptoBitmapSourceLoader mCryptoLoader;
 
     @Bean
-    TakePhotoHelper photoHelper;
+    PhotoHelper photoHelper;
 
     @OptionsMenuItem
     MenuItem add;
@@ -59,7 +53,7 @@ public class MainActivity extends BaseSPActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loadFragment(ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+        loadFragment(SecuredFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
         getActionBar().setBackgroundDrawable(null);
     }
@@ -111,7 +105,7 @@ public class MainActivity extends BaseSPActivity {
 
         Fragment fragment = findFragmentByTag(IMAGES_FRAGMENT_TAG);
 
-        loadFragment(fragment != null ? fragment : ImageGridFragment.build(), false, IMAGES_FRAGMENT_TAG);
+        loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
     }
 
@@ -131,47 +125,18 @@ public class MainActivity extends BaseSPActivity {
         }
     }
 
-    public void secureNewPhotos(ArrayList<Integer> positions, final Cursor cursor) {
-
-        if (cursor == null || positions == null) {
-
-            UI.showHint(this, R.string.ERR_secure_photos);
-
-            return;
-        }
-
-        int size = positions.size(), index = 0;
-
-        final ArrayList<Image> images = new ArrayList<Image>(size);
-
-        final String[] originalContentIds = new String[size];
-
-        for (int position : positions) {
-
-            if (!cursor.moveToPosition(position)) continue;
-
-            String path = "file://" + CursorUtils.getString(MediaStore.Images.Media.DATA, cursor);
-
-            Image image = new Image(String.valueOf(System.currentTimeMillis()), path);
-
-            images.add(image);
-
-            originalContentIds[index++] = CursorUtils.getString(MediaStore.Images.Media._ID, cursor);
-        }
-
-        CursorUtils.close(cursor);
+    public void secureNewPhotos(ArrayList<Integer> positions, Cursor cursor) {
+        photoHelper.secureNewPhotos(positions, cursor);
 
         back();
+    }
 
-        encrypt(images, new Procedure<String>() {
-            @Override
-            public void apply(String dialog) {
+    public void unSecurePhotos(ArrayList<Integer> positions, final Cursor cursor) {
+        photoHelper.unSecurePhotos(positions, cursor);
+    }
 
-                for (String id : originalContentIds)
-                    API.db().delete(Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + id), null, null);
-
-            }
-        });
+    public void deletePhotos(ArrayList<Integer> positions, final Cursor cursor) {
+        photoHelper.deletePhotos(positions, cursor);
     }
 
     public void showAddMenuItem(boolean show) {
@@ -202,13 +167,9 @@ public class MainActivity extends BaseSPActivity {
 
                 images.add(image);
 
-                encrypt(images, null);
+                API.data().cryptonize(images, null);
             }
         }
-    }
-
-    private void encrypt(ArrayList<Image> images, Procedure<String> p) {
-        API.data().cryptonize(images, p);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.sckftr.android.securephoto.fragment;
 
-import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
@@ -9,49 +8,31 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 
+import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
-import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
-import com.sckftr.android.securephoto.db.Image;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
 import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
 
-@EFragment
-public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesGridCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
+public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView, BaseCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
 
-    private ArrayList<Image> actionList;
+    ArrayList<Integer> actionList;
 
     private PauseScrollListener mPauseScrollListener;
-
-    @ViewById
-    Button camera;
 
     @Override
     protected int layoutId() {
         return R.layout.images;
-    }
-
-    @Override
-    protected ImagesGridCursorAdapter createAdapter() {
-        return new ImagesGridCursorAdapter(getActivity());
     }
 
     @Override
@@ -63,18 +44,19 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         getLoaderManager().initLoader(1, null, this);
     }
 
-    @AfterViews
-    void init() {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         getAdapterView().setMultiChoiceModeListener(this);
-
-        setHidingView(camera);
 
         setSwipeRefreshEnabled(false);
 
         setTitle(R.string.secured);
     }
+
+    abstract Loader<Cursor> getCursorLoader();
 
     @Override
     public void onResume() {
@@ -96,8 +78,7 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
 
         Log.d("Loader", "onCreateLoader");
 
-        return API.data().getEncryptedImagesCursorLoader(getContext());
-
+        return getCursorLoader();
     }
 
     @Override
@@ -139,32 +120,31 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         mPauseScrollListener.onScrollStateChanged(view, scrollState);
     }
 
-    public static Fragment build() {
-        return ImageGridFragment_.builder().build();
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+        actionList = new ArrayList<Integer>();
+
+        mode.setTitle(API.string(R.string.cab_title_select_items));
+
+        return true;
     }
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 
         mode.setSubtitle(API.qstring(R.plurals.selected_items, getAdapterView().getCheckedItemCount()));
-        Cursor cursor = (Cursor) getAdapter().getItem(position);
-        actionList.add(new Image(cursor));
+
+        if (checked) {
+            actionList.add(position);
+        } else {
+            actionList.remove(new Integer(position));
+        }
     }
 
     @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-
-        mode.setTitle(API.string(R.string.cab_title_select_items));
-
-        actionList = new ArrayList<Image>();
-
-        MenuInflater inflater = mode.getMenuInflater();
-
-        if (inflater == null) return false;
-
-        inflater.inflate(R.menu.cab_image_list, menu);
-
-        return true;
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
     }
 
     @Override
@@ -173,41 +153,8 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_delete:
-
-                setRefreshing(true);
-
-                API.data().deleteFiles(actionList);
-
-                mode.finish();
-
-                return true;
-
-            case R.id.menu_unlock:
-
-                setRefreshing(true);
-
-                API.data().uncryptonize(actionList, null);
-
-                mode.finish();
-
-                return true;
-
-            default:
-                return false;
-        }
-    }
-
-    @Override
     public void onDestroyActionMode(ActionMode mode) {
         actionList = null;
-    }
-
-    @Click
-    void camera() {
-        ((MainActivity) getActivity()).startCamera();
     }
 
     @Override
@@ -215,20 +162,11 @@ public class ImageGridFragment extends SickAdapterViewFragment<GridView, ImagesG
         super.populateInsets(insets);
 
         final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
-        final int margin = getResources().getDimensionPixelSize(R.dimen.unit3);
 
         getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
 
-        final Button button = aq.id(R.id.camera).getButton();
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
-
-        layoutParams.bottomMargin = insets.bottom + margin;
-        layoutParams.rightMargin = insets.right + margin;
-
-        button.setLayoutParams(layoutParams);
-
         final SwipeRefreshLayout layout = (SwipeRefreshLayout) aq.id(R.id.refreshContainer).getView();
-        layoutParams = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layout.getLayoutParams();
 
         layoutParams.topMargin = insets.top;
 

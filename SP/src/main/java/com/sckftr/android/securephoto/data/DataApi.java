@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import com.sckftr.android.app.ServiceConst;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.Application;
-import com.sckftr.android.securephoto.Application_;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
@@ -23,7 +22,6 @@ import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.ContractUtils;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
-import com.sckftr.android.utils.UI;
 
 import java.io.File;
 import java.io.FileInputStream;
