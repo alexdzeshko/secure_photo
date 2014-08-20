@@ -1,5 +1,6 @@
 package com.sckftr.android.securephoto.image;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapSourceLoader;
+import by.grsu.mcreader.mcrimageloader.imageloader.utils.BitmapReformer;
 import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
 
 /**
@@ -22,15 +24,13 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream
     private static final String TAG = CryptoBitmapSourceLoader.class.getSimpleName();
 
     @Override
-    protected InputStream getSource(String url, BitmapFactory.Options options) {
-
-        Bundle params = getParams();
+    protected InputStream getSource(String url, BitmapFactory.Options options, Bundle extra) {
 
         String key = null;
 
-        if (params != null) {
+        if (extra != null) {
 
-            key = params.getString(AppConst.EXTRA.IMAGE);
+            key = extra.getString(AppConst.EXTRA.IMAGE);
 
         }
 
@@ -60,9 +60,12 @@ public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream
     }
 
     @Override
-    protected int getRotationDegree(String url) {
-        Bundle params = getParams();
+    protected Bitmap onBitmapReady(String url, Bitmap result, Bundle extra) {
 
-        return params == null ? -1 : params.getInt(AppConst.EXTRA.ORIENTATION);
+        if (extra == null) return result;
+
+        int degree = extra.getInt(AppConst.EXTRA.ORIENTATION, 0);
+
+        return BitmapReformer.rotate(result, degree);
     }
 }
