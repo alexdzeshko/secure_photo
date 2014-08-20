@@ -28,8 +28,9 @@
 
         <activity
             android:name=".activity.MainActivity_"
-            android:launchMode="singleTask"
             android:label="@string/app_name" />
+
+        <activity android:name=".activity.DetailActivity_" />
 
         <service android:name=".data.DataApi$DataAsyncEnforcerService" />
 

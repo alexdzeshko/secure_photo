@@ -68,6 +68,11 @@ public class GalleryFragment extends ImageGridFragment {
     }
 
     @Override
+    boolean isPhotosSecured() {
+        return false;
+    }
+
+    @Override
     public void onDestroyActionMode(ActionMode mode) {
 
         if (actionList != null) {

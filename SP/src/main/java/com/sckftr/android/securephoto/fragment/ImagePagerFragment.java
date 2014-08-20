@@ -3,6 +3,7 @@ package com.sckftr.android.securephoto.fragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -39,7 +40,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
 
             viewPager = (ViewPager) view.findViewById(R.id.pager);
 
-            pagerAdapter = new ViewPagerFragmentAdapter(getContext(), getFragmentManager(), null, systemGallery);
+            pagerAdapter = new ViewPagerFragmentAdapter(getContext(), getFragmentManager(), null);
 
             viewPager.setAdapter(pagerAdapter);
 
@@ -85,6 +86,13 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         pagerAdapter.swapCursor(null);
+    }
+
+    @Override
+    protected void populateInsets(Rect insets) {
+        super.populateInsets(insets);
+
+
     }
 
     public static ImagePagerFragment build(int position, boolean systemGallery) {

@@ -69,6 +69,11 @@ public class SecuredFragment extends ImageGridFragment {
         return API.data().getEncryptedImagesCursorLoader(getActivity());
     }
 
+    @Override
+    boolean isPhotosSecured() {
+        return true;
+    }
+
     @Click
     void camera() {
         ((MainActivity) getActivity()).startCamera();

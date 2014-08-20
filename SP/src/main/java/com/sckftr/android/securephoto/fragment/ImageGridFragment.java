@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.activity.MainActivity;
 
 import java.util.ArrayList;
@@ -57,6 +58,8 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
     }
 
     abstract Loader<Cursor> getCursorLoader();
+
+    abstract boolean isPhotosSecured();
 
     @Override
     public void onResume() {
@@ -101,9 +104,11 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (isPhotosSecured()) {
+            ((MainActivity) getBaseActivity()).setSaveLivingHint(true);
 
-        getBaseActivity().loadFragment(ImagePagerFragment.build(position, false), true, MainActivity.DETAIL_IMAGE_FRAGMENT_TAG);
-
+            DetailActivity.start(this, position);
+        }
     }
 
     @Override

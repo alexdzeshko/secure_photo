@@ -172,6 +172,10 @@ public class MainActivity extends BaseSPActivity {
         }
     }
 
+    public void setSaveLivingHint(boolean saveLivingHint) {
+        this.saveLivingHint = saveLivingHint;
+    }
+
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();

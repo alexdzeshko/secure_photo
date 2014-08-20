@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.utils.UI;
 
 import org.androidannotations.annotations.AfterViews;
@@ -18,7 +19,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class ViewPagerItemFragment extends BaseFragment {
 
     @FragmentArg
-    String url, key;
+    Image image;
 
     @AfterViews
     void onAfterViews() {
@@ -29,23 +30,19 @@ public class ViewPagerItemFragment extends BaseFragment {
 
             ImageView mImageView = (ImageView) view.findViewById(R.id.imageView);
 
-            Bundle params = null;
-            if (key != null) {
+            Bundle params = new Bundle(getBaseActivity().getClassLoader());
+            params.putString(EXTRA.IMAGE, image.getKey());
+            params.putInt(EXTRA.ORIENTATION, image.getOrientation());
 
-                params = new Bundle(getBaseActivity().getClassLoader());
-                params.putString(EXTRA.IMAGE, key);
-
-            }
-
-            UI.displayImage(mImageView, url, mImageView.getWidth(), mImageView.getHeight(), params, null);
+            UI.displayImage(mImageView, image.getFileUri().toString(), mImageView.getWidth(), mImageView.getHeight(), params, null);
 
             new PhotoViewAttacher(mImageView).update();
         }
     }
 
-    public static ViewPagerItemFragment build(String url, String key) {
+    public static ViewPagerItemFragment build(Image image) {
 
-        return ViewPagerItemFragment_.builder().url(url).key(key).build();
+        return ViewPagerItemFragment_.builder().image(image).build();
 
     }
 
