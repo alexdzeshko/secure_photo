@@ -9,16 +9,16 @@ import com.sckftr.android.securephoto.AppConst;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapSourceLoader;
+import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapLoader;
 import by.grsu.mcreader.mcrimageloader.imageloader.utils.BitmapAnalizer;
 import by.grsu.mcreader.mcrimageloader.imageloader.utils.BitmapReformer;
 
 /**
  * Created by dzianis_roi on 23.07.2014.
  */
-public class FileBitmapSourceLoader extends BaseBitmapSourceLoader<FileInputStream> {
+public class FileBitmapLoader extends BaseBitmapLoader<FileInputStream> {
 
-    private static final String TAG = FileBitmapSourceLoader.class.getSimpleName();
+    private static final String TAG = FileBitmapLoader.class.getSimpleName();
 
     @Override
     protected FileInputStream getSource(String url, BitmapFactory.Options options, Bundle extra) {

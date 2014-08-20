@@ -17,8 +17,8 @@ import com.sckftr.android.securephoto.fragment.GalleryFragment;
 import com.sckftr.android.securephoto.fragment.SecuredFragment;
 import com.sckftr.android.securephoto.helper.PhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
-import com.sckftr.android.securephoto.image.FileBitmapSourceLoader;
+import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
+import com.sckftr.android.securephoto.image.FileBitmapLoader;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -38,8 +38,8 @@ public class MainActivity extends BaseSPActivity {
     public static final String SYSTEM_GALLERY_FRAGMENT_TAG = "SYSTEM_GALLERY";
     public static final String DETAIL_IMAGE_FRAGMENT_TAG = "DETAIL_IMAGE";
 
-    private FileBitmapSourceLoader mFileLoader;
-    private CryptoBitmapSourceLoader mCryptoLoader;
+    private FileBitmapLoader mFileLoader;
+    private CryptoBitmapLoader mCryptoLoader;
 
     @Bean
     PhotoHelper photoHelper;
@@ -112,13 +112,13 @@ public class MainActivity extends BaseSPActivity {
     public void toggleSourceLoader(boolean secured) {
         if (secured) {
 
-            mCryptoLoader = mCryptoLoader == null ? new CryptoBitmapSourceLoader() : mCryptoLoader;
+            mCryptoLoader = mCryptoLoader == null ? new CryptoBitmapLoader() : mCryptoLoader;
 
             API.images().setBitmapSourceLoader(mCryptoLoader);
 
         } else {
 
-            mFileLoader = mFileLoader == null ? new FileBitmapSourceLoader() : mFileLoader;
+            mFileLoader = mFileLoader == null ? new FileBitmapLoader() : mFileLoader;
 
             API.images().setBitmapSourceLoader(mFileLoader);
 

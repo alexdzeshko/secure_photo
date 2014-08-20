@@ -12,16 +12,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapSourceLoader;
+import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapLoader;
 import by.grsu.mcreader.mcrimageloader.imageloader.utils.BitmapReformer;
 import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
 
 /**
  * Created by dzianis_roi on 21.07.2014.
  */
-public class CryptoBitmapSourceLoader extends BaseBitmapSourceLoader<InputStream> {
+public class CryptoBitmapLoader extends BaseBitmapLoader<InputStream> {
 
-    private static final String TAG = CryptoBitmapSourceLoader.class.getSimpleName();
+    private static final String TAG = CryptoBitmapLoader.class.getSimpleName();
 
     @Override
     protected InputStream getSource(String url, BitmapFactory.Options options, Bundle extra) {

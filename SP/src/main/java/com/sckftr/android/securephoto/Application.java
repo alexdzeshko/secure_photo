@@ -1,6 +1,6 @@
 package com.sckftr.android.securephoto;
 
-import com.sckftr.android.securephoto.image.CryptoBitmapSourceLoader;
+import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
 
 import org.androidannotations.annotations.EApplication;
 
@@ -27,7 +27,7 @@ public class Application extends android.app.Application {
                 .setDiscCacheEnabled(false)
                 .setMemoryCacheEnabled(true)
                 .setMemoryCacheSize(cacheSize)
-                .setCustomLoader(new CryptoBitmapSourceLoader())
+                .setCustomLoader(new CryptoBitmapLoader())
                 .build();
     }
 
