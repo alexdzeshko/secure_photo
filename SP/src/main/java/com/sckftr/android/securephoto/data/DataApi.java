@@ -34,7 +34,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
+import by.mcreader.imageloader.utils.IOUtils;
 
 public class DataApi implements AppConst {
 

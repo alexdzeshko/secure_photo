@@ -12,9 +12,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapLoader;
-import by.grsu.mcreader.mcrimageloader.imageloader.utils.BitmapReformer;
-import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
+import by.mcreader.imageloader.BaseBitmapLoader;
+import by.mcreader.imageloader.utils.BitmapReformer;
+import by.mcreader.imageloader.utils.IOUtils;
 
 /**
  * Created by dzianis_roi on 21.07.2014.
@@ -33,6 +33,8 @@ public class CryptoBitmapLoader extends BaseBitmapLoader<InputStream> {
             key = extra.getString(AppConst.EXTRA.IMAGE);
 
         }
+
+        AppConst.Log.d("ADAPTER SOURCE", "uri = " + url + ", key = " + key);
 
         FileInputStream fis = null;
 

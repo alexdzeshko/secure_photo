@@ -9,9 +9,9 @@ import com.sckftr.android.securephoto.AppConst;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.BaseBitmapLoader;
-import by.grsu.mcreader.mcrimageloader.imageloader.utils.BitmapAnalizer;
-import by.grsu.mcreader.mcrimageloader.imageloader.utils.BitmapReformer;
+import by.mcreader.imageloader.BaseBitmapLoader;
+import by.mcreader.imageloader.utils.BitmapAnalizer;
+import by.mcreader.imageloader.utils.BitmapReformer;
 
 /**
  * Created by dzianis_roi on 23.07.2014.

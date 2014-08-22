@@ -31,7 +31,8 @@ import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.utils.net.Network;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.callback.ImageLoaderCallback;
+import by.mcreader.imageloader.BaseBitmapLoader;
+import by.mcreader.imageloader.callback.ImageLoaderCallback;
 
 /**
  * Bundle of UI-related helper methods.
@@ -266,30 +267,28 @@ public class UI implements AppConst {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-    public static void displayImage(ImageView imageView, String url, int widthInPx, int heightInPx, Bundle params, ImageLoaderCallback callback) {
-
-        AppConst.API.images().loadBitmap(imageView, url, widthInPx, heightInPx, params, callback);
-
-    }
-
-    public static void displayImage(ImageView imageView, String url, int widthInPx, int heightInPx, ImageLoaderCallback callback) {
-
-        AppConst.API.images().loadBitmap(imageView, url, widthInPx, heightInPx, callback);
-
-    }
-
-
     public static void sendBroadcast(Context context, String action, Parcelable result) {
         final Intent intent = new Intent(action);
         intent.putExtra(EXTRA.RESULT, result);
         sendBroadcast(context, intent);
-
     }
 
     public static void sendSimpleStringBroadcast(Context context, String action, String value) {
         Bundle params = new Bundle();
         params.putString(EXTRA.VALUES, value);
         sendBroadcast(context, action, params);
+    }
+
+    public static void displayImage(ImageView imageView, String url, int widthInPx, int heightInPx, Bundle params, ImageLoaderCallback callback, BaseBitmapLoader loader) {
+
+        API.images().loadImage(imageView, url, widthInPx, heightInPx, params, callback, loader);
+
+    }
+
+    public static void displayImage(ImageView imageView, String url, int widthInPx, int heightInPx, ImageLoaderCallback callback, BaseBitmapLoader loader) {
+
+        API.images().loadImage(imageView, url, widthInPx, heightInPx, callback);
+
     }
 
     /**

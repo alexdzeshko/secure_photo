@@ -16,8 +16,6 @@ import android.view.WindowManager;
 
 import java.util.regex.Pattern;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.utils.AndroidVersions;
-
 
 /**
  * Class for converting px to the dp values, ellipsize text and else.

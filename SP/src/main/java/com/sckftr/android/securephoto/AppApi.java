@@ -17,7 +17,7 @@ import com.sckftr.android.utils.net.Network;
 
 import java.util.Locale;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
+import by.mcreader.imageloader.SuperImageLoader;
 
 
 /**

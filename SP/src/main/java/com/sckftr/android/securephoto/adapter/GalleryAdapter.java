@@ -9,12 +9,15 @@ import android.widget.ImageView;
 
 import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.image.FileBitmapLoader;
 import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.UI;
 
 public class GalleryAdapter extends BaseCursorAdapter {
 
     private final int imageSize;
+
+    private FileBitmapLoader mFileLoader = new FileBitmapLoader();
 
     public GalleryAdapter(Context ctx) {
         super(ctx, null, false);
@@ -27,7 +30,7 @@ public class GalleryAdapter extends BaseCursorAdapter {
 
         ImageView imageView = (ImageView) view.findViewById(R.id.image_view_grid);
 
-        UI.displayImage(imageView, CursorUtils.getString(MediaStore.Images.Media.DATA, cursor), imageSize, imageSize, null);
+        UI.displayImage(imageView, CursorUtils.getString(MediaStore.Images.Media.DATA, cursor), imageSize, imageSize, null, null, mFileLoader);
     }
 
     @Override

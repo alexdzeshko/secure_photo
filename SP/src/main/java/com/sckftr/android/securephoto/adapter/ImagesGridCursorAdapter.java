@@ -11,12 +11,15 @@ import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
+import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
 import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.UI;
 
 public class ImagesGridCursorAdapter extends BaseCursorAdapter {
 
     private final int imageSize;
+
+    private final CryptoBitmapLoader mCryptoLoader = new CryptoBitmapLoader();
 
     public ImagesGridCursorAdapter(Context context) {
         super(context, null, false);
@@ -34,7 +37,7 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter {
         params.putString(AppConst.EXTRA.IMAGE, CursorUtils.getString(Contracts.ImageContract.KEY, cursor));
         params.putInt(AppConst.EXTRA.ORIENTATION, CursorUtils.getInteger(Contracts.ImageContract.ORIENTATION, cursor));
 
-        UI.displayImage(imageView, CursorUtils.getString(Contracts.ImageContract.URI, cursor), imageSize, imageSize, params, null);
+        UI.displayImage(imageView, CursorUtils.getString(Contracts.ImageContract.URI, cursor), imageSize, imageSize, params, null, mCryptoLoader);
     }
 
     @Override

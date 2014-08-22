@@ -33,8 +33,6 @@ public class GalleryFragment extends ImageGridFragment {
 
             MainActivity mainActivity = (MainActivity) getBaseActivity();
 
-            mainActivity.toggleSourceLoader(false);
-
             mainActivity.showAddMenuItem(false);
 
             getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -45,15 +43,15 @@ public class GalleryFragment extends ImageGridFragment {
     public void onPause() {
         super.onPause();
 
+        API.images().setPauseWork(false);
+
         if (!isDetached()) {
 
             MainActivity mainActivity = (MainActivity) getBaseActivity();
 
             mainActivity.showAddMenuItem(true);
 
-            API.images().setPauseWork(false);
-
-            getActionBar().setDisplayHomeAsUpEnabled(false);
+            mainActivity.getActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
 

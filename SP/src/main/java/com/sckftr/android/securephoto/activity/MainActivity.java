@@ -36,10 +36,6 @@ public class MainActivity extends BaseSPActivity {
 
     public static final String IMAGES_FRAGMENT_TAG = "IMAGES";
     public static final String SYSTEM_GALLERY_FRAGMENT_TAG = "SYSTEM_GALLERY";
-    public static final String DETAIL_IMAGE_FRAGMENT_TAG = "DETAIL_IMAGE";
-
-    private FileBitmapLoader mFileLoader;
-    private CryptoBitmapLoader mCryptoLoader;
 
     @Bean
     PhotoHelper photoHelper;
@@ -107,22 +103,6 @@ public class MainActivity extends BaseSPActivity {
 
         loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, IMAGES_FRAGMENT_TAG);
 
-    }
-
-    public void toggleSourceLoader(boolean secured) {
-        if (secured) {
-
-            mCryptoLoader = mCryptoLoader == null ? new CryptoBitmapLoader() : mCryptoLoader;
-
-            API.images().setBitmapSourceLoader(mCryptoLoader);
-
-        } else {
-
-            mFileLoader = mFileLoader == null ? new FileBitmapLoader() : mFileLoader;
-
-            API.images().setBitmapSourceLoader(mFileLoader);
-
-        }
     }
 
     public void secureNewPhotos(ArrayList<Integer> positions, Cursor cursor) {

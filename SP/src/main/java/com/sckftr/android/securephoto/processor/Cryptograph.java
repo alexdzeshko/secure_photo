@@ -1,14 +1,10 @@
 package com.sckftr.android.securephoto.processor;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
 
 import com.sckftr.android.securephoto.AppConst;
-import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.utils.ExifUtil;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
@@ -18,31 +14,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import androidkeystore.Crypto;
 import androidkeystore.android.security.KeyStoreManager;
-import by.grsu.mcreader.mcrimageloader.imageloader.utils.IOUtils;
 
 public class Cryptograph {
 
@@ -112,8 +98,11 @@ public class Cryptograph {
     // TODO add user hash
     public static byte[] decrypt(byte[] encodedBytes, String key) {
 
-        if (encodedBytes == null || encodedBytes.length <= 0 || Strings.isEmpty(key))
-            throw new IllegalArgumentException("Decryption is impossible!!");
+        if (encodedBytes == null || encodedBytes.length <= 0)
+            throw new IllegalArgumentException("Decryption is impossible: Illegal source");
+
+        if (Strings.isEmpty(key))
+            throw new IllegalArgumentException("Decryption is impossible: Illegal key");
 
         try {
 

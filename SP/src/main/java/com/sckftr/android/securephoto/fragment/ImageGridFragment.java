@@ -23,7 +23,7 @@ import com.sckftr.android.securephoto.activity.MainActivity;
 
 import java.util.ArrayList;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.listener.PauseScrollListener;
+import by.mcreader.imageloader.listener.PauseScrollListener;
 
 public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView, BaseCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
 
@@ -60,13 +60,6 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
     abstract Loader<Cursor> getCursorLoader();
 
     abstract boolean isPhotosSecured();
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (!isDetached()) ((MainActivity) getBaseActivity()).toggleSourceLoader(true);
-    }
 
     @Override
     public void onPause() {

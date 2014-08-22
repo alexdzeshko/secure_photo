@@ -8,7 +8,7 @@ import com.sckftr.android.securephoto.data.DataApi;
 import com.sckftr.android.securephoto.db.DbService;
 import com.sckftr.android.utils.Strings;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
+import by.mcreader.imageloader.SuperImageLoader;
 
 public interface AppConst {
 
@@ -67,7 +67,6 @@ public interface AppConst {
         }
 
         public static SuperImageLoader images() {
-
             return get().images();
         }
 

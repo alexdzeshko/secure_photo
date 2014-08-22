@@ -1,10 +1,9 @@
 package com.sckftr.android.securephoto;
 
-import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
-
 import org.androidannotations.annotations.EApplication;
 
-import by.grsu.mcreader.mcrimageloader.imageloader.SuperImageLoader;
+import by.mcreader.imageloader.SuperImageLoader;
+import by.mcreader.imageloader.SuperImageLoaderCore;
 
 @EApplication
 public class Application extends android.app.Application {
@@ -22,12 +21,11 @@ public class Application extends android.app.Application {
         final int cacheSize = maxMemory / 4;
 
         mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
-                .setLoadingImage(R.drawable.ic_blue_lock)
+                .setPlaceholder(R.drawable.ic_blue_lock)
                 .enableFadeIn(true)
                 .setDiscCacheEnabled(false)
                 .setMemoryCacheEnabled(true)
                 .setMemoryCacheSize(cacheSize)
-                .setCustomLoader(new CryptoBitmapLoader())
                 .build();
     }
 

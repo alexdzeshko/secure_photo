@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.db.Image;
+import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
 import com.sckftr.android.utils.UI;
 
 import org.androidannotations.annotations.AfterViews;
@@ -21,6 +22,8 @@ public class ViewPagerItemFragment extends BaseFragment {
     @FragmentArg
     Image image;
 
+    private final CryptoBitmapLoader mCryptoLoader = new CryptoBitmapLoader();
+
     @AfterViews
     void onAfterViews() {
 
@@ -31,10 +34,11 @@ public class ViewPagerItemFragment extends BaseFragment {
             ImageView mImageView = (ImageView) view.findViewById(R.id.imageView);
 
             Bundle params = new Bundle(getBaseActivity().getClassLoader());
+
             params.putString(EXTRA.IMAGE, image.getKey());
             params.putInt(EXTRA.ORIENTATION, image.getOrientation());
 
-            UI.displayImage(mImageView, image.getFileUri().toString(), mImageView.getWidth(), mImageView.getHeight(), params, null);
+            UI.displayImage(mImageView, image.getFileUri().toString(), mImageView.getWidth(), mImageView.getHeight(), params, null, mCryptoLoader);
 
             new PhotoViewAttacher(mImageView).update();
         }

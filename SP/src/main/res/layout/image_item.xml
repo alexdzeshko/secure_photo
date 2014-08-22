@@ -4,7 +4,7 @@
     android:layout_height="@dimen/column_width"
     android:padding="@dimen/unit.5">
 
-    <by.grsu.mcreader.mcrimageloader.imageloader.view.RecyclingImageView
+    <by.mcreader.imageloader.view.RecyclingImageView
         android:id="@+id/image_view_grid"
         android:layout_width="@dimen/column_width"
         android:layout_height="@dimen/column_width"
