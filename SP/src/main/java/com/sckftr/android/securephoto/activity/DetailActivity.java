@@ -25,6 +25,8 @@ public class DetailActivity extends BaseSPActivity {
 
         getActionBar().hide();
 
+        getWindow().setBackgroundDrawable(null);
+
         loadFragment(ImagePagerFragment.build(position, false), false, "detail");
     }
 

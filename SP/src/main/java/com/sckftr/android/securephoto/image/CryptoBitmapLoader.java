@@ -19,22 +19,16 @@ import by.mcreader.imageloader.utils.IOUtils;
 /**
  * Created by dzianis_roi on 21.07.2014.
  */
-public class CryptoBitmapLoader extends BaseBitmapLoader<InputStream> {
+public class CryptoBitmapLoader extends BaseBitmapLoader {
 
     private static final String TAG = CryptoBitmapLoader.class.getSimpleName();
 
     @Override
-    protected InputStream getSource(String url, BitmapFactory.Options options, Bundle extra) {
+    protected byte[] getSource(String url, BitmapFactory.Options options, Bundle extra) {
 
         String key = null;
 
-        if (extra != null) {
-
-            key = extra.getString(AppConst.EXTRA.IMAGE);
-
-        }
-
-        AppConst.Log.d("ADAPTER SOURCE", "uri = " + url + ", key = " + key);
+        if (extra != null) key = extra.getString(AppConst.EXTRA.IMAGE);
 
         FileInputStream fis = null;
 
@@ -46,7 +40,7 @@ public class CryptoBitmapLoader extends BaseBitmapLoader<InputStream> {
 
             fis.read(buffer);
 
-            return new ByteArrayInputStream(Cryptograph.decrypt(buffer, key));
+            return Cryptograph.decrypt(buffer, key);
 
         } catch (IOException e) {
 
