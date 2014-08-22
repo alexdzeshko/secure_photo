@@ -15,7 +15,11 @@
     </style>
 
     <style name="Theme.SP.NoActionBar" parent="Theme.SP">
-
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="Theme.SP.Start" parent="Theme.SP.NoActionBar">
+        <item name="android:windowBackground">@color/primary_light</item>
+    </style>
 </resources>

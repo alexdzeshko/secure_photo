@@ -43,7 +43,7 @@ public class StartActivity extends BaseSPActivity implements TextWatcher {
 
             commitButton.setVisibility(View.GONE);
 
-            passwordCaption.setText(R.string.input_password);
+//            passwordCaption.setVisibility(View.INVISIBLE);
 
             passwordInput.addTextChangedListener(this);
 

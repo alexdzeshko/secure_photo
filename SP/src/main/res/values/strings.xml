@@ -21,5 +21,6 @@
     <!--========= TITLES ==========-->
     <string name="secured">Secured</string>
     <string name="gallery">Gallery</string>
+    <string name="btn_done">Done</string>
 
 </resources>

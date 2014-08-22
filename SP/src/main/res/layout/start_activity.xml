@@ -5,12 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Safe Place"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:textColor="@color/primary_sibling"
+        android:textSize="34sp"/>
+
     <EditText
         android:id="@+id/passwordInput"
+        android:background="@drawable/edit_text"
         android:layout_width="240dp"
         android:layout_height="@dimen/tap_item_dimen"
         android:layout_centerInParent="true"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:hint="@string/input_password"
+        android:textColorHint="@color/text_hint"/>
 
     <TextView
         android:id="@+id/passwordCaption"
@@ -19,16 +31,20 @@
         android:layout_above="@id/passwordInput"
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
-        android:text="@string/input_password"
+        android:text=""
+        android:textColor="@color/primary_sibling"
         android:textSize="20sp" />
 
     <Button
         android:id="@+id/commitButton"
+        android:background="@drawable/btn_basic"
         android:layout_width="240dp"
         android:layout_height="@dimen/tap_item_dimen"
         android:layout_below="@id/passwordInput"
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
-        android:text="@string/commit_new_password" />
+        android:text="@string/btn_done"
+        android:textColor="@color/text_white"
+        android:textAllCaps="true"/>
 
 </RelativeLayout>

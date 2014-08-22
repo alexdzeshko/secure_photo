@@ -9,6 +9,10 @@
     <color name="primary_dark_60">#990a7e07</color>
     <color name="primary_light">#a3e9a4</color>
 
+    <color name="primary_sibling">#1B7474</color>
+    <color name="primary_oppozit">#C22D2D</color>
+    <color name="primary_oppozit_sibling">#C2712D</color>
+
     <color name="accent1">#cddc39</color>
     <color name="accent1_dark">#afb42b</color>
     <color name="accent1_light">#f0f4c3</color>
