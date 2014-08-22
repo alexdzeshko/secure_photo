@@ -2,6 +2,7 @@ package com.sckftr.android.securephoto.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.sckftr.android.app.fragment.BaseFragment;
@@ -9,45 +10,47 @@ import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
 import com.sckftr.android.utils.UI;
+import com.sckftr.android.utils.UiUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.ViewById;
 
+import by.mcreader.imageloader.view.RecyclingImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 @EFragment(R.layout.view_pager_item)
-public class ViewPagerItemFragment extends BaseFragment {
+public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObserver.OnGlobalLayoutListener {
 
     @FragmentArg
     Image image;
+
+    @ViewById
+    RecyclingImageView imageView;
 
     private final CryptoBitmapLoader mCryptoLoader = new CryptoBitmapLoader();
 
     @AfterViews
     void onAfterViews() {
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+    }
 
-        View view = getView();
+    @Override
+    public void onGlobalLayout() {
+        Bundle params = new Bundle();
 
-        if (view != null) {
+        params.putString(EXTRA.IMAGE, image.getKey());
+        params.putInt(EXTRA.ORIENTATION, image.getOrientation());
 
-            ImageView mImageView = (ImageView) view.findViewById(R.id.imageView);
+        UI.displayImage(imageView, image.getFileUri().toString(), imageView.getWidth(), imageView.getHeight(), params, null, mCryptoLoader);
 
-            Bundle params = new Bundle(getBaseActivity().getClassLoader());
+//        new PhotoViewAttacher(imageView).update();
 
-            params.putString(EXTRA.IMAGE, image.getKey());
-            params.putInt(EXTRA.ORIENTATION, image.getOrientation());
-
-            UI.displayImage(mImageView, image.getFileUri().toString(), mImageView.getWidth(), mImageView.getHeight(), params, null, mCryptoLoader);
-
-            new PhotoViewAttacher(mImageView).update();
-        }
+        UiUtil.removeOnGlobalLayoutListener(imageView, this);
     }
 
     public static ViewPagerItemFragment build(Image image) {
-
         return ViewPagerItemFragment_.builder().image(image).build();
-
     }
-
 }
