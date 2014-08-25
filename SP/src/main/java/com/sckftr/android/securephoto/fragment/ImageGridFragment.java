@@ -39,7 +39,7 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPauseScrollListener = new PauseScrollListener(API.images());
+        mPauseScrollListener = new PauseScrollListener(API.images(), false, true);
 
         getLoaderManager().initLoader(1, null, this);
     }
@@ -53,10 +53,6 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
         setSwipeRefreshEnabled(false);
     }
-
-    abstract Loader<Cursor> getCursorLoader();
-
-    abstract boolean isPhotosSecured();
 
     @Override
     public void onPause() {
@@ -171,4 +167,8 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
         button.setLayoutParams(layoutParams);
     }
+
+    abstract Loader<Cursor> getCursorLoader();
+
+    abstract boolean isPhotosSecured();
 }

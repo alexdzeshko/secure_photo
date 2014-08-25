@@ -58,6 +58,26 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
      */
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        broadcastHandler = new BroadcastHandler(getContext());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        int resId = Platform.getResourceIdFor(this, Platform.RESOURCE_TYPE_LAYOUT);
+
+        return resId == 0 ? super.onCreateView(inflater, container, savedInstanceState) : inflater.inflate(resId, container, false);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
@@ -69,12 +89,6 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
         initRefreshContainer();
     }
 
-    protected <T extends Parcelable> void registerReceiver(String action, final Function<T, Boolean> function) {
-
-        broadcastHandler.registerReceiver(action, function);
-
-    }
-
     @Override
     public void onDestroyView() {
         broadcastHandler.unregisterAll();
@@ -83,53 +97,34 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        broadcastHandler = new BroadcastHandler(getContext());
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+
+            Bundle params = data.getExtras();
+
+            if (params != null) onActivityResultParams(requestCode, params);
+
+        }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        int resId = Platform.getResourceIdFor(this, Platform.RESOURCE_TYPE_LAYOUT);
-        return resId == 0 ? super.onCreateView(inflater, container, savedInstanceState) : inflater.inflate(resId, container, false);
+    protected void onActivityResultParams(int requestCode, Bundle params) {
+        // NOOP
     }
 
     /**
-     * {@inheritDoc}
-     * <p/>
-     * Tries to resolve menu layout resource by key {@code #getNameKey()} <br/>
-     * and then applies it if exists
+     * ******************************************************
+     * /** Activity
+     * /********************************************************
      */
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//
-//        MenuUtils.apply(this, menu);
-//
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
+
     public BaseActivity getBaseActivity() {
         return (BaseActivity) getActivity();
     }
 
     public Context getContext() {
         return getActivity();
-    }
-
-    public void setTitle(int res) {
-        getActionBar().setDisplayShowTitleEnabled(true);
-        getActionBar().setTitle(res);
-
-    }
-
-    public void setTitle(String title) {
-
-        getActionBar().setTitle(title);
-
     }
 
     protected Bundle getActivityParams() {
@@ -144,20 +139,51 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
         return getBaseActivity().putParamObject(obj);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /**
+     * ******************************************************
+     * /** Receiver
+     * /********************************************************
+     */
 
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            Bundle params = data.getExtras();
-            if (params != null) {
-                onActivityResultParams(requestCode, params);
-            }
-        }
+    protected <T extends Parcelable> void registerReceiver(String action, final Function<T, Boolean> function) {
+        broadcastHandler.registerReceiver(action, function);
+    }
+
+    /**
+     * ******************************************************
+     * /** ActionBar
+     * /********************************************************
+     */
+
+    protected ActionBar getActionBar() {
+        return getActivity().getActionBar();
+    }
+
+    public void setCustomActionBarView(View view) {
+
+        getActionBar().setDisplayShowCustomEnabled(view != null);
+
+        getActionBar().setCustomView(view);
 
     }
 
-    protected void onActivityResultParams(int requestCode, Bundle params) {
+    public void setHomeAsUp(boolean enabled) {
+
+        getActionBar().setDisplayHomeAsUpEnabled(enabled);
+
+        getActionBar().setDisplayShowHomeEnabled(enabled);
+
+    }
+
+    public void setTitle(String title) {
+        getActionBar().setTitle(title);
+    }
+
+    public void setTitle(int res) {
+
+        getActionBar().setDisplayShowTitleEnabled(true);
+
+        getActionBar().setTitle(res);
 
     }
 
@@ -167,24 +193,15 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
      * /********************************************************
      */
 
-    public void setHomeAsUp(boolean enabled) {
-        getActionBar().setDisplayHomeAsUpEnabled(enabled);
-        getActionBar().setDisplayShowHomeEnabled(enabled);
-    }
-
-    protected ActionBar getActionBar() {
-        return getActivity().getActionBar();
-    }
-
-    public void setCustomActionBarView(View view) {
-
-        getActionBar().setDisplayShowCustomEnabled(view != null);
-        getActionBar().setCustomView(view);
-    }
-
     protected void d(String msg) {
         Log.d("fragment", msg);
     }
+
+    /**
+     * ******************************************************
+     * /** Keyboard
+     * /********************************************************
+     */
 
     public void showSoftKeyboard(View view) {
 
@@ -192,9 +209,7 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
     }
 
     public void hideSoftKeyboard(View view) {
-
         UI.getInputManager(getContext()).hideSoftInputFromWindow(view.getWindowToken(), 0);
-
     }
 
     /**
@@ -221,35 +236,19 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
 
         View view = getView();
 
-        if (view == null) {
-            return;
-        }
+        if (view == null) return;
 
         SwipeRefreshLayout refreshContainer = (SwipeRefreshLayout) view.findViewById(R.id.refreshContainer);
 
-        if (refreshContainer != null) {
-
-            refreshContainer.setRefreshing(b);
-        }
+        if (refreshContainer != null) refreshContainer.setRefreshing(b);
     }
 
     @Override
     public void onRefresh() {
-
         setRefreshing(false);
     }
 
     public void setSwipeRefreshEnabled(boolean b) {
-        if (getView() == null) return;
-
-//        SwipeRefreshLayout refreshContainer = (SwipeRefreshLayout) getView().findViewById(R.id.refreshContainer);
-
         aq.id(R.id.refreshContainer).enabled(b);
-
-//        if (refreshContainer != null) {
-//
-//            refreshContainer.setEnabled(b);
-//        }
     }
-
 }

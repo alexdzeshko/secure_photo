@@ -18,6 +18,7 @@ import com.sckftr.android.securephoto.fragment.GalleryFragment;
 import com.sckftr.android.securephoto.fragment.SecuredFragment;
 import com.sckftr.android.securephoto.helper.PhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
+import com.sckftr.android.utils.Procedure;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -33,8 +34,8 @@ public class MainActivity extends BaseSPActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    public static final String IMAGES_FRAGMENT_TAG = "IMAGES";
-    public static final String SYSTEM_GALLERY_FRAGMENT_TAG = "SYSTEM_GALLERY";
+    public static final String SECURED_FRAGMENT_TAG = "SECURED";
+    public static final String GALLERY_FRAGMENT_TAG = "GALLERY";
 
     @Bean
     PhotoHelper photoHelper;
@@ -48,9 +49,7 @@ public class MainActivity extends BaseSPActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loadFragment(SecuredFragment.build(), false, IMAGES_FRAGMENT_TAG);
-
-        getActionBar().setBackgroundDrawable(null);
+        loadFragment(SecuredFragment.build(), false, SECURED_FRAGMENT_TAG);
     }
 
     @Override
@@ -90,26 +89,39 @@ public class MainActivity extends BaseSPActivity {
     @OptionsItem
     void add() {
 
-        Fragment fragment = findFragmentByTag(SYSTEM_GALLERY_FRAGMENT_TAG);
+        Fragment fragment = findFragmentByTag(GALLERY_FRAGMENT_TAG);
 
-        loadFragment(fragment != null ? fragment : GalleryFragment.build(), true, SYSTEM_GALLERY_FRAGMENT_TAG);
+        loadFragment(fragment != null ? fragment : GalleryFragment.build(), true, GALLERY_FRAGMENT_TAG);
 
     }
 
-    @OptionsItem void settings(){
+    @OptionsItem
+    void settings() {
         startActivity(new Intent(this, SettingsActivity.class));
     }
 
     private void back() {
 
-        Fragment fragment = findFragmentByTag(IMAGES_FRAGMENT_TAG);
+        Fragment fragment = findFragmentByTag(SECURED_FRAGMENT_TAG);
 
-        loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, IMAGES_FRAGMENT_TAG);
+        loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SECURED_FRAGMENT_TAG);
 
     }
 
     public void secureNewPhotos(SparseBooleanArray items, Cursor cursor) {
-        photoHelper.secureNewPhotos(items, cursor);
+        getSecuredFragment().setRefreshing(true);
+
+        photoHelper.secureNewPhotos(items, cursor, new Procedure<String>() {
+            @Override
+            public void apply(String dialog) {
+
+                SecuredFragment securedFragment = getSecuredFragment();
+
+                if (securedFragment != null && !securedFragment.isDetached())
+                    getSecuredFragment().setRefreshing(false);
+
+            }
+        });
 
         back();
     }
@@ -138,6 +150,8 @@ public class MainActivity extends BaseSPActivity {
             if (uri != null) {
 
                 if (resultCode != Activity.RESULT_OK) {
+
+                    getSecuredFragment().setRefreshing(false);
 
                     new FileAsyncTask().deleteFile(uri);
 
@@ -171,6 +185,10 @@ public class MainActivity extends BaseSPActivity {
         super.onBackPressed();
 
         if (isFinishing()) UserHelper.setIsLogged(false);
+    }
+
+    SecuredFragment getSecuredFragment() {
+        return (SecuredFragment) findFragmentByTag(SECURED_FRAGMENT_TAG);
     }
 
     public static void start(Context context) {

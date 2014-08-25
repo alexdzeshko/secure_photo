@@ -87,6 +87,8 @@ public class SecuredFragment extends ImageGridFragment {
 
     @Click
     void camera() {
+        setRefreshing(true);
+
         ((MainActivity) getActivity()).startCamera();
     }
 

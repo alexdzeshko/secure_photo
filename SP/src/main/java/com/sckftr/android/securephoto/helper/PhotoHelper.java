@@ -71,7 +71,7 @@ public class PhotoHelper {
         return mCapturedPhotoUri;
     }
 
-    public void secureNewPhotos(SparseBooleanArray items, final Cursor cursor) {
+    public void secureNewPhotos(SparseBooleanArray items, final Cursor cursor, final Procedure<String> onFinished) {
 
         if (cursor == null || items == null) {
 
@@ -112,6 +112,8 @@ public class PhotoHelper {
 
                 for (String id : originalContentIds)
                     AppConst.API.db().delete(Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + id), null, null);
+
+                onFinished.apply(dialog);
 
             }
         });

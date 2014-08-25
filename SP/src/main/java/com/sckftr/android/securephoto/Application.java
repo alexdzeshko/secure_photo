@@ -16,13 +16,12 @@ public class Application extends android.app.Application {
 
         AppConst.API.init(this);
 
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        // Use 1/4th of the available memory for this memory cache.
-        final int cacheSize = maxMemory / 4;
+        // Use 1/3th of the available memory for this memory cache.
+        final int cacheSize = (int) (Runtime.getRuntime().maxMemory() / 3);
 
         mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
                 .setPlaceholder(R.drawable.ic_blue_lock)
-                .enableFadeIn(true)
+                .enableFadeIn(false)
                 .setDiscCacheEnabled(false)
                 .setMemoryCacheEnabled(true)
                 .setMemoryCacheSize(cacheSize)
