@@ -89,7 +89,7 @@ public class StartActivity extends BaseSPActivity implements TextWatcher {
     }
 
     public static void start(Context context) {
-        StartActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+        StartActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).start();
     }
 
 }

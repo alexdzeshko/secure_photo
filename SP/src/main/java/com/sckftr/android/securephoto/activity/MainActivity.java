@@ -172,6 +172,6 @@ public class MainActivity extends BaseSPActivity {
     }
 
     public static void start(Context context) {
-        MainActivity_.intent(context).start();
+        MainActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).start();
     }
 }

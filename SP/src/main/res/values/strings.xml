@@ -19,8 +19,10 @@
     </plurals>
 
     <!--========= TITLES ==========-->
-    <string name="secured">Secured</string>
+    <string name="secured">Safe Place</string>
     <string name="gallery">Gallery</string>
+
+    <!--========= BUTTONS ==========-->
     <string name="btn_done">Done</string>
 
 </resources>
