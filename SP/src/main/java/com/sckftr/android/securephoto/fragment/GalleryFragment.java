@@ -45,8 +45,6 @@ public class GalleryFragment extends ImageGridFragment {
     public void onPause() {
         super.onPause();
 
-        API.images().setPauseWork(false);
-
         if (!isDetached()) {
 
             MainActivity mainActivity = (MainActivity) getBaseActivity();

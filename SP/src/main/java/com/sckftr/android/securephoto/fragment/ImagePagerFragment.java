@@ -16,14 +16,15 @@ import com.sckftr.android.securephoto.adapter.ViewPagerFragmentAdapter;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.ViewById;
 
 @EFragment
-public class ImagePagerFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ImagePagerFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>, ViewPager.OnPageChangeListener {
 
-    private ViewPagerFragmentAdapter pagerAdapter;
-    private ViewPager viewPager;
+    private static final String EXTRA_POSITION = "com.sckftr.android.securephoto.fragment.EXTRA_POSITION";
 
-    private Drawable mWindowDrawable;
+    @ViewById
+    ViewPager pager;
 
     @FragmentArg
     int position;
@@ -31,21 +32,20 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
     @FragmentArg
     boolean systemGallery;
 
+    private ViewPagerFragmentAdapter pagerAdapter;
+
+    private int mCurrentPosition;
+
     @AfterViews
     void onAfterViews() {
 
-        View view = getView();
+        pagerAdapter = new ViewPagerFragmentAdapter(getContext(), getFragmentManager(), null);
 
-        if (view != null) {
+        pager.setAdapter(pagerAdapter);
 
-            viewPager = (ViewPager) view.findViewById(R.id.pager);
+        pager.setOnPageChangeListener(this);
 
-            pagerAdapter = new ViewPagerFragmentAdapter(getContext(), getFragmentManager(), null);
-
-            viewPager.setAdapter(pagerAdapter);
-
-            getLoaderManager().initLoader(0, null, this);
-        }
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -53,18 +53,14 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
 
         super.onResume();
 
-        mWindowDrawable = mWindowDrawable == null ? getActivity().getWindow().getDecorView().getBackground() : mWindowDrawable;
-
         getActivity().getWindow().setBackgroundDrawable(null);
-
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        getActivity().getWindow().setBackgroundDrawable(mWindowDrawable);
-
+        getActivityParams().putInt(EXTRA_POSITION, mCurrentPosition);
     }
 
     @Override
@@ -76,23 +72,33 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
         pagerAdapter.swapCursor(data);
 
-        viewPager.setCurrentItem(position, false);
-
+        pager.setCurrentItem(getActivityParams().getInt(EXTRA_POSITION, position), false);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        pagerAdapter.swapCursor(null);
     }
 
     @Override
     protected void populateInsets(Rect insets) {
         super.populateInsets(insets);
 
+        // TODO
+    }
 
+    @Override
+    public void onPageScrolled(int i, float v, int i2) {
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+        mCurrentPosition = i;
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
     }
 
     public static ImagePagerFragment build(int position, boolean systemGallery) {

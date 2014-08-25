@@ -43,6 +43,12 @@ public class MainActivity extends BaseSPActivity {
 
     private boolean saveLivingHint;
 
+    /**
+     * ******************************************************
+     * /** Lifetime
+     * /********************************************************
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,66 +97,6 @@ public class MainActivity extends BaseSPActivity {
         }
     }
 
-    public void startCamera() {
-        saveLivingHint = photoHelper.takePhotoFromCamera(this);
-    }
-
-    @OptionsItem
-    void add() {
-
-        Fragment fragment = findFragmentByTag(GalleryFragment.TAG);
-
-        loadFragment(fragment != null ? fragment : GalleryFragment.build(), true, GalleryFragment.TAG);
-
-    }
-
-    @OptionsItem
-    void settings() {
-        startActivity(new Intent(this, SettingsActivity.class));
-    }
-
-    private void back() {
-
-        Fragment fragment = getSecuredFragment();
-
-        loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SecuredFragment.TAG);
-
-    }
-
-    SecuredFragment getSecuredFragment() {
-        return (SecuredFragment) findFragmentByTag(SecuredFragment.TAG);
-    }
-
-    public void secureNewPhotos(SparseBooleanArray items, Cursor cursor) {
-        photoHelper.secureNewPhotos(items, cursor, new Procedure<String>() {
-            @Override
-            public void apply(String dialog) {
-
-                SecuredFragment securedFragment = getSecuredFragment();
-
-                if (securedFragment != null && !securedFragment.isDetached())
-                    getSecuredFragment().setRefreshing(false);
-
-            }
-        });
-
-        back();
-
-        getSecuredFragment().setRefreshing(true);
-    }
-
-    public void unSecurePhotos(SparseBooleanArray items, Cursor cursor) {
-        photoHelper.unSecurePhotos(items, cursor);
-    }
-
-    public void deletePhotos(SparseBooleanArray items, Cursor cursor) {
-        photoHelper.deletePhotos(items, cursor);
-    }
-
-    public void showAddMenuItem(boolean show) {
-        add.setVisible(show);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -187,10 +133,6 @@ public class MainActivity extends BaseSPActivity {
         }
     }
 
-    public void setSaveLivingHint(boolean saveLivingHint) {
-        this.saveLivingHint = saveLivingHint;
-    }
-
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
@@ -204,6 +146,100 @@ public class MainActivity extends BaseSPActivity {
 
         if (isFinishing()) UserHelper.setIsLogged(false);
     }
+
+    /**
+     * ******************************************************
+     * /** Click listeners
+     * /********************************************************
+     */
+
+    public void startCamera() {
+        saveLivingHint = photoHelper.takePhotoFromCamera(this);
+    }
+
+    /**
+     * ******************************************************
+     * /** Options
+     * /********************************************************
+     */
+
+    @OptionsItem
+    void add() {
+
+        Fragment fragment = findFragmentByTag(GalleryFragment.TAG);
+
+        loadFragment(fragment != null ? fragment : GalleryFragment.build(), true, GalleryFragment.TAG);
+
+    }
+
+    @OptionsItem
+    void settings() {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
+    void back() {
+
+        Fragment fragment = getSecuredFragment();
+
+        loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SecuredFragment.TAG);
+
+    }
+
+    public void showAddMenuItem(boolean show) {
+        add.setVisible(show);
+    }
+
+    /**
+     * ******************************************************
+     * /** Fragment
+     * /********************************************************
+     */
+
+    SecuredFragment getSecuredFragment() {
+        return (SecuredFragment) findFragmentByTag(SecuredFragment.TAG);
+    }
+
+    /**
+     * ******************************************************
+     * /** Actions
+     * /********************************************************
+     */
+
+    public void secureNewPhotos(SparseBooleanArray items, Cursor cursor) {
+        photoHelper.secureNewPhotos(items, cursor, new Procedure<String>() {
+            @Override
+            public void apply(String dialog) {
+
+                SecuredFragment securedFragment = getSecuredFragment();
+
+                if (securedFragment != null && !securedFragment.isDetached())
+                    getSecuredFragment().setRefreshing(false);
+
+            }
+        });
+
+        back();
+
+        getSecuredFragment().setRefreshing(true);
+    }
+
+    public void unSecurePhotos(SparseBooleanArray items, Cursor cursor) {
+        photoHelper.unSecurePhotos(items, cursor);
+    }
+
+    public void deletePhotos(SparseBooleanArray items, Cursor cursor) {
+        photoHelper.deletePhotos(items, cursor);
+    }
+
+    public void setSaveLivingHint(boolean saveLivingHint) {
+        this.saveLivingHint = saveLivingHint;
+    }
+
+    /**
+     * ******************************************************
+     * /** Activity start
+     * /********************************************************
+     */
 
     public static void start(Context context) {
         MainActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).start();
