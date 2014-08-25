@@ -108,6 +108,10 @@ public class MainActivity extends BaseSPActivity {
 
     }
 
+    SecuredFragment getSecuredFragment() {
+        return (SecuredFragment) findFragmentByTag(SECURED_FRAGMENT_TAG);
+    }
+
     public void secureNewPhotos(SparseBooleanArray items, Cursor cursor) {
         photoHelper.secureNewPhotos(items, cursor, new Procedure<String>() {
             @Override
@@ -145,7 +149,7 @@ public class MainActivity extends BaseSPActivity {
 
         if (requestCode == REQUESTS.IMAGE_CAPTURE) {
 
-            final Uri uri = photoHelper.getCapturedPhotoUri();
+            final Uri uri = getParams().getParcelable(PhotoHelper.EXTRA_NEW_PHOTO);
 
             if (uri != null) {
 
@@ -169,6 +173,8 @@ public class MainActivity extends BaseSPActivity {
 
                 API.data().cryptonize(images, null);
             }
+
+            getParams().remove(PhotoHelper.EXTRA_NEW_PHOTO);
         }
     }
 
@@ -188,10 +194,6 @@ public class MainActivity extends BaseSPActivity {
         super.onBackPressed();
 
         if (isFinishing()) UserHelper.setIsLogged(false);
-    }
-
-    SecuredFragment getSecuredFragment() {
-        return (SecuredFragment) findFragmentByTag(SECURED_FRAGMENT_TAG);
     }
 
     public static void start(Context context) {

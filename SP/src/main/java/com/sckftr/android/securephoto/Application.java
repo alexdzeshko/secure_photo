@@ -16,8 +16,8 @@ public class Application extends android.app.Application {
 
         AppConst.API.init(this);
 
-        // Use 1/3th of the available memory for this memory cache.
-        final int cacheSize = (int) (Runtime.getRuntime().maxMemory() / 3);
+        // Use 1/4th of the available memory for this memory cache.
+        final int cacheSize = (int) (Runtime.getRuntime().maxMemory() / 4);
 
         mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
                 .setPlaceholder(R.drawable.ic_blue_lock)

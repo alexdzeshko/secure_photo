@@ -27,9 +27,11 @@ public class BaseActivity extends Activity implements AppConst {
     private ArrayList<PopupWindow> popups;
     private Bundle mParams;
 
-    // ----------------------
-    // Life-time
-    // ----------------------
+    /**
+     * ******************************************************
+     * /** Lifetime
+     * /********************************************************
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +39,10 @@ public class BaseActivity extends Activity implements AppConst {
         super.onCreate(savedInstanceState);
 
         int resId = Platform.getResourceIdFor(this, Platform.RESOURCE_TYPE_LAYOUT);
-        if (resId != 0) {
-            setContentView(resId);
-        }
 
-        if (savedInstanceState != null) {
-            mParams = savedInstanceState.getBundle(KEY_PARAMS);
-        }
+        if (resId != 0) setContentView(resId);
+
+        if (savedInstanceState != null) mParams = savedInstanceState.getBundle(KEY_PARAMS);
 
         aq = new AQuery(this);
     }
@@ -58,7 +57,6 @@ public class BaseActivity extends Activity implements AppConst {
 
     @Override
     protected void onDestroy() {
-
         aq = null;
 
         // dismiss all active popups
@@ -73,7 +71,9 @@ public class BaseActivity extends Activity implements AppConst {
         Intent intent = new Intent();
 
         if (mParams != null) {
+
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
             intent.putExtras(mParams);
 
             setResult(RESULT_OK, intent);
@@ -88,19 +88,23 @@ public class BaseActivity extends Activity implements AppConst {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
+
             Bundle params = data.getExtras();
-            if (params != null) {
-                onActivityResultParams(requestCode, params);
-            }
+
+            if (params != null) onActivityResultParams(requestCode, params);
+
         }
     }
 
     protected void onActivityResultParams(int requestCode, Bundle params) {
         // NOOP
     }
-    // ----------------------
-    // Fragments
-    // ----------------------
+
+    /**
+     * ******************************************************
+     * /** Fragments
+     * /********************************************************
+     */
 
     public int loadFragment(int id, Fragment fragment, boolean addToBackStack, String name) {
 
@@ -128,11 +132,9 @@ public class BaseActivity extends Activity implements AppConst {
 
         Fragment preInitializedFragment = findFragmentByTag(tag);
 
-        if (preInitializedFragment != null) {
-
+        if (preInitializedFragment != null)
             getFragmentManager().beginTransaction().detach(preInitializedFragment).commit();
 
-        }
     }
 
     public void attachFragment(Fragment fragment) {
@@ -151,9 +153,11 @@ public class BaseActivity extends Activity implements AppConst {
         return findFragmentByTag(tag) != null;
     }
 
-    // ----------------------
-    // Params
-    // ----------------------
+    /**
+     * ******************************************************
+     * /** Params
+     * /********************************************************
+     */
 
     public Bundle getParams() {
         if (mParams == null) {
@@ -163,43 +167,40 @@ public class BaseActivity extends Activity implements AppConst {
     }
 
     public Object getParamObject(Class<?> clazz, boolean removeImmediately) {
+
         Bundle activityParams = getParams();
+
         String s = activityParams.getString(clazz.getName());
 
-        if (s == null) {
+        if (s == null) return null;
 
-            return null;
-        }
-
-        if (removeImmediately) {
-
-            activityParams.remove(clazz.getName());
-        }
+        if (removeImmediately) activityParams.remove(clazz.getName());
 
         return API.gson().fromJson(s, clazz);
     }
 
     public Object putParamObject(Object obj) {
+
         getParams().putString(obj.getClass().getName(), API.gson().toJson(obj));
+
         return obj;
     }
 
-    // ----------------------
-    // Pop-ups
-    // ----------------------
+    /**
+     * ******************************************************
+     * /** Pop-ups
+     * /********************************************************
+     */
 
     private void unregisterPopupWindow(PopupWindow popUp) {
 
-        if (popups != null) {
-            popups.remove(popUp);
-        }
+        if (popups != null) popups.remove(popUp);
+
     }
 
     private void registerPopupWindow(PopupWindow popUp) {
 
-        if (popups == null) {
-            popups = new ArrayList<PopupWindow>();
-        }
+        if (popups == null) popups = new ArrayList<PopupWindow>();
 
         popups.add(popUp);
     }
@@ -207,9 +208,9 @@ public class BaseActivity extends Activity implements AppConst {
     public void dismissAllPopups() {
 
         if (popups != null) {
-            for (PopupWindow p : popups) {
-                p.dismiss();
-            }
+
+            for (PopupWindow p : popups) p.dismiss();
+
         }
 
         popups = null;
@@ -225,6 +226,7 @@ public class BaseActivity extends Activity implements AppConst {
             public void onClick(View v) {
 
                 if (popUp == null) {
+
                     popUp = UI.showPopupText(v, s);
 
                     registerPopupWindow(popUp);
@@ -232,7 +234,9 @@ public class BaseActivity extends Activity implements AppConst {
                 } else {
 
                     popUp.dismiss();
+
                     unregisterPopupWindow(popUp);
+
                     popUp = null;
                 }
             }

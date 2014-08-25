@@ -1,6 +1,5 @@
 package com.sckftr.android.securephoto.helper;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,6 +8,7 @@ import android.provider.MediaStore;
 import android.util.SparseBooleanArray;
 import android.widget.Toast;
 
+import com.sckftr.android.app.activity.BaseActivity;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
@@ -29,7 +29,7 @@ import java.util.Date;
 @EBean
 public class PhotoHelper {
 
-    private Uri mCapturedPhotoUri;
+    public static final String EXTRA_NEW_PHOTO = "com.sckftr.android.securephoto.helper.EXTRA_NEW_PHOTO";
 
     private Context mContext;
 
@@ -37,7 +37,7 @@ public class PhotoHelper {
         mContext = context;
     }
 
-    public boolean takePhotoFromCamera(final Activity activity) {
+    public boolean takePhotoFromCamera(final BaseActivity activity) {
 
         if (!Platform.hasCamera(activity)) return false;
 
@@ -51,7 +51,7 @@ public class PhotoHelper {
 
                     Uri uri = params.getParcelable(FileAsyncTask.FILE_URI);
 
-                    mCapturedPhotoUri = uri;
+                    activity.getParams().putParcelable(EXTRA_NEW_PHOTO, uri);
 
                     AppConst.API.get().camera(activity, AppConst.REQUESTS.IMAGE_CAPTURE, uri);
 
@@ -64,11 +64,6 @@ public class PhotoHelper {
         }).createTempFile("JPEG_" + new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()) + "_", ".jpg", Storage.Images.getPrivateFolder());
 
         return true;
-    }
-
-    // TODO: store on orientation changed
-    public Uri getCapturedPhotoUri() {
-        return mCapturedPhotoUri;
     }
 
     public void secureNewPhotos(SparseBooleanArray items, final Cursor cursor, final Procedure<String> onFinished) {

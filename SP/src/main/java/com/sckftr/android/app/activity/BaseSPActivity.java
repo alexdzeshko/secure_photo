@@ -21,44 +21,42 @@ public abstract class BaseSPActivity extends BaseActivity implements InsetFrameL
         super.onCreate(savedInstanceState);
 
         mInsetFrameLayout = (InsetFrameLayout) findViewById(R.id.frame_inset);
-        if (mInsetFrameLayout != null) {
-            mInsetFrameLayout.setOnInsetsCallback(this);
-        }
+
+        if (mInsetFrameLayout != null) mInsetFrameLayout.setOnInsetsCallback(this);
     }
 
     public void addInsetChangedCallback(OnActivityInsetsCallback callback) {
-        if (mInsetCallbacks == null) {
-            mInsetCallbacks = new HashSet();
-        }
+        if (mInsetCallbacks == null) mInsetCallbacks = new HashSet<OnActivityInsetsCallback>();
+
         mInsetCallbacks.add(callback);
 
-        if (mInsets != null) {
-            callback.onInsetsChanged(mInsets);
-        }
+        if (mInsets != null) callback.onInsetsChanged(mInsets);
     }
 
     public void removeInsetChangedCallback(OnActivityInsetsCallback callback) {
-        if (mInsetCallbacks != null) {
-            mInsetCallbacks.remove(callback);
-        }
+
+        if (mInsetCallbacks != null) mInsetCallbacks.remove(callback);
+
     }
 
     @Override
     public void onInsetsChanged(Rect insets) {
+
         mInsets = insets;
 
         if (mInsetCallbacks != null && !mInsetCallbacks.isEmpty()) {
-            for (OnActivityInsetsCallback callback : mInsetCallbacks) {
+
+            for (OnActivityInsetsCallback callback : mInsetCallbacks)
                 callback.onInsetsChanged(insets);
-            }
+
         }
     }
 
     public void setInsetTopAlpha(float alpha) {
-        if (mInsetFrameLayout != null) {
-            final int round = Math.round(alpha * 255);
-            mInsetFrameLayout.setTopInsetAlpha(Math.max(Math.min(round, 0), 255));
-        }
+
+        if (mInsetFrameLayout != null)
+            mInsetFrameLayout.setTopInsetAlpha(Math.max(Math.min(Math.round(alpha * 255), 0), 255));
+
     }
 
     public void resetInsets() {
