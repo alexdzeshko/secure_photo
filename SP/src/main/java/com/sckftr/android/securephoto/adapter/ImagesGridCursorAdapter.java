@@ -19,13 +19,11 @@ import com.sckftr.android.utils.UI;
 
 import by.mcreader.imageloader.callback.ImageLoaderCallback;
 
-public class ImagesGridCursorAdapter extends BaseCursorAdapter implements ImageLoaderCallback {
+public class ImagesGridCursorAdapter extends BaseCursorAdapter {
 
     private final int imageSize;
 
     private final CryptoBitmapLoader mCryptoLoader = new CryptoBitmapLoader();
-
-    private ProgressBar mProgressBar;
 
     public ImagesGridCursorAdapter(Context context) {
         super(context, null, false);
@@ -36,33 +34,16 @@ public class ImagesGridCursorAdapter extends BaseCursorAdapter implements ImageL
     @Override
     protected void bindData(View view, Context context, Cursor cursor) {
 
-        mProgressBar = (ProgressBar) view.findViewById(android.R.id.progress);
-
         Bundle params = new Bundle(context.getClassLoader());
 
         params.putString(AppConst.EXTRA.IMAGE, CursorUtils.getString(Contracts.ImageContract.KEY, cursor));
         params.putInt(AppConst.EXTRA.ORIENTATION, CursorUtils.getInteger(Contracts.ImageContract.ORIENTATION, cursor));
 
-        UI.displayImage((ImageView) view.findViewById(R.id.image_view_grid), CursorUtils.getString(Contracts.ImageContract.URI, cursor), imageSize, imageSize, params, this, mCryptoLoader);
+        UI.displayImage((ImageView) view.findViewById(R.id.image_view_grid), CursorUtils.getString(Contracts.ImageContract.URI, cursor), imageSize, imageSize, params, null, mCryptoLoader);
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        return View.inflate(context, R.layout.image_item, null);
-    }
-
-    @Override
-    public void onLoadingStarted(String url) {
-        // no need to implement
-    }
-
-    @Override
-    public void onLoadingError(Exception e, String url) {
-        mProgressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onLoadingFinished(BitmapDrawable drawable) {
-        mProgressBar.setVisibility(View.GONE);
+        return View.inflate(context, R.layout.view_image_item, null);
     }
 }

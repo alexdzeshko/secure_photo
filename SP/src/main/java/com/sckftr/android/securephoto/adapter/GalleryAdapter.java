@@ -17,13 +17,12 @@ import com.sckftr.android.utils.UI;
 
 import by.mcreader.imageloader.callback.ImageLoaderCallback;
 
-public class GalleryAdapter extends BaseCursorAdapter implements ImageLoaderCallback {
+public class GalleryAdapter extends BaseCursorAdapter {
 
     private final int imageSize;
 
     private FileBitmapLoader mFileLoader = new FileBitmapLoader();
 
-    private ProgressBar mProgressBar;
 
     public GalleryAdapter(Context ctx) {
         super(ctx, null, false);
@@ -33,30 +32,13 @@ public class GalleryAdapter extends BaseCursorAdapter implements ImageLoaderCall
 
     @Override
     protected void bindData(View view, Context context, Cursor cursor) {
-
-        mProgressBar = (ProgressBar) view.findViewById(android.R.id.progress);
-
-        UI.displayImage((ImageView) view.findViewById(R.id.image_view_grid), CursorUtils.getString(MediaStore.Images.Media.DATA, cursor), imageSize, imageSize, null, this, mFileLoader);
+        UI.displayImage((ImageView) view.findViewById(R.id.image_view_grid), CursorUtils.getString(MediaStore.Images.Media.DATA, cursor), imageSize, imageSize, null, null, mFileLoader);
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
 
-        return View.inflate(context, R.layout.image_item, null);
+        return View.inflate(context, R.layout.view_image_item, null);
 
-    }
-
-    @Override
-    public void onLoadingStarted(String url) {
-    }
-
-    @Override
-    public void onLoadingError(Exception e, String url) {
-        mProgressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onLoadingFinished(BitmapDrawable drawable) {
-        mProgressBar.setVisibility(View.GONE);
     }
 }
