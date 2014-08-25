@@ -80,11 +80,10 @@ public class PhotoHelper {
             return;
         }
 
-        int size = items.size(), index = 0;
+        int size = items.size();
 
         final ArrayList<Image> images = new ArrayList<Image>(size);
-
-        final String[] originalContentIds = new String[size];
+        final ArrayList<String> contentIds = new ArrayList<String>(size);
 
         for (int i = 0; i < items.size(); i++) {
 
@@ -100,9 +99,11 @@ public class PhotoHelper {
 
                 images.add(image);
 
-                originalContentIds[index++] = CursorUtils.getString(MediaStore.Images.Media._ID, cursor);
+                contentIds.add(CursorUtils.getString(MediaStore.Images.Media._ID, cursor));
             }
         }
+
+        contentIds.trimToSize();
 
         CursorUtils.close(cursor);
 
@@ -110,7 +111,7 @@ public class PhotoHelper {
             @Override
             public void apply(String dialog) {
 
-                for (String id : originalContentIds)
+                for (String id : contentIds)
                     AppConst.API.db().delete(Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + id), null, null);
 
                 onFinished.apply(dialog);
