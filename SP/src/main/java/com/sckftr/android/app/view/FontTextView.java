@@ -23,6 +23,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.utils.TypefaceManager;
 
@@ -35,7 +36,7 @@ public class FontTextView extends TextView {
     public static final int FONT_ROBOTO_CONDENSED_BOLD = 4;
     public static final int FONT_ROBOTO_SLAB = 5;
 
-    TypefaceManager mTypefaceManager;
+    private TypefaceManager mTypefaceManager;
 
     public FontTextView(Context context) {
         this(context, null);
@@ -48,7 +49,7 @@ public class FontTextView extends TextView {
     public FontTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mTypefaceManager = new TypefaceManager(context.getAssets());
+        mTypefaceManager = AppConst.API.get().getTypefaceManager();
 
         if (!isInEditMode()) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FontTextView);

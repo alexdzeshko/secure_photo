@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sckftr.android.utils.TypefaceManager;
 import com.sckftr.android.utils.UI;
 import com.sckftr.android.utils.net.Network;
 
@@ -31,6 +32,7 @@ public class AppApi extends MutableContextWrapper implements AppConst {
     static final String ID_TYPE_STRING = "string";
 
     private Gson gson;
+    private TypefaceManager typefaceManager;
 
     public Gson gson() {
         if (gson == null) gson = new GsonBuilder().create();
@@ -44,6 +46,12 @@ public class AppApi extends MutableContextWrapper implements AppConst {
 
     public SuperImageLoader images() {
         return Application.getImageLoader();
+    }
+
+    public TypefaceManager getTypefaceManager() {
+        if(typefaceManager == null)
+            typefaceManager = new TypefaceManager(getAssets());
+        return typefaceManager;
     }
 
     public String string(int resId, Object... args) {
@@ -176,4 +184,5 @@ public class AppApi extends MutableContextWrapper implements AppConst {
             }
         }
     }
+
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/page_side_padding">
+
+    <com.sckftr.android.app.view.AutofitTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/settings_category_privacy"
+        android:textAllCaps="true"
+        android:textColor="@color/primary_inverse_dark"
+        android:textSize="@dimen/textMidi"
+        android:layout_marginBottom="@dimen/unit2"
+        android:paddingLeft="@dimen/unit"
+        android:paddingRight="@dimen/unit"
+        app:font="roboto_condensed_bold"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_grey_transparent"/>
+
+    <com.sckftr.android.app.view.FontTextView
+        android:id="@+id/changePassword"
+        android:background="@drawable/bg_on_press_highlight"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_item_change_password"
+        android:textSize="18sp"
+        android:paddingTop="@dimen/unit"
+        android:paddingBottom="@dimen/unit"
+        android:paddingLeft="@dimen/unit"
+        android:paddingRight="@dimen/unit"
+        app:font="roboto_light"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_grey_transparent"/>
+
+</LinearLayout>
