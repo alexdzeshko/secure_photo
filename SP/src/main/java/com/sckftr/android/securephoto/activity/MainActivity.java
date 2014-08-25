@@ -109,8 +109,6 @@ public class MainActivity extends BaseSPActivity {
     }
 
     public void secureNewPhotos(SparseBooleanArray items, Cursor cursor) {
-        getSecuredFragment().setRefreshing(true);
-
         photoHelper.secureNewPhotos(items, cursor, new Procedure<String>() {
             @Override
             public void apply(String dialog) {
@@ -124,6 +122,8 @@ public class MainActivity extends BaseSPActivity {
         });
 
         back();
+
+        getSecuredFragment().setRefreshing(true);
     }
 
     public void unSecurePhotos(SparseBooleanArray items, Cursor cursor) {
@@ -151,7 +151,10 @@ public class MainActivity extends BaseSPActivity {
 
                 if (resultCode != Activity.RESULT_OK) {
 
-                    getSecuredFragment().setRefreshing(false);
+                    SecuredFragment fragment = getSecuredFragment();
+
+                    if (fragment != null && !fragment.isDetached())
+                        fragment.setRefreshing(false);
 
                     new FileAsyncTask().deleteFile(uri);
 
