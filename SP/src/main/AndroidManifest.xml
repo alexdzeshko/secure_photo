@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/Theme.SP"
+        android:theme="@style/Theme.SP.Base"
         android:name=".Application_">
 
         <activity
@@ -29,9 +29,15 @@
 
         <activity
             android:name=".activity.MainActivity_"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:theme="@style/Theme.SP"/>
 
         <activity android:name=".activity.DetailActivity_" />
+
+        <activity android:name=".activity.SettingsActivity"
+            android:theme="@style/Theme.SP.Settings"
+            android:label="@string/label_settings"/>
+
 
         <service android:name=".data.DataApi$DataAsyncEnforcerService" />
 

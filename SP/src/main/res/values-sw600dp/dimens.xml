@@ -23,4 +23,5 @@
     <dimen name="tap_item_dimen">56dp</dimen>
 
     <dimen name="column_width">140dp</dimen>
+    <dimen name="page_side_padding">16dp</dimen>
 </resources>

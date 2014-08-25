@@ -27,4 +27,10 @@
         <attr name="default_inset_color" format="color|reference" />
     </declare-styleable>
 
+    <declare-styleable name="AutofitTextView">
+        <attr name="minTextSize" format="dimension|reference" />
+        <attr name="precision" format="float|reference" />
+        <attr name="sizeToFit" format="boolean|reference" />
+    </declare-styleable>
+
 </resources>

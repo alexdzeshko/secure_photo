@@ -32,15 +32,15 @@ public class TypefaceManager {
     private static final String ROBOTO_LIGHT_NATIVE_FONT_FAMILY = "sans-serif-light";
     private static final String ROBOTO_CONDENSED_NATIVE_FONT_FAMILY = "sans-serif-condensed";
 
+
     private final LruCache<String, Typeface> mCache;
     private final AssetManager mAssetManager;
 
     public TypefaceManager(AssetManager assetManager) {
-        if (assetManager == null) {
-            throw new NullPointerException("assetManager cannot be null");
-        }
+        if(assetManager == null)
+            throw new IllegalArgumentException("assetManager cannot be null");
         mAssetManager = assetManager;
-        mCache = new LruCache(3);
+        mCache = new LruCache<String, Typeface>(3);
     }
 
     public Typeface getRobotoLight() {
