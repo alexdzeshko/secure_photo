@@ -3,6 +3,7 @@ package com.sckftr.android.securephoto.fragment;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.View;
 
@@ -10,6 +11,7 @@ import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.GalleryAdapter;
 
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 
 /**
@@ -22,7 +24,7 @@ public class GalleryFragment extends ImageGridFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        aq.id(R.id.camera).gone();
+        setTitle(R.string.gallery);
     }
 
     @Override
@@ -70,14 +72,12 @@ public class GalleryFragment extends ImageGridFragment {
         return false;
     }
 
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
+    @Click
+    void camera() {
 
-        if (actionList != null) {
-            ((MainActivity) getBaseActivity()).secureNewPhotos(actionList, (Cursor) getAdapter().getItem(0));
-        }
+        if (!isDetached())
+            ((MainActivity) getBaseActivity()).secureNewPhotos(getAdapterView().getCheckedItemPositions(), (Cursor) getAdapter().getItem(0));
 
-        super.onDestroyActionMode(mode);
     }
 
     public static GalleryFragment build() {

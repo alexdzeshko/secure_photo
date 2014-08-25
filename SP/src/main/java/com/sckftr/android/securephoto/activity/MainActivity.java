@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
@@ -107,18 +108,18 @@ public class MainActivity extends BaseSPActivity {
 
     }
 
-    public void secureNewPhotos(ArrayList<Integer> positions, Cursor cursor) {
-        photoHelper.secureNewPhotos(positions, cursor);
+    public void secureNewPhotos(SparseBooleanArray items, Cursor cursor) {
+        photoHelper.secureNewPhotos(items, cursor);
 
         back();
     }
 
-    public void unSecurePhotos(ArrayList<Integer> positions, final Cursor cursor) {
-        photoHelper.unSecurePhotos(positions, cursor);
+    public void unSecurePhotos(SparseBooleanArray items, Cursor cursor) {
+        photoHelper.unSecurePhotos(items, cursor);
     }
 
-    public void deletePhotos(ArrayList<Integer> positions, final Cursor cursor) {
-        photoHelper.deletePhotos(positions, cursor);
+    public void deletePhotos(SparseBooleanArray items, Cursor cursor) {
+        photoHelper.deletePhotos(items, cursor);
     }
 
     public void showAddMenuItem(boolean show) {

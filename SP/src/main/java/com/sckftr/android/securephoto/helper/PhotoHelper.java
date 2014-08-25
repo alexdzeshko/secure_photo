@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.SparseBooleanArray;
 import android.widget.Toast;
 
 import com.sckftr.android.securephoto.AppConst;
@@ -65,38 +66,42 @@ public class PhotoHelper {
         return true;
     }
 
-
     // TODO: store on orientation changed
     public Uri getCapturedPhotoUri() {
         return mCapturedPhotoUri;
     }
 
-    public void secureNewPhotos(ArrayList<Integer> positions, final Cursor cursor) {
+    public void secureNewPhotos(SparseBooleanArray items, final Cursor cursor) {
 
-        if (cursor == null || positions == null) {
+        if (cursor == null || items == null) {
 
             UI.showHint(mContext, R.string.ERR_SECURE_PHOTOS);
 
             return;
         }
 
-        int size = positions.size(), index = 0;
+        int size = items.size(), index = 0;
 
         final ArrayList<Image> images = new ArrayList<Image>(size);
 
         final String[] originalContentIds = new String[size];
 
-        for (int position : positions) {
+        for (int i = 0; i < items.size(); i++) {
 
-            if (!cursor.moveToPosition(position)) continue;
+            int key = items.keyAt(i);
 
-            String path = "file://" + CursorUtils.getString(MediaStore.Images.Media.DATA, cursor);
+            if (items.get(key, false)) {
 
-            Image image = new Image(String.valueOf(System.currentTimeMillis()), path);
+                if (!cursor.moveToPosition(key)) continue;
 
-            images.add(image);
+                String path = "file://" + CursorUtils.getString(MediaStore.Images.Media.DATA, cursor);
 
-            originalContentIds[index++] = CursorUtils.getString(MediaStore.Images.Media._ID, cursor);
+                Image image = new Image(String.valueOf(System.currentTimeMillis()), path);
+
+                images.add(image);
+
+                originalContentIds[index++] = CursorUtils.getString(MediaStore.Images.Media._ID, cursor);
+            }
         }
 
         CursorUtils.close(cursor);
@@ -112,49 +117,57 @@ public class PhotoHelper {
         });
     }
 
-    public void unSecurePhotos(ArrayList<Integer> positions, final Cursor cursor) {
+    public void unSecurePhotos(SparseBooleanArray items, final Cursor cursor) {
 
-        if (cursor == null || positions == null) {
+        if (cursor == null || items == null) {
 
             UI.showHint(mContext, R.string.ERR_UNSECURE_PHOTOS);
 
             return;
         }
 
-        final ArrayList<Image> images = new ArrayList<Image>(positions.size());
+        final ArrayList<Image> images = new ArrayList<Image>(items.size());
 
-        for (int position : positions) {
+        for (int i = 0; i < items.size(); i++) {
 
-            if (!cursor.moveToPosition(position)) continue;
+            int key = items.keyAt(i);
 
-            Image image = new Image(cursor);
+            if (items.get(key, false)) {
 
-            images.add(image);
+                if (!cursor.moveToPosition(key)) continue;
 
+                Image image = new Image(cursor);
+
+                images.add(image);
+            }
         }
 
         AppConst.API.data().uncryptonize(images, null);
     }
 
-    public void deletePhotos(ArrayList<Integer> positions, final Cursor cursor) {
+    public void deletePhotos(SparseBooleanArray items, final Cursor cursor) {
 
-        if (cursor == null || positions == null) {
+        if (cursor == null || items == null) {
 
             UI.showHint(mContext, R.string.ERR_DELETE_PHOTOS);
 
             return;
         }
 
-        final ArrayList<Image> images = new ArrayList<Image>(positions.size());
+        final ArrayList<Image> images = new ArrayList<Image>(items.size());
 
-        for (int position : positions) {
+        for (int i = 0; i < items.size(); i++) {
 
-            if (!cursor.moveToPosition(position)) continue;
+            int key = items.keyAt(i);
 
-            Image image = new Image(cursor);
+            if (items.get(key, false)) {
 
-            images.add(image);
+                if (!cursor.moveToPosition(key)) continue;
 
+                Image image = new Image(cursor);
+
+                images.add(image);
+            }
         }
 
         AppConst.API.data().deleteFiles(images);

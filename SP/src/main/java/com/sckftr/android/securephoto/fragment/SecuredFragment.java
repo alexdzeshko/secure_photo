@@ -15,6 +15,7 @@ import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 
@@ -23,6 +24,16 @@ import org.androidannotations.annotations.EFragment;
  */
 @EFragment
 public class SecuredFragment extends ImageGridFragment {
+
+    @AfterViews
+    void onAfterViews() {
+        setTitle(R.string.secured);
+    }
+
+    @Override
+    protected ImagesGridCursorAdapter createAdapter() {
+        return new ImagesGridCursorAdapter(getActivity());
+    }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -43,7 +54,7 @@ public class SecuredFragment extends ImageGridFragment {
 
                 setRefreshing(true);
 
-                ((MainActivity) getActivity()).deletePhotos(actionList, (Cursor) getAdapter().getItem(0));
+                ((MainActivity) getActivity()).deletePhotos(getAdapterView().getCheckedItemPositions(), (Cursor) getAdapter().getItem(0));
 
                 mode.finish();
 
@@ -53,7 +64,7 @@ public class SecuredFragment extends ImageGridFragment {
 
                 setRefreshing(true);
 
-                ((MainActivity) getActivity()).unSecurePhotos(actionList, (Cursor) getAdapter().getItem(0));
+                ((MainActivity) getActivity()).unSecurePhotos(getAdapterView().getCheckedItemPositions(), (Cursor) getAdapter().getItem(0));
 
                 mode.finish();
 
@@ -81,27 +92,5 @@ public class SecuredFragment extends ImageGridFragment {
 
     public static Fragment build() {
         return SecuredFragment_.builder().build();
-    }
-
-    @Override
-    protected ImagesGridCursorAdapter createAdapter() {
-        return new ImagesGridCursorAdapter(getActivity());
-    }
-
-    @Override
-    public void populateInsets(Rect insets) {
-        super.populateInsets(insets);
-
-        final int margin = getResources().getDimensionPixelSize(R.dimen.unit3);
-
-        final Button button = aq.id(R.id.camera).getButton();
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
-
-        layoutParams.bottomMargin = insets.bottom + margin;
-        layoutParams.rightMargin = insets.right + margin;
-
-        setHidingView(button);
-
-        button.setLayoutParams(layoutParams);
     }
 }

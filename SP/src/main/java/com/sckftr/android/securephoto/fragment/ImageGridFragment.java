@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 
@@ -26,8 +27,6 @@ import java.util.ArrayList;
 import by.mcreader.imageloader.listener.PauseScrollListener;
 
 public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView, BaseCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
-
-    ArrayList<Integer> actionList;
 
     private PauseScrollListener mPauseScrollListener;
 
@@ -49,12 +48,10 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getAdapterView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        getAdapterView().setChoiceMode(isPhotosSecured() ? AbsListView.CHOICE_MODE_MULTIPLE_MODAL : AbsListView.CHOICE_MODE_MULTIPLE);
         getAdapterView().setMultiChoiceModeListener(this);
 
         setSwipeRefreshEnabled(false);
-
-        setTitle(R.string.secured);
     }
 
     abstract Loader<Cursor> getCursorLoader();
@@ -121,8 +118,6 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
-        actionList = new ArrayList<Integer>();
-
         mode.setTitle(API.string(R.string.cab_title_select_items));
 
         return true;
@@ -133,11 +128,6 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
         mode.setSubtitle(API.qstring(R.plurals.selected_items, getAdapterView().getCheckedItemCount()));
 
-        if (checked) {
-            actionList.add(position);
-        } else {
-            actionList.remove(new Integer(position));
-        }
     }
 
     @Override
@@ -152,7 +142,6 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        actionList = null;
     }
 
     @Override
@@ -160,6 +149,7 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
         super.populateInsets(insets);
 
         final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
+        final int margin = getResources().getDimensionPixelSize(R.dimen.unit3);
 
         getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
 
@@ -169,5 +159,16 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
         layoutParams.topMargin = insets.top;
 
         layout.setLayoutParams(layoutParams);
+
+        final Button button = aq.id(R.id.camera).getButton();
+
+        layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
+
+        layoutParams.bottomMargin = insets.bottom + margin;
+        layoutParams.rightMargin = insets.right + margin;
+
+        setHidingView(button);
+
+        button.setLayoutParams(layoutParams);
     }
 }
