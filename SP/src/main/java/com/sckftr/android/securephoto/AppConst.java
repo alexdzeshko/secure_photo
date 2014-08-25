@@ -27,6 +27,8 @@ public interface AppConst {
         String IMAGE = PACKAGE + ".IMAGE";
         String ORIENTATION = PACKAGE + ".ORIENTATION";
 
+        String CURRENT_FRAGMENT = PACKAGE + ".CURRENT_FRAGMENT";
+
         String VALUES = PACKAGE + ".VALUES";
         String RESULT = PACKAGE + ".RESULT";
 

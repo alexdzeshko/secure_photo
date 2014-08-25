@@ -3,8 +3,8 @@ package com.sckftr.android.securephoto.fragment;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import com.sckftr.android.securephoto.R;
@@ -20,6 +20,8 @@ import org.androidannotations.annotations.EFragment;
 @EFragment
 public class GalleryFragment extends ImageGridFragment {
 
+    public static final String TAG = "GalleryFragment";
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -33,9 +35,7 @@ public class GalleryFragment extends ImageGridFragment {
 
         if (!isDetached()) {
 
-            MainActivity mainActivity = (MainActivity) getBaseActivity();
-
-            mainActivity.showAddMenuItem(false);
+            getActivityParams().putString(EXTRA.CURRENT_FRAGMENT, TAG);
 
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -53,8 +53,15 @@ public class GalleryFragment extends ImageGridFragment {
 
             mainActivity.showAddMenuItem(true);
 
-            mainActivity.getActionBar().setDisplayHomeAsUpEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(false);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        menu.findItem(R.id.add).setVisible(false);
     }
 
     @Override

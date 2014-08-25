@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
@@ -34,9 +35,6 @@ public class MainActivity extends BaseSPActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    public static final String SECURED_FRAGMENT_TAG = "SECURED";
-    public static final String GALLERY_FRAGMENT_TAG = "GALLERY";
-
     @Bean
     PhotoHelper photoHelper;
 
@@ -49,7 +47,9 @@ public class MainActivity extends BaseSPActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loadFragment(SecuredFragment.build(), false, SECURED_FRAGMENT_TAG);
+        String fragmentTag = getParams().getString(EXTRA.CURRENT_FRAGMENT, SecuredFragment.TAG);
+
+        loadFragment(fragmentTag.equals(SecuredFragment.TAG) ? SecuredFragment.build() : GalleryFragment.build(), false, fragmentTag);
     }
 
     @Override
@@ -64,6 +64,15 @@ public class MainActivity extends BaseSPActivity {
         super.onNewIntent(intent);
 
         setIntent(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        if (findFragmentByTag(GalleryFragment.TAG) != null)
+            menu.findItem(R.id.add).setVisible(false);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -89,9 +98,9 @@ public class MainActivity extends BaseSPActivity {
     @OptionsItem
     void add() {
 
-        Fragment fragment = findFragmentByTag(GALLERY_FRAGMENT_TAG);
+        Fragment fragment = findFragmentByTag(GalleryFragment.TAG);
 
-        loadFragment(fragment != null ? fragment : GalleryFragment.build(), true, GALLERY_FRAGMENT_TAG);
+        loadFragment(fragment != null ? fragment : GalleryFragment.build(), true, GalleryFragment.TAG);
 
     }
 
@@ -102,14 +111,14 @@ public class MainActivity extends BaseSPActivity {
 
     private void back() {
 
-        Fragment fragment = findFragmentByTag(SECURED_FRAGMENT_TAG);
+        Fragment fragment = getSecuredFragment();
 
-        loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SECURED_FRAGMENT_TAG);
+        loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SecuredFragment.TAG);
 
     }
 
     SecuredFragment getSecuredFragment() {
-        return (SecuredFragment) findFragmentByTag(SECURED_FRAGMENT_TAG);
+        return (SecuredFragment) findFragmentByTag(SecuredFragment.TAG);
     }
 
     public void secureNewPhotos(SparseBooleanArray items, Cursor cursor) {

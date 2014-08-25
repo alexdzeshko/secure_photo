@@ -84,8 +84,6 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         setRefreshing(false);
-
-        getAdapter().swapCursor(null);
     }
 
     @Override

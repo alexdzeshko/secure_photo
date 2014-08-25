@@ -25,9 +25,27 @@ import org.androidannotations.annotations.EFragment;
 @EFragment
 public class SecuredFragment extends ImageGridFragment {
 
+    public static final String TAG = "SecuredFragment";
+
     @AfterViews
     void onAfterViews() {
         setTitle(R.string.secured);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!isDetached())
+            getActivityParams().putString(EXTRA.CURRENT_FRAGMENT, TAG);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ((MainActivity) getBaseActivity()).showAddMenuItem(false);
     }
 
     @Override
