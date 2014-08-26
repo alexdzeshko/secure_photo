@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.adapter.ViewPagerFragmentAdapter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -87,6 +88,8 @@ public class DetailFragment extends BaseFragment implements LoaderManager.Loader
     @Override
     public void onPageSelected(int i) {
         mCurrentPosition = i;
+
+        ((DetailActivity) getBaseActivity()).resetDelay();
     }
 
     @Override

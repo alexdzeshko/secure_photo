@@ -51,21 +51,26 @@ public class DetailActivity extends BaseSPActivity implements View.OnSystemUiVis
 
     @Override
     public void onSystemUiVisibilityChange(int visibility) {
+
         if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-            // TODO: The system bars are visible. Make any desired
-            // adjustments to your UI, such as showing the action bar or
-            // other navigational controls.
-            delayedHide(4000);
+
+            delayedHide(5000);
+
         } else {
-            // TODO: The system bars are NOT visible. Make any desired
-            // adjustments to your UI, such as hiding the action bar or
-            // other navigational controls.
+
             hideHandler.removeCallbacks(hideRunnable);
+
         }
     }
 
     public void delayedHide(int delay) {
         hideHandler.postDelayed(hideRunnable, delay);
+    }
+
+    public void resetDelay() {
+        hideHandler.removeCallbacks(hideRunnable);
+
+        delayedHide(5000);
     }
 
     private void showNavigation(View decorView, boolean show) {
