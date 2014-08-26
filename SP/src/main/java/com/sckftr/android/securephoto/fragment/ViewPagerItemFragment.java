@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.image.CryptoBitmapLoader;
 import com.sckftr.android.utils.UI;
@@ -21,7 +22,7 @@ import by.mcreader.imageloader.view.RecyclingImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 @EFragment(R.layout.view_pager_item)
-public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObserver.OnGlobalLayoutListener {
+public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObserver.OnGlobalLayoutListener, View.OnClickListener {
 
     @FragmentArg
     Image image;
@@ -33,7 +34,10 @@ public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObser
 
     @AfterViews
     void onAfterViews() {
+
+        imageView.setOnClickListener(this);
         imageView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
     }
 
     @Override
@@ -52,5 +56,10 @@ public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObser
 
     public static ViewPagerItemFragment build(Image image) {
         return ViewPagerItemFragment_.builder().image(image).build();
+    }
+
+    @Override
+    public void onClick(View v) {
+        ((DetailActivity) getBaseActivity()).toggleNavigation();
     }
 }
