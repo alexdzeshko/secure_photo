@@ -3,6 +3,7 @@ package com.sckftr.android.securephoto.activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
@@ -63,14 +64,24 @@ public class DetailActivity extends BaseSPActivity implements View.OnSystemUiVis
         }
     }
 
-    public void delayedHide(int delay) {
-        hideHandler.postDelayed(hideRunnable, delay);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+
+                finish();
+
+                return true;
+            }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
-    public void resetDelay() {
+    public void delayedHide(int delay) {
         hideHandler.removeCallbacks(hideRunnable);
-
-        delayedHide(5000);
+        hideHandler.postDelayed(hideRunnable, delay);
     }
 
     private void showNavigation(View decorView, boolean show) {

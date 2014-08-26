@@ -5,6 +5,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.MenuItem;
 
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
@@ -44,6 +45,8 @@ public class DetailFragment extends BaseFragment implements LoaderManager.Loader
         pager.setAdapter(pagerAdapter);
 
         pager.setOnPageChangeListener(this);
+
+        setHomeAsUp(true);
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -89,7 +92,7 @@ public class DetailFragment extends BaseFragment implements LoaderManager.Loader
     public void onPageSelected(int i) {
         mCurrentPosition = i;
 
-        ((DetailActivity) getBaseActivity()).resetDelay();
+        ((DetailActivity) getBaseActivity()).delayedHide(5000);
     }
 
     @Override
