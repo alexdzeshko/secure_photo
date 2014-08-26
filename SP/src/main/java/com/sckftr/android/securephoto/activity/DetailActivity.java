@@ -2,11 +2,12 @@ package com.sckftr.android.securephoto.activity;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
-import com.sckftr.android.securephoto.fragment.ImagePagerFragment;
+import com.sckftr.android.securephoto.fragment.DetailFragment;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -15,12 +16,20 @@ import org.androidannotations.annotations.Extra;
  * Created by Dzianis_Roi on 20.08.2014.
  */
 @EActivity(R.layout.frame)
-public class DetailActivity extends BaseSPActivity {
+public class DetailActivity extends BaseSPActivity implements View.OnSystemUiVisibilityChangeListener {
 
     @Extra
     int position;
 
-    private boolean mStatusBarVisible;
+    Handler hideHandler = new Handler();
+    Runnable hideRunnable = new Runnable() {
+        @Override
+        public void run() {
+            View decorView = getWindow().getDecorView();
+
+            if (decorView != null) showNavigation(decorView, false);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +37,35 @@ public class DetailActivity extends BaseSPActivity {
 
         getWindow().setBackgroundDrawable(null);
 
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(this);
 
-        showNavigation(getWindow().getDecorView(), false);
+        loadFragment(DetailFragment.build(position), false, DetailFragment.TAG);
+    }
 
-        loadFragment(ImagePagerFragment.build(position, false), false, "detail");
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        delayedHide(200);
+    }
+
+    @Override
+    public void onSystemUiVisibilityChange(int visibility) {
+        if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+            // TODO: The system bars are visible. Make any desired
+            // adjustments to your UI, such as showing the action bar or
+            // other navigational controls.
+            delayedHide(4000);
+        } else {
+            // TODO: The system bars are NOT visible. Make any desired
+            // adjustments to your UI, such as hiding the action bar or
+            // other navigational controls.
+            hideHandler.removeCallbacks(hideRunnable);
+        }
+    }
+
+    public void delayedHide(int delay) {
+        hideHandler.postDelayed(hideRunnable, delay);
     }
 
     private void showNavigation(View decorView, boolean show) {
@@ -45,7 +79,7 @@ public class DetailActivity extends BaseSPActivity {
 
         View decorView = getWindow().getDecorView();
 
-        showNavigation(decorView, (decorView.getSystemUiVisibility() & (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN)) != 0);
+        showNavigation(decorView, (decorView.getSystemUiVisibility() & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0);
 
     }
 

@@ -3,11 +3,8 @@ package com.sckftr.android.securephoto.fragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
@@ -18,8 +15,10 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
-@EFragment
-public class ImagePagerFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>, ViewPager.OnPageChangeListener {
+@EFragment(R.layout.fragment_detail)
+public class DetailFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>, ViewPager.OnPageChangeListener {
+
+    public static final String TAG = "DetailFragment";
 
     private static final String EXTRA_POSITION = "com.sckftr.android.securephoto.fragment.EXTRA_POSITION";
 
@@ -66,7 +65,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        return systemGallery ? API.data().getGalleryImagesCursorLoader(getActivity()) : API.data().getEncryptedImagesCursorLoader(getContext());
+        return API.data().getEncryptedImagesCursorLoader(getContext());
 
     }
 
@@ -82,13 +81,6 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
     }
 
     @Override
-    protected void populateInsets(Rect insets) {
-        super.populateInsets(insets);
-
-        // TODO
-    }
-
-    @Override
     public void onPageScrolled(int i, float v, int i2) {
     }
 
@@ -101,7 +93,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderManager.Lo
     public void onPageScrollStateChanged(int i) {
     }
 
-    public static ImagePagerFragment build(int position, boolean systemGallery) {
-        return ImagePagerFragment_.builder().position(position).systemGallery(systemGallery).build();
+    public static DetailFragment build(int position) {
+        return DetailFragment_.builder().position(position).build();
     }
 }
