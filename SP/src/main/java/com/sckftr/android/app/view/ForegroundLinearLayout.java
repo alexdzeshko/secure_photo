@@ -23,12 +23,15 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.widget.Checkable;
 import android.widget.LinearLayout;
 
 import com.sckftr.android.securephoto.R;
 
 
-public class ForegroundLinearLayout extends LinearLayout {
+public class ForegroundLinearLayout extends LinearLayout implements Checkable {
+
+    private boolean mChecked;
 
     private Drawable mForeground;
 
@@ -38,6 +41,22 @@ public class ForegroundLinearLayout extends LinearLayout {
     private int mForegroundGravity = Gravity.FILL;
 
     private boolean mForegroundBoundsChanged = false;
+
+    @Override
+    public void setChecked(boolean checked) {
+        mChecked = checked;
+        setBackgroundResource(checked ? R.drawable.bg_checkable_item : 0);//todo extract attrs
+    }
+
+    @Override
+    public boolean isChecked() {
+        return mChecked;
+    }
+
+    @Override
+    public void toggle() {
+        setChecked(!mChecked);
+    }
 
     public ForegroundLinearLayout(Context context) {
         super(context);

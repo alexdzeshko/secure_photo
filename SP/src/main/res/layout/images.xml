@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/listContainer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+                android:id="@+id/listContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools">
 
     <GridView
         android:id="@android:id/list"
@@ -12,17 +12,17 @@
         android:layout_height="match_parent"
         android:columnWidth="@dimen/column_width"
         android:numColumns="auto_fit"
-        android:padding="@dimen/unit.5"
+        android:drawSelectorOnTop="true"
         android:clipToPadding="false"
         android:stretchMode="columnWidth"
-        tools:listitem="@layout/image_item" />
+        tools:listitem="@layout/view_image_item"/>
 
     <ProgressBar
         android:id="@android:id/progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@android:id/empty"
@@ -32,7 +32,7 @@
         android:visibility="gone"
         android:textColor="@color/text_secondary"
         android:text="@string/empty_list_text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <Button
         android:id="@+id/camera"
@@ -41,7 +41,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/unit3"
-        android:background="@drawable/camera_button" />
+        android:background="@drawable/camera_button"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refreshContainer"
@@ -51,7 +51,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
+            android:layout_height="1dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

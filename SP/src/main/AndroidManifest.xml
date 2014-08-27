@@ -34,7 +34,7 @@
 
         <activity
             android:name=".activity.DetailActivity_"
-            android:theme="@style/Theme.SP" />
+            android:theme="@style/Theme.SP.Detail" />
 
         <activity
             android:name=".activity.SettingsActivity"

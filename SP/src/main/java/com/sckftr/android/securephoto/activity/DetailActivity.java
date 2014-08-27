@@ -36,8 +36,6 @@ public class DetailActivity extends BaseSPActivity implements View.OnSystemUiVis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setBackgroundDrawable(null);
-
         getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(this);
 
         loadFragment(DetailFragment.build(position), false, DetailFragment.TAG);
