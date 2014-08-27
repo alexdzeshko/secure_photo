@@ -30,16 +30,12 @@ import org.androidannotations.annotations.OptionsMenuItem;
 import java.util.ArrayList;
 
 @EActivity
-@OptionsMenu(R.menu.main_menu)
 public class MainActivity extends BaseSPActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Bean
     PhotoHelper photoHelper;
-
-    @OptionsMenuItem
-    MenuItem add;
 
     private boolean saveLivingHint;
 
@@ -70,15 +66,6 @@ public class MainActivity extends BaseSPActivity {
         super.onNewIntent(intent);
 
         setIntent(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        if (findFragmentByTag(GalleryFragment.TAG) != null)
-            menu.findItem(R.id.add).setVisible(false);
-
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -185,10 +172,6 @@ public class MainActivity extends BaseSPActivity {
 
         loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SecuredFragment.TAG);
 
-    }
-
-    public void showAddMenuItem(boolean show) {
-        add.setVisible(show);
     }
 
     /**

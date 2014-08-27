@@ -45,14 +45,8 @@ public class GalleryFragment extends ImageGridFragment {
     public void onPause() {
         super.onPause();
 
-        if (!isDetached()) {
-
-            MainActivity mainActivity = (MainActivity) getBaseActivity();
-
-            mainActivity.showAddMenuItem(true);
-
+        if (!isDetached())
             getActionBar().setDisplayHomeAsUpEnabled(false);
-        }
     }
 
     @Override

@@ -10,7 +10,6 @@
         android:id="@+id/settings"
         android:icon="@drawable/ic_action_share"
         android:title="@string/menu_settings"
-        android:showAsAction="never"
-        />
+        android:showAsAction="never" />
 
 </menu>

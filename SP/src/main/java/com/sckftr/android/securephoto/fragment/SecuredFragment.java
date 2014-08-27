@@ -42,13 +42,6 @@ public class SecuredFragment extends ImageGridFragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-
-        ((MainActivity) getBaseActivity()).showAddMenuItem(false);
-    }
-
-    @Override
     protected ImagesGridCursorAdapter createAdapter() {
         return new ImagesGridCursorAdapter(getActivity());
     }
