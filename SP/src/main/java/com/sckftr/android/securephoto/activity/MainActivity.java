@@ -174,6 +174,8 @@ public class MainActivity extends BaseSPActivity {
 
     @OptionsItem
     void settings() {
+        setSaveLivingHint(true);
+
         startActivity(new Intent(this, SettingsActivity.class));
     }
 
@@ -242,6 +244,6 @@ public class MainActivity extends BaseSPActivity {
      */
 
     public static void start(Context context) {
-        MainActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).start();
+        MainActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
     }
 }
