@@ -36,8 +36,12 @@ public class SecuredFragment extends ImageGridFragment {
     public void onResume() {
         super.onResume();
 
-        if (!isDetached())
+        if (!isDetached()) {
+
             getActivityParams().putString(EXTRA.CURRENT_FRAGMENT, TAG);
+
+            API.images().setPlaceholder(R.drawable.ic_blue_lock);
+        }
 
     }
 

@@ -38,6 +38,8 @@ public class GalleryFragment extends ImageGridFragment {
             getActivityParams().putString(EXTRA.CURRENT_FRAGMENT, TAG);
 
             getActionBar().setDisplayHomeAsUpEnabled(true);
+
+            API.images().setPlaceholder(android.R.drawable.ic_menu_gallery);
         }
     }
 
