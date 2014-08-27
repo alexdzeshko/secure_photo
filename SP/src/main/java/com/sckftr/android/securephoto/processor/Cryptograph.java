@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
@@ -37,11 +38,15 @@ public class Cryptograph {
     // TODO add user hash
     public static boolean encrypt(Context ctx, Uri source, String key) {
 
-        if (ctx == null || source == null || Strings.isEmpty(key))
-            throw new IllegalArgumentException("Encryption is impossible!!");
+        if (ctx == null || source == null)
+            throw new IllegalArgumentException(TAG + ": Encryption is impossible. Bad source!!");
+
+        if (Strings.isEmpty(key))
+            throw new IllegalArgumentException(TAG + ": Encryption is impossible: Illegal key!!");
+
+        key += UserHelper.getUserHash();
 
         FileInputStream fis = null;
-
         FileOutputStream fos = null;
 
         try {
@@ -99,10 +104,12 @@ public class Cryptograph {
     public static byte[] decrypt(byte[] encodedBytes, String key) {
 
         if (encodedBytes == null || encodedBytes.length <= 0)
-            throw new IllegalArgumentException("Decryption is impossible: Illegal source");
+            throw new IllegalArgumentException(TAG + ": Decryption is impossible: Illegal source");
 
         if (Strings.isEmpty(key))
-            throw new IllegalArgumentException("Decryption is impossible: Illegal key");
+            throw new IllegalArgumentException(TAG + ": Decryption is impossible: Illegal key");
+
+        key += UserHelper.getUserHash();
 
         try {
 
