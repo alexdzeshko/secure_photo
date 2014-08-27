@@ -33,7 +33,7 @@ public class FileBitmapLoader extends BaseBitmapLoader<FileInputStream> {
 
     @Override
     protected Bitmap onBitmapReady(String url, Bitmap result, Bundle extra) {
-        int degree = BitmapAnalizer.analizRotationDegree(url);
+        int degree = BitmapAnalizer.countRotationDegree(url);
 
         return degree > 0 ? BitmapReformer.rotate(result, degree) : result;
     }
