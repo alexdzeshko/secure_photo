@@ -31,7 +31,7 @@
 
     <style name="Theme.SP.Settings" parent="Theme.SP.Base">
         <item name="android:windowActionBarOverlay">false</item>
-        <item name="android:actionBarStyle">@style/Widget.SP.ActionBar.HomeAndTitle</item>
+        <item name="android:actionBarStyle">@style/Widget.SP.ActionBar.Solid</item>
     </style>
 
     <style name="Theme.SP.Detail">

@@ -27,6 +27,8 @@ public class GalleryFragment extends ImageGridFragment {
         super.onViewCreated(view, savedInstanceState);
 
         setTitle(R.string.gallery);
+
+        aq.id(R.id.fab_icon).image(R.drawable.add_button_icon_unchecked);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class GalleryFragment extends ImageGridFragment {
     }
 
     @Click
-    void camera() {
+    void fab() {
 
         if (!isDetached())
             ((MainActivity) getBaseActivity()).secureNewPhotos(getAdapterView().getCheckedItemPositions(), (Cursor) getAdapter().getItem(0));

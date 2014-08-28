@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 
@@ -21,8 +20,6 @@ import com.sckftr.android.app.fragment.SickAdapterViewFragment;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.activity.MainActivity;
-
-import java.util.ArrayList;
 
 import by.mcreader.imageloader.listener.PauseScrollListener;
 
@@ -154,7 +151,7 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
         layout.setLayoutParams(layoutParams);
 
-        final Button button = aq.id(R.id.camera).getButton();
+        final RelativeLayout button = (RelativeLayout) aq.id(R.id.fab).getView();
 
         layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
 

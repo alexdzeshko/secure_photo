@@ -25,10 +25,10 @@
     <item android:drawable="@drawable/action_fab_checked_default"
         android:state_checked="true" />
 
-    <item android:drawable="@drawable/action_fab_unchecked_pressed"
+    <item android:drawable="@drawable/action_fab_unchecked_pressed2"
         android:state_pressed="true" />
-    <item android:drawable="@drawable/action_fab_unchecked_focused"
+    <item android:drawable="@drawable/action_fab_unchecked_focused2"
         android:state_focused="true" />
-    <item android:drawable="@drawable/action_fab_unchecked_default" />
+    <item android:drawable="@drawable/action_fab_unchecked_default2" />
 
 </selector>

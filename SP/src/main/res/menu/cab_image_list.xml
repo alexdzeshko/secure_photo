@@ -3,12 +3,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_unlock"
-        android:icon="@drawable/ic_action_not_secure"
-        android:showAsAction="always"
+        android:icon="@drawable/unlock"
+        android:showAsAction="ifRoom"
         android:title="@string/unsecure" />
     <item
         android:id="@+id/menu_delete"
-        android:icon="@drawable/ic_action_discard"
-        android:showAsAction="always"
+        android:icon="@drawable/delete"
+        android:showAsAction="ifRoom"
         android:title="@string/delete" />
 </menu>

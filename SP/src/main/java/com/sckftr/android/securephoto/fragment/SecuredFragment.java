@@ -3,13 +3,10 @@ package com.sckftr.android.securephoto.fragment;
 import android.app.Fragment;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Rect;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
@@ -104,7 +101,7 @@ public class SecuredFragment extends ImageGridFragment {
     }
 
     @Click
-    void camera() {
+    void fab() {
         setRefreshing(true);
 
         ((MainActivity) getActivity()).startCamera();
