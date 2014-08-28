@@ -47,13 +47,8 @@ public class Storage {
 
         AppConst.Log.d(TAG, "orig_uri: %s, sec_uri: %s", uri, secureUri);
 
-        if (!secureUri.equals(uri)) {
+        if (!secureUri.equals(uri)) deleteFileSync(uri);
 
-            deleteFileSync(uri);
-
-            //scanFile(uri);
-
-        }
     }
 
     public static void deleteFileSync(Uri uri) {
@@ -103,8 +98,11 @@ public class Storage {
         }
 
         public static File getPublicFile(Uri uri) throws IOException {
+
             File file = new File(getPublicFolder(), uri.getLastPathSegment());
+
             file.createNewFile();
+
             return file;
         }
 

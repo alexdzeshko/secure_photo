@@ -40,6 +40,8 @@ public class GalleryFragment extends ImageGridFragment {
             getActivityParams().putString(EXTRA.CURRENT_FRAGMENT, TAG);
 
             getActionBar().setDisplayHomeAsUpEnabled(true);
+
+            API.images().setPlaceholder(R.drawable.placeholder_image_no_sec);
         }
     }
 
@@ -47,14 +49,8 @@ public class GalleryFragment extends ImageGridFragment {
     public void onPause() {
         super.onPause();
 
-        if (!isDetached()) {
-
-            MainActivity mainActivity = (MainActivity) getBaseActivity();
-
-            mainActivity.showAddMenuItem(true);
-
+        if (!isDetached())
             getActionBar().setDisplayHomeAsUpEnabled(false);
-        }
     }
 
     @Override

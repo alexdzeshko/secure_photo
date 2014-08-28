@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
@@ -48,6 +49,8 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
         getAdapterView().setChoiceMode(isPhotosSecured() ? AbsListView.CHOICE_MODE_MULTIPLE_MODAL : AbsListView.CHOICE_MODE_MULTIPLE);
         getAdapterView().setMultiChoiceModeListener(this);
 
+        setHasOptionsMenu(true);
+
         setSwipeRefreshEnabled(false);
     }
 
@@ -56,6 +59,14 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
         super.onPause();
 
         API.images().setPauseWork(false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.main_menu, menu);
+
+        menu.findItem(R.id.add).setVisible(isPhotosSecured());
     }
 
     @Override
