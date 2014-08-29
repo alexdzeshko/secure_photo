@@ -59,6 +59,10 @@ public abstract class BaseSPActivity extends BaseActivity implements InsetFrameL
 
     }
 
+    public void setBackgroundDrawableWithAnimation(int colorRes) {
+        mInsetFrameLayout.setBackgroundDrawableWithAnimation(colorRes);
+    }
+
     public void resetInsets() {
         setInsetTopAlpha(255);
     }

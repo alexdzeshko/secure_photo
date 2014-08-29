@@ -31,7 +31,7 @@ public class SecuredFragment extends ImageGridFragment {
 
         setTitle(R.string.secured);
 
-        ((MainActivity) getBaseActivity()).setInsetBackgroundColorId(R.color.primary_dark_60);
+        ((MainActivity) getBaseActivity()).setBackgroundDrawableWithAnimation(R.color.primary_dark_60);
     }
 
     @Override

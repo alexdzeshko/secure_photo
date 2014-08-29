@@ -4,17 +4,14 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.app.view.InsetFrameLayout;
-import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.GalleryFragment;
@@ -26,8 +23,6 @@ import com.sckftr.android.utils.Procedure;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
-import org.androidannotations.annotations.OptionsMenuItem;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -39,9 +34,6 @@ public class MainActivity extends BaseSPActivity {
 
     @Bean
     PhotoHelper photoHelper;
-
-    @ViewById
-    InsetFrameLayout frameInset;
 
     private boolean saveLivingHint;
 
@@ -224,16 +216,6 @@ public class MainActivity extends BaseSPActivity {
 
     public void setSaveLivingHint(boolean saveLivingHint) {
         this.saveLivingHint = saveLivingHint;
-    }
-
-
-    public void setInsetBackgroundColorId(int colorRes) {
-
-        Resources r = getResources();
-
-        if (colorRes > 0 && r != null && frameInset != null)
-            frameInset.setInsetBackgroundColor(r.getColor(colorRes));
-
     }
 
     /**

@@ -16,6 +16,7 @@
 
 package com.sckftr.android.app.view;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -24,8 +25,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.os.Handler;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -41,6 +40,13 @@ public class InsetFrameLayout extends FrameLayout {
     private Drawable mDefaultInsetBackground;
     private Drawable mInsetBackground;
 
+    // animation properties
+    private int mStartColor, mEndColor;
+    private float mAnimationProgress;
+    private int mAnimationDuration = 500;
+
+    private ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this, "animationProgress", 0f, (float) mAnimationDuration).setDuration(mAnimationDuration);
+
     private Rect mInsets;
     private Rect mTempRect = new Rect();
     private OnInsetsCallback mOnInsetsCallback;
@@ -49,27 +55,30 @@ public class InsetFrameLayout extends FrameLayout {
 
     public InsetFrameLayout(Context context) {
         super(context);
+
         init(context, null, 0);
     }
 
     public InsetFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         init(context, attrs, 0);
     }
 
     public InsetFrameLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
         init(context, attrs, defStyle);
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
-        final TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.DrawInsetsFrameLayout, defStyle, 0);
-        if (a == null) {
-            return;
-        }
-        mDefaultInsetBackground = mInsetBackground
-                = a.getDrawable(R.styleable.DrawInsetsFrameLayout_insetBackground);
+
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DrawInsetsFrameLayout, defStyle, 0);
+
+        if (a == null) return;
+
+        mDefaultInsetBackground = mInsetBackground = a.getDrawable(R.styleable.DrawInsetsFrameLayout_insetBackground);
+
         a.recycle();
 
         setWillNotDraw(true);
@@ -113,10 +122,35 @@ public class InsetFrameLayout extends FrameLayout {
         }
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        if (mInsetBackground != null) mInsetBackground.setCallback(null);
+
+        if (objectAnimator.isRunning()) objectAnimator.cancel();
+    }
+
+
     public void resetInsetBackground() {
         if (mInsetBackground != mDefaultInsetBackground) {
             setInsetBackground(mDefaultInsetBackground);
         }
+    }
+
+    /**
+     * Allows the calling container to specify a callback for custom processing when insets change
+     * (i.e. when {@link #fitSystemWindows(android.graphics.Rect)} is called. This is useful for setting padding on
+     * UI elements based on UI chrome insets (e.g. a Google Map or a ListView). When using with
+     * ListView or GridView, remember to set clipToPadding to false.
+     */
+    public void setOnInsetsCallback(OnInsetsCallback onInsetsCallback) {
+        mOnInsetsCallback = onInsetsCallback;
+    }
+
+    public void setTopInsetAlpha(int alpha) {
+        mTopAlpha = alpha;
+        ViewCompat.postInvalidateOnAnimation(this);
     }
 
     public void setInsetBackgroundColor(int color) {
@@ -147,25 +181,56 @@ public class InsetFrameLayout extends FrameLayout {
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (mInsetBackground != null) mInsetBackground.setCallback(null);
+    public void setAnimationProgress(float progress) {
+        this.mAnimationProgress = progress;
+
+        float fraction = progress / (float) mAnimationDuration;
+
+        setInsetBackgroundColor(Color.rgb(
+                evaluate(fraction, Color.red(mStartColor), Color.red(mEndColor)),     // red
+                evaluate(fraction, Color.green(mStartColor), Color.green(mEndColor)), // green
+                evaluate(fraction, Color.blue(mStartColor), Color.blue(mEndColor)))); // blue
     }
 
-    public void setTopInsetAlpha(int alpha) {
-        mTopAlpha = alpha;
-        ViewCompat.postInvalidateOnAnimation(this);
+    public float getAnimationProgress() {
+        return mAnimationProgress;
     }
 
-    /**
-     * Allows the calling container to specify a callback for custom processing when insets change
-     * (i.e. when {@link #fitSystemWindows(android.graphics.Rect)} is called. This is useful for setting padding on
-     * UI elements based on UI chrome insets (e.g. a Google Map or a ListView). When using with
-     * ListView or GridView, remember to set clipToPadding to false.
-     */
-    public void setOnInsetsCallback(OnInsetsCallback onInsetsCallback) {
-        mOnInsetsCallback = onInsetsCallback;
+    private static int evaluate(float fraction, int startValue, int endValue) {
+        return (int) (startValue + fraction * (endValue - startValue));
+    }
+
+    public void setBackgroundDrawableWithAnimation(int colorResId) {
+
+        Resources resources = getResources();
+
+        if (mInsetBackground == null)
+            mInsetBackground = new ColorDrawable(resources.getColor(android.R.color.transparent));
+
+        if (!(mInsetBackground instanceof ColorDrawable))
+            throw new IllegalArgumentException("Can't animate background changing from non-ColorDrawable!");
+
+        mStartColor = ((ColorDrawable) mInsetBackground).getColor();
+        mEndColor = resources.getColor(colorResId);
+
+        if (objectAnimator.isRunning()) objectAnimator.cancel();
+
+        objectAnimator.start();
+    }
+
+    public void setBackgroundDrawableWithAnimation(int startColorResID, int endColorResID) {
+
+        Resources resources = getResources();
+
+        if (mInsetBackground == null)
+            mInsetBackground = new ColorDrawable(resources.getColor(startColorResID));
+
+        mStartColor = resources.getColor(startColorResID);
+        mEndColor = resources.getColor(endColorResID);
+
+        if (objectAnimator.isRunning()) objectAnimator.cancel();
+
+        objectAnimator.start();
     }
 
     public static interface OnInsetsCallback {

@@ -30,7 +30,7 @@ public class GalleryFragment extends ImageGridFragment {
 
         aq.id(R.id.fab_icon).image(R.drawable.add_button_icon_unchecked);
 
-        ((MainActivity) getBaseActivity()).setInsetBackgroundColorId(R.color.primary_oppozit_sibling);
+        ((MainActivity) getBaseActivity()).setBackgroundDrawableWithAnimation(R.color.primary_oppozit_sibling);
     }
 
     @Override
