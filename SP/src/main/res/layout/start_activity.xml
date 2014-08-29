@@ -45,6 +45,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
         android:text="@string/btn_done"
+        android:visibility="gone"
         android:textColor="@color/text_white"
         android:textAllCaps="true" />
 

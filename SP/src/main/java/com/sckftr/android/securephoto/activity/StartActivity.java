@@ -16,10 +16,11 @@ import com.sckftr.android.securephoto.helper.UserHelper;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.TextChange;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.start_activity)
-public class StartActivity extends BaseSPActivity implements TextWatcher {
+public class StartActivity extends BaseSPActivity {
 
     private static final String LOG_TAG = StartActivity.class.getSimpleName();
 
@@ -39,29 +40,15 @@ public class StartActivity extends BaseSPActivity implements TextWatcher {
 
             passwordCaption.setText(getString(R.string.choose_new_password));
 
-        } else {
-
-            commitButton.setVisibility(View.GONE);
-
-//            passwordCaption.setVisibility(View.INVISIBLE);
-
-            passwordInput.addTextChangedListener(this);
+            commitButton.setVisibility(View.VISIBLE);
 
         }
-
     }
 
-    @Override
-    public void afterTextChanged(Editable arg0) {
+    @TextChange
+    void passwordInput(CharSequence newText, int start, int before, int count) {
+        if (UserHelper.isFirstLogin()) return;
 
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-    }
-
-    @Override
-    public void onTextChanged(CharSequence newText, int start, int before, int count) {
         Log.d(LOG_TAG, "onTextChanged: " + newText);
 
         if (UserHelper.authenticate(this, "userName", newText.toString())) {// todo manage with user name
@@ -74,7 +61,6 @@ public class StartActivity extends BaseSPActivity implements TextWatcher {
 
             finish();
         }
-
     }
 
     @Click(R.id.commitButton)
