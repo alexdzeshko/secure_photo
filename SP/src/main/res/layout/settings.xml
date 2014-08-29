@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:orientation="vertical"
@@ -20,12 +19,12 @@
         android:layout_marginBottom="@dimen/unit2"
         android:paddingLeft="@dimen/unit"
         android:paddingRight="@dimen/unit"
-        app:font="roboto_condensed_bold"/>
+        app:font="roboto_condensed_bold" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/bg_grey_transparent"/>
+        android:background="@color/bg_grey_transparent" />
 
     <com.sckftr.android.app.view.FontTextView
         android:id="@+id/changePassword"
@@ -39,11 +38,11 @@
         android:paddingBottom="@dimen/unit"
         android:paddingLeft="@dimen/unit"
         android:paddingRight="@dimen/unit"
-        app:font="roboto_light"/>
+        app:font="roboto_light" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/bg_grey_transparent"/>
+        android:background="@color/bg_grey_transparent" />
 
 </LinearLayout>

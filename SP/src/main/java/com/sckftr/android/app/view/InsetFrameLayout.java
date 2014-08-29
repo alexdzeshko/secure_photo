@@ -43,7 +43,7 @@ public class InsetFrameLayout extends FrameLayout {
     // animation properties
     private int mStartColor, mEndColor;
     private float mAnimationProgress;
-    private int mAnimationDuration = 500;
+    private int mAnimationDuration = 300;
 
     private ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this, "animationProgress", 0f, (float) mAnimationDuration).setDuration(mAnimationDuration);
 

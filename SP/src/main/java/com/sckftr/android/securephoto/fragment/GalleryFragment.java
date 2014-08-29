@@ -10,6 +10,7 @@ import android.view.View;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.GalleryAdapter;
+import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -68,12 +69,12 @@ public class GalleryFragment extends ImageGridFragment {
     }
 
     @Override
-    Loader<Cursor> getCursorLoader() {
+    public Loader<Cursor> getCursorLoader() {
         return API.data().getGalleryImagesCursorLoader(getActivity());
     }
 
     @Override
-    boolean isPhotosSecured() {
+    public boolean isPhotosSecured() {
         return false;
     }
 

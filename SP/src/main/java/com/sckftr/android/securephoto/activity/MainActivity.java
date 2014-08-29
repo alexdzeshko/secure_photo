@@ -151,9 +151,7 @@ public class MainActivity extends BaseSPActivity {
     @OptionsItem
     void add() {
 
-        Fragment fragment = findFragmentByTag(GalleryFragment.TAG);
-
-        loadFragment(fragment != null ? fragment : GalleryFragment.build(), true, GalleryFragment.TAG);
+        loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
 
     }
 
@@ -161,7 +159,7 @@ public class MainActivity extends BaseSPActivity {
     void settings() {
         setSaveLivingHint(true);
 
-        startActivity(new Intent(this, SettingsActivity.class));
+        SettingsActivity.start(this);
     }
 
     void back() {

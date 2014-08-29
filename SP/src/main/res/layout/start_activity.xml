@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/RelativeLayout1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.sckftr.android.app.view.AutofitTextView
         android:layout_width="wrap_content"
@@ -14,7 +13,7 @@
         android:layout_marginTop="120dp"
         android:textColor="@color/primary_sibling"
         android:textSize="34sp"
-        app:font="roboto_light"/>
+        app:font="roboto_light" />
 
     <EditText
         android:id="@+id/passwordInput"
@@ -24,7 +23,7 @@
         android:layout_centerInParent="true"
         android:inputType="textPassword"
         android:hint="@string/input_password"
-        android:textColorHint="@color/text_hint"/>
+        android:textColorHint="@color/text_hint" />
 
     <TextView
         android:id="@+id/passwordCaption"
@@ -47,6 +46,6 @@
         android:layout_margin="16dp"
         android:text="@string/btn_done"
         android:textColor="@color/text_white"
-        android:textAllCaps="true"/>
+        android:textAllCaps="true" />
 
 </RelativeLayout>

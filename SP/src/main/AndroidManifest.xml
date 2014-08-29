@@ -36,15 +36,9 @@
             android:theme="@style/Theme.SP.Detail" />
 
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name=".activity.SettingsActivity_"
             android:theme="@style/Theme.SP.Settings"
-            android:label="@string/label_settings"
-            android:parentActivityName="com.sckftr.android.securephoto.activity.MainActivity_">
-            <!-- The meta-data element is needed for versions lower than 4.1 -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sckftr.android.securephoto.activity.MainActivity_" />
-        </activity>
+            android:label="@string/label_settings" />
 
 
         <service android:name=".data.DataApi$DataAsyncEnforcerService" />

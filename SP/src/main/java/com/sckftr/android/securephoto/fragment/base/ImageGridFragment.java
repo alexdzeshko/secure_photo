@@ -1,4 +1,4 @@
-package com.sckftr.android.securephoto.fragment;
+package com.sckftr.android.securephoto.fragment.base;
 
 import android.app.LoaderManager;
 import android.content.Loader;
@@ -22,8 +22,6 @@ import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.activity.MainActivity;
 
-import org.androidannotations.annotations.AfterViews;
-
 import by.mcreader.imageloader.listener.PauseScrollListener;
 
 public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView, BaseCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {
@@ -32,7 +30,7 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
     @Override
     protected int layoutId() {
-        return R.layout.images;
+        return R.layout.fragment_image_grid;
     }
 
     @Override
@@ -176,7 +174,7 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
         button.setLayoutParams(layoutParams);
     }
 
-    abstract Loader<Cursor> getCursorLoader();
+    public abstract Loader<Cursor> getCursorLoader();
 
-    abstract boolean isPhotosSecured();
+    public abstract boolean isPhotosSecured();
 }
