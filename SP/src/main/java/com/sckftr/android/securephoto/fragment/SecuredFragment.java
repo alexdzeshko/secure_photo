@@ -3,16 +3,17 @@ package com.sckftr.android.securephoto.fragment;
 import android.app.Fragment;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 
-import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 
@@ -24,9 +25,13 @@ public class SecuredFragment extends ImageGridFragment {
 
     public static final String TAG = "SecuredFragment";
 
-    @AfterViews
-    void onAfterViews() {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         setTitle(R.string.secured);
+
+        ((MainActivity) getBaseActivity()).setInsetBackgroundColorId(R.color.primary_dark_60);
     }
 
     @Override

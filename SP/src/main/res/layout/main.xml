@@ -2,7 +2,7 @@
 <com.sckftr.android.app.view.InsetFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/frame_inset"
+    android:id="@+id/frameInset"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"

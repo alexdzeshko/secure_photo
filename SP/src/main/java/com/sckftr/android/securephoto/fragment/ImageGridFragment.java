@@ -22,6 +22,8 @@ import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.activity.MainActivity;
 
+import org.androidannotations.annotations.AfterViews;
+
 import by.mcreader.imageloader.listener.PauseScrollListener;
 
 public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView, BaseCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>, AbsListView.MultiChoiceModeListener {

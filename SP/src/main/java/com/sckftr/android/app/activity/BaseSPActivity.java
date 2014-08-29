@@ -20,7 +20,7 @@ public abstract class BaseSPActivity extends BaseActivity implements InsetFrameL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mInsetFrameLayout = (InsetFrameLayout) findViewById(R.id.frame_inset);
+        mInsetFrameLayout = (InsetFrameLayout) findViewById(R.id.frameInset);
 
         if (mInsetFrameLayout != null) mInsetFrameLayout.setOnInsetsCallback(this);
     }

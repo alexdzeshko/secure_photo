@@ -24,6 +24,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.os.Handler;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -78,11 +80,11 @@ public class InsetFrameLayout extends FrameLayout {
         mInsets = new Rect(insets);
 
         setWillNotDraw(mInsetBackground == null);
+
         ViewCompat.postInvalidateOnAnimation(this);
 
-        if (mOnInsetsCallback != null) {
-            mOnInsetsCallback.onInsetsChanged(insets);
-        }
+        if (mOnInsetsCallback != null) mOnInsetsCallback.onInsetsChanged(insets);
+
         return true; // consume insets
     }
 
@@ -90,13 +92,15 @@ public class InsetFrameLayout extends FrameLayout {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        final int width = getWidth();
-        final int height = getHeight();
         if (mInsets != null && mInsetBackground != null) {
+
             // Top
-            mTempRect.set(0, 0, width, mInsets.top);
+            mTempRect.set(0, 0, getWidth(), mInsets.top);
+
             mInsetBackground.setBounds(mTempRect);
+
             mInsetBackground.setAlpha(mTopAlpha);
+
             mInsetBackground.draw(canvas);
         }
     }
@@ -133,24 +137,20 @@ public class InsetFrameLayout extends FrameLayout {
     }
 
     private void setInsetBackground(Drawable background) {
-        if (mInsetBackground != null) {
-            mInsetBackground.setCallback(null);
-        }
+        if (mInsetBackground != null) mInsetBackground.setCallback(null);
 
         mInsetBackground = background;
 
-        if (mInsetBackground != null && getWindowToken() != null) {
+        if (mInsetBackground != null && getWindowToken() != null)
             mInsetBackground.setCallback(this);
-        }
+
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mInsetBackground != null) {
-            mInsetBackground.setCallback(null);
-        }
+        if (mInsetBackground != null) mInsetBackground.setCallback(null);
     }
 
     public void setTopInsetAlpha(int alpha) {
