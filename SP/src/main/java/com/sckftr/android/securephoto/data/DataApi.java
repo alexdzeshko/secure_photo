@@ -18,10 +18,13 @@ import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
 import com.sckftr.android.securephoto.db.Image;
+import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.ContractUtils;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,8 +37,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.mcreader.imageloader.utils.IOUtils;
-
 public class DataApi implements AppConst {
 
     private static final String TAG = DataApi.class.getSimpleName();
@@ -43,7 +44,7 @@ public class DataApi implements AppConst {
     private static DataApi instance;
 
     private enum CommandName {
-        UNLOCK_FILE, LOCK_FILE, DELETE_FILES
+        UNLOCK, LOCK, DELETE, RELOCK
     }
 
     public static DataApi instance() {
@@ -60,25 +61,21 @@ public class DataApi implements AppConst {
 
         List<Image> toDbDelete = new ArrayList<Image>(files.size());
 
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+
         for (Cryptonite file : files) {
-
-            if (!(file instanceof Image)) continue;
-
-            FileInputStream fis = null;
-            FileOutputStream fos = null;
 
             try {
 
                 fis = new FileInputStream(file.getFileUri().toString());
 
-                byte[] buffer = new byte[fis.available()];
-
-                fis.read(buffer);
+                byte[] buffer = IOUtils.toByteArray(fis);
 
                 File publicFile = Storage.Images.getPublicFile(file.getFileUri());
                 fos = new FileOutputStream(publicFile);
 
-                fos.write(Cryptograph.decrypt(buffer, file.getKey()));
+                IOUtils.write(Cryptograph.decrypt(buffer, file.getKey()), fos);
 
                 Storage.scanFile(context, Uri.fromFile(publicFile));
 
@@ -94,8 +91,8 @@ public class DataApi implements AppConst {
 
             } finally {
 
-                IOUtils.closeStream(fis);
-                IOUtils.closeStream(fos);
+                IOUtils.closeQuietly(fis);
+                IOUtils.closeQuietly(fos);
 
             }
         }
@@ -136,6 +133,37 @@ public class DataApi implements AppConst {
         }
 
         API.db().insert((ArrayList<? extends DbModel>) toDbInsert);
+    }
+
+    private void relockFiles(Context context, List<Cryptonite> files) {
+
+        FileInputStream fis = null;
+
+        String hash = UserHelper.getOldUserHash();
+
+        try {
+
+            for (Cryptonite file : files) {
+
+                fis = new FileInputStream(file.getFileUri().toString());
+
+                byte[] buffer = Cryptograph.decrypt(IOUtils.toByteArray(fis), file.getKey(), hash);
+
+                Cryptograph.encrypt(context, file.getFileUri(), buffer, file.getKey());
+            }
+
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "relockFiles: ", e);
+        } catch (IOException e) {
+            Log.e(TAG, "relockFiles: ", e);
+        } finally {
+
+            IOUtils.closeQuietly(fis);
+
+            UserHelper.clearOldHash();
+
+            context.getContentResolver().notifyChange(ContractUtils.getUri(Contracts.ImageContract.class), null);
+        }
     }
 
     public void deleteFiles(List<? extends Cryptonite> files) {
@@ -195,13 +223,13 @@ public class DataApi implements AppConst {
             Bundle resultingBundle = null;
 
             switch (commandName) {
-                case UNLOCK_FILE: {
+                case UNLOCK: {
 
                     API.data().unlockFiles(getBaseContext(), files);
 
                     break;
                 }
-                case LOCK_FILE: {
+                case LOCK: {
 
                     API.data().lockFiles(getBaseContext(), files);
 
@@ -209,10 +237,15 @@ public class DataApi implements AppConst {
 
                     break;
                 }
-                case DELETE_FILES:
+                case DELETE:
 
                     API.data().deleteFiles(files);
 
+                case RELOCK:
+
+                    API.data().relockFiles(getBaseContext(), files);
+
+                    resultingBundle = createSingleEntryBundle("ok");
                 default:
                     break;
             }
@@ -243,7 +276,7 @@ public class DataApi implements AppConst {
 
     public void uncryptonize(ArrayList<? extends Cryptonite> cryptonite, Procedure<? extends Object> callback) {
 
-        final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.UNLOCK_FILE, createResultReceiver(callback));
+        final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.UNLOCK, createResultReceiver(callback));
 
         intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
 
@@ -252,7 +285,16 @@ public class DataApi implements AppConst {
 
     public void cryptonize(ArrayList<? extends Cryptonite> cryptonite, Procedure<? extends Object> callback) {
 
-        final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.LOCK_FILE, createResultReceiver(callback));
+        final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.LOCK, createResultReceiver(callback));
+
+        intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
+
+        dispatchServiceCall(intent);
+    }
+
+    public void recryptonize(ArrayList<? extends Cryptonite> cryptonite, Procedure<? extends Object> callback) {
+
+        final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.RELOCK, createResultReceiver(callback));
 
         intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
 
@@ -261,7 +303,7 @@ public class DataApi implements AppConst {
 
     public void delete(ArrayList<? extends Cryptonite> cryptonite, Procedure<Integer> callback) {
 
-        final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.DELETE_FILES, createResultReceiver(callback));
+        final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.DELETE, createResultReceiver(callback));
 
         intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
 

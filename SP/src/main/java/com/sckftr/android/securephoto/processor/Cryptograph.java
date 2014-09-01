@@ -6,15 +6,16 @@ import android.util.Log;
 
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.utils.IO;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
 import com.sckftr.android.utils.Strings;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -35,10 +36,9 @@ public class Cryptograph {
 
     private static final String TAG = Cryptograph.class.getSimpleName();
 
-    // TODO add user hash
-    public static boolean encrypt(Context ctx, Uri source, String key) {
+    public static boolean encrypt(Context ctx, Uri uri, String key) {
 
-        if (ctx == null || source == null)
+        if (ctx == null || uri == null)
             throw new IllegalArgumentException(TAG + ": Encryption is impossible. Bad source!!");
 
         if (Strings.isEmpty(key))
@@ -46,22 +46,18 @@ public class Cryptograph {
 
         key += UserHelper.getUserHash();
 
-        FileInputStream fis = null;
+        InputStream is = null;
         FileOutputStream fos = null;
 
         try {
-//            is = ctx.getContentResolver().openInputStream(source);
+            is = ctx.getContentResolver().openInputStream(uri);
 
-            fis = new FileInputStream(source.getPath());
-
-            byte[] buffer = new byte[fis.available()];
-
-            fis.read(buffer);
+            byte[] buffer = IOUtils.toByteArray(is);
 
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKeySpec(key));
 
-            Uri secureUri = Storage.Images.getPrivateUri(source);//todo storage images
+            Uri secureUri = Storage.Images.getPrivateUri(uri);//todo storage images
 
             File file = new File(secureUri.getPath());
 
@@ -93,14 +89,66 @@ public class Cryptograph {
             AppConst.Log.e(TAG, "Encrypt: ", e);
             return false;
         } finally {
-            IO.close(fis);
-            IO.close(fos);
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(fos);
         }
 
         return true;
     }
 
-    // TODO add user hash
+    public static boolean encrypt(Context ctx, Uri securedUri, byte[] source, String key) {
+
+        if (ctx == null || source == null)
+            throw new IllegalArgumentException(TAG + ": Encryption is impossible. Bad source!!");
+
+        if (Strings.isEmpty(key))
+            throw new IllegalArgumentException(TAG + ": Encryption is impossible: Illegal key!!");
+
+        key += UserHelper.getUserHash();
+
+        FileOutputStream fos = null;
+
+        try {
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, getSecretKeySpec(key));
+
+            File file = new File(securedUri.getPath());
+
+            fos = new FileOutputStream(file, false);
+
+            fos.write(cipher.doFinal(source));
+
+            Log.d("Encode", "SecurePath = " + securedUri.getPath());
+
+        } catch (IOException e) {
+            AppConst.Log.e(TAG, "Encrypt", e);
+            return false;
+        } catch (IllegalBlockSizeException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (InvalidKeyException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (BadPaddingException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (NoSuchAlgorithmException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (NoSuchPaddingException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } catch (NoSuchProviderException e) {
+            AppConst.Log.e(TAG, "Encrypt: ", e);
+            return false;
+        } finally {
+            IOUtils.closeQuietly(fos);
+        }
+
+        return true;
+    }
+
     public static byte[] decrypt(byte[] encodedBytes, String key) {
 
         if (encodedBytes == null || encodedBytes.length <= 0)
@@ -110,6 +158,43 @@ public class Cryptograph {
             throw new IllegalArgumentException(TAG + ": Decryption is impossible: Illegal key");
 
         key += UserHelper.getUserHash();
+
+        try {
+
+            Cipher cipher = Cipher.getInstance("AES");
+
+            cipher.init(Cipher.DECRYPT_MODE, getSecretKeySpec(key));
+
+            return cipher.doFinal(encodedBytes);
+
+        } catch (IllegalBlockSizeException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (InvalidKeyException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (BadPaddingException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (NoSuchAlgorithmException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (NoSuchPaddingException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (NoSuchProviderException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        } catch (UnsupportedEncodingException e) {
+            AppConst.Log.e(TAG, "Decryption: ", e);
+        }
+
+        return null;
+    }
+
+    public static byte[] decrypt(byte[] encodedBytes, String key, String hash) {
+
+        if (encodedBytes == null || encodedBytes.length <= 0)
+            throw new IllegalArgumentException(TAG + ": Decryption is impossible: Illegal source");
+
+        if (Strings.isEmpty(key))
+            throw new IllegalArgumentException(TAG + ": Decryption is impossible: Illegal key");
+
+        key += hash;
 
         try {
 

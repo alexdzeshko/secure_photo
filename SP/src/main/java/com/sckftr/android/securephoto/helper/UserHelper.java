@@ -1,7 +1,5 @@
 package com.sckftr.android.securephoto.helper;
 
-import android.content.Context;
-
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.utils.HashUtils;
 import com.sckftr.android.utils.Strings;
@@ -9,7 +7,6 @@ import com.sckftr.android.utils.Strings;
 //todo complete refactor
 public class UserHelper implements AppConst {
 
-    private static final String PREF_FIRST_LOGGED = "user:firstLogged";
     private static final String TEMPLATE_FOR_HASH = "%s-%s";
 
     public static boolean isLogged() {
@@ -28,29 +25,45 @@ public class UserHelper implements AppConst {
 
     }
 
-    public static boolean authenticate(Context context, String userName, String password) {
+    public static void changePassword(String userName, String password) {
+
+        API.get().putPreference(KEYS.USER_OLD_KEY, getUserHash());
+
+        logIn(userName, password);
+    }
+
+    public static boolean authenticate(String userName, String password) {
 
         String hash = HashUtils.stringToMD5(String.format(TEMPLATE_FOR_HASH, userName, password));
 
         return hash != null && hash.equals(getUserHash());
+
     }
 
     public static void clearUserAuthenticateInfo() {
         API.get().putPreference(KEYS.USER_KEY, Strings.EMPTY);
-        API.get().putPreference(PREF_FIRST_LOGGED, false);
+        API.get().putPreference(KEYS.PREF_FIRST_LOGGED, false);
         API.get().putPreference(KEYS.USER_LOGGED, false);
     }
 
+    public static void clearOldHash() {
+        API.get().putPreference(KEYS.USER_OLD_KEY, Strings.EMPTY);
+    }
+
+
     public static void setFirstLogin(boolean was) {
-        API.get().putPreference(PREF_FIRST_LOGGED, was);
+        API.get().putPreference(KEYS.PREF_FIRST_LOGGED, was);
     }
 
     public static boolean isFirstLogin() {
-        return API.get().getPreferenceBool(PREF_FIRST_LOGGED, true);
+        return API.get().getPreferenceBool(KEYS.PREF_FIRST_LOGGED, true);
     }
 
     public static String getUserHash() {
         return API.get().getPreferenceString(KEYS.USER_KEY, Strings.EMPTY);
     }
 
+    public static String getOldUserHash() {
+        return API.get().getPreferenceString(KEYS.USER_OLD_KEY, Strings.EMPTY);
+    }
 }

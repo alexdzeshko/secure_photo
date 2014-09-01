@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.SettingsActivity;
+import com.sckftr.android.securephoto.data.DataApi;
 import com.sckftr.android.securephoto.fragment.base.BaseSettingsFragment;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.Strings;
@@ -66,9 +67,9 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
 
         if (strictValidate()) {
 
-            SettingsActivity activity = (SettingsActivity) getBaseActivity();
+            UserHelper.changePassword("userName", newPassword.getText().toString());
 
-            UserHelper.logIn("userName", newPassword.getText().toString());
+            SettingsActivity activity = (SettingsActivity) getBaseActivity();
 
             Toast.makeText(activity, activity.getString(R.string.password_successfully_changed), Toast.LENGTH_LONG).show();
 
@@ -96,7 +97,7 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
 
         boolean validate = oldPasswordValid && newPasswordValid && confirmNewPasswordValid;
 
-        boolean authenticate = UserHelper.authenticate(getActivity(), "userName", oldPassword.getText().toString());
+        boolean authenticate = UserHelper.authenticate("userName", oldPassword.getText().toString());
         boolean confirm = newPassword.getText().toString().equals(confirmNewPassword.getText().toString());
 
         if (!authenticate) {

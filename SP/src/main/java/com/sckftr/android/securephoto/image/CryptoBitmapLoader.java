@@ -7,14 +7,13 @@ import android.os.Bundle;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 
-import java.io.ByteArrayInputStream;
+import org.apache.commons.io.IOUtils;
+
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import by.mcreader.imageloader.BaseBitmapLoader;
 import by.mcreader.imageloader.utils.BitmapReformer;
-import by.mcreader.imageloader.utils.IOUtils;
 
 /**
  * Created by dzianis_roi on 21.07.2014.
@@ -36,11 +35,7 @@ public class CryptoBitmapLoader extends BaseBitmapLoader {
 
             fis = new FileInputStream(url);
 
-            byte[] buffer = new byte[fis.available()];
-
-            fis.read(buffer);
-
-            return Cryptograph.decrypt(buffer, key);
+            return Cryptograph.decrypt(IOUtils.toByteArray(fis), key);
 
         } catch (IOException e) {
 
@@ -48,7 +43,7 @@ public class CryptoBitmapLoader extends BaseBitmapLoader {
 
         } finally {
 
-            IOUtils.closeStream(fis);
+            IOUtils.closeQuietly(fis);
 
         }
 

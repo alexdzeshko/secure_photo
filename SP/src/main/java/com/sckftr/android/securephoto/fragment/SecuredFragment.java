@@ -3,6 +3,7 @@ package com.sckftr.android.securephoto.fragment;
 import android.app.Fragment;
 import android.content.Loader;
 import android.database.Cursor;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -13,10 +14,18 @@ import android.view.View;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
+import com.sckftr.android.securephoto.db.Cryptonite;
+import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
+import com.sckftr.android.securephoto.helper.UserHelper;
+import com.sckftr.android.utils.Procedure;
+import com.sckftr.android.utils.Strings;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Dzianis_Roi on 19.08.2014.
@@ -51,6 +60,31 @@ public class SecuredFragment extends ImageGridFragment {
     @Override
     protected ImagesGridCursorAdapter createAdapter() {
         return new ImagesGridCursorAdapter(getActivity());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        if (Strings.isEmpty(UserHelper.getOldUserHash())) {
+
+            super.onLoadFinished(loader, data);
+
+        } else {
+
+            setListShown(true);
+            setRefreshing(true);
+
+            ArrayList<Cryptonite> items = new ArrayList<Cryptonite>(data.getCount());
+
+            for (int i = 0; i < data.getCount(); i++) {
+
+                if (data.moveToPosition(i))
+                    items.add(new Image(data));
+
+            }
+
+            API.data().recryptonize(items, null);
+        }
     }
 
     @Override

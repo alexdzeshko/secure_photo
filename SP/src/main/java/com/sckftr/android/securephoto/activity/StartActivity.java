@@ -51,7 +51,7 @@ public class StartActivity extends BaseSPActivity {
 
         Log.d(LOG_TAG, "onTextChanged: " + newText);
 
-        if (UserHelper.authenticate(this, "userName", newText.toString())) {// todo manage with user name
+        if (UserHelper.authenticate("userName", newText.toString())) {// todo manage with user name
 
             passwordInput.setActivated(false);
 
@@ -67,11 +67,14 @@ public class StartActivity extends BaseSPActivity {
     void commitClicked() {
 
         String newPassword = passwordInput.getText().toString();
+
         UserHelper.logIn("userName", newPassword); // todo manage with user name
+
         UserHelper.setIsLogged(true);
+
         UserHelper.setFirstLogin(false);
+
         MainActivity.start(this);
-        finish();
     }
 
     public static void start(Context context) {
