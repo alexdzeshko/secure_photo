@@ -10,10 +10,6 @@ import com.sckftr.android.utils.Strings;
 public class UserHelper implements AppConst {
 
     private static final String PREF_FIRST_LOGGED = "user:firstLogged";
-    private static final String PREF_NAME = "user";
-    private static final String PREF_KEY_LOGGED = "user:logged";
-    private static final String PREF_KEY_HASH = "user:hash";
-    private static final int PREF_MODE = Context.MODE_PRIVATE;
     private static final String TEMPLATE_FOR_HASH = "%s-%s";
 
     public static boolean isLogged() {

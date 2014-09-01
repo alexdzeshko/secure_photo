@@ -28,6 +28,8 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
     private PauseScrollListener mPauseScrollListener;
 
+    private boolean mLoaderCreated = false;
+
     @Override
     protected int layoutId() {
         return R.layout.fragment_image_grid;
@@ -75,6 +77,8 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
         Log.d("Loader", "onCreateLoader");
 
+        mLoaderCreated = true;
+
         return getCursorLoader();
     }
 
@@ -86,7 +90,7 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
         getAdapter().swapCursor(data);
 
-        setListShown(true);
+        setListShown(true, !mLoaderCreated);
     }
 
     @Override

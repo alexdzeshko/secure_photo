@@ -9,6 +9,7 @@ import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.fragment.base.BaseSettingsFragment;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 
@@ -19,6 +20,11 @@ import org.androidannotations.annotations.EFragment;
 public class SettingsFragment extends BaseSettingsFragment {
 
     public static final String TAG = "SettingsFragment";
+
+    @AfterViews
+    void onAfterViews() {
+        setTitle(R.string.label_settings);
+    }
 
     @Click
     void changePassword() {

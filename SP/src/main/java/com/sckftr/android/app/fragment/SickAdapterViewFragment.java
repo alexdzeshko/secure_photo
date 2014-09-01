@@ -221,7 +221,7 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
         setListShown(shown, true);
     }
 
-    private void setListShown(boolean shown, boolean animate) {
+    public void setListShown(boolean shown, boolean animate) {
 
         if (mListShown == shown) return;
 

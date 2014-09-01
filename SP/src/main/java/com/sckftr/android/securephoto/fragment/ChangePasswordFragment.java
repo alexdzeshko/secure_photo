@@ -5,9 +5,13 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.activity.SettingsActivity;
 import com.sckftr.android.securephoto.fragment.base.BaseSettingsFragment;
+import com.sckftr.android.securephoto.helper.UserHelper;
+import com.sckftr.android.utils.Strings;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -26,14 +30,14 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
     @ViewById
     EditText oldPassword, newPassword, confirmNewPassword;
 
-    private boolean oldPasswordValid, newPasswordValid, confirmNewPasswordValid, newPasswordConfirmed;
+    private boolean oldPasswordValid, newPasswordValid, confirmNewPasswordValid;
 
     @ViewById
     Button done;
 
     @AfterViews
     void onAfterViews() {
-
+        setTitle(R.string.change_password);
     }
 
     @TextChange
@@ -61,12 +65,19 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
     void done() {
 
         if (strictValidate()) {
-            // TODO change password
+
+            SettingsActivity activity = (SettingsActivity) getBaseActivity();
+
+            UserHelper.logIn("userName", newPassword.getText().toString());
+
+            Toast.makeText(activity, activity.getString(R.string.password_successfully_changed), Toast.LENGTH_LONG).show();
+
+            activity.back();
+
         }
     }
 
     private void validate(EditText editText) {
-        Log.d("Alpha", done.getAlpha() + "");
 
         if (oldPasswordValid && newPasswordValid && confirmNewPasswordValid) {
 
@@ -82,9 +93,46 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
     }
 
     private boolean strictValidate() {
-        // TODO
 
-        return false;
+        boolean validate = oldPasswordValid && newPasswordValid && confirmNewPasswordValid;
+
+        boolean authenticate = UserHelper.authenticate(getActivity(), "userName", oldPassword.getText().toString());
+        boolean confirm = newPassword.getText().toString().equals(confirmNewPassword.getText().toString());
+
+        if (!authenticate) {
+
+            oldPassword.setText(Strings.EMPTY);
+
+            // TODO password error
+            oldPassword.setHintTextColor(getResources().getColor(android.R.color.holo_red_light));
+
+            return false;
+
+        } else {
+
+            oldPassword.setHintTextColor(getResources().getColor(R.color.text_hint));
+
+        }
+
+        if (!confirm) {
+
+            newPassword.setText(Strings.EMPTY);
+            confirmNewPassword.setText(Strings.EMPTY);
+
+            newPassword.setHintTextColor(getResources().getColor(android.R.color.holo_red_light));
+            confirmNewPassword.setHintTextColor(getResources().getColor(android.R.color.holo_red_light));
+
+        } else {
+
+            newPassword.setHintTextColor(getResources().getColor(R.color.text_hint));
+            confirmNewPassword.setHintTextColor(getResources().getColor(R.color.text_hint));
+
+        }
+
+        boolean strictValidate = authenticate && confirm;
+
+        return validate && strictValidate;
+
     }
 
     private void showDoneButton(boolean show) {

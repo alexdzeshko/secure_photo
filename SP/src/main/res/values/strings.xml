@@ -29,8 +29,12 @@
     <string name="settings_item_change_password">Change password</string>
     <string name="start_greetings">Your Safe Place</string>
     <string name="label_settings">Settings</string>
+
+    <!--========= Change Password settings ==========-->
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
+    <string name="change_password">Change Password</string>
+    <string name="password_successfully_changed">Password successfully changed</string>
 
 </resources>

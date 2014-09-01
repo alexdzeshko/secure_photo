@@ -48,7 +48,7 @@ public class SettingsActivity extends BaseSPActivity {
         }
     }
 
-    void back() {
+    public void back() {
 
         Fragment fragment = getSettingsFragment();
 

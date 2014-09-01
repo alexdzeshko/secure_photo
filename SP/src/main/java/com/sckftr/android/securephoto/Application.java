@@ -21,7 +21,7 @@ public class Application extends android.app.Application {
 
         mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
                 .setPlaceholder(R.drawable.ic_blue_lock)
-                .enableFadeIn(false)
+                .enableFadeIn(true)
                 .setDiscCacheEnabled(false)
                 .setMemoryCacheEnabled(true)
                 .setMemoryCacheSize(cacheSize)
