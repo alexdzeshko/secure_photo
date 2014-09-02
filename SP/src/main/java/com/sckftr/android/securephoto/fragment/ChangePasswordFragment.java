@@ -80,7 +80,9 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
 
     private void validate(EditText editText) {
 
-        if (oldPasswordValid && newPasswordValid && confirmNewPasswordValid) {
+        boolean valid = oldPasswordValid && newPasswordValid && confirmNewPasswordValid;
+
+        if (valid) {
 
             if (done.getAlpha() != 1) showDoneButton(true);
 
@@ -104,7 +106,6 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
 
             oldPassword.setText(Strings.EMPTY);
 
-            // TODO password error
             oldPassword.setHintTextColor(getResources().getColor(android.R.color.holo_red_light));
 
             return false;

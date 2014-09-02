@@ -58,8 +58,6 @@ public class StartActivity extends BaseSPActivity {
             UserHelper.setIsLogged(true);
 
             MainActivity.start(this);
-
-            finish();
         }
     }
 

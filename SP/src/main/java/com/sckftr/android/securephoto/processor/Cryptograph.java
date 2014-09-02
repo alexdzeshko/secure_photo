@@ -2,18 +2,16 @@ package com.sckftr.android.securephoto.processor;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
 import com.sckftr.android.utils.Strings;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -30,8 +28,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import androidkeystore.android.security.KeyStoreManager;
-
 public class Cryptograph {
 
     private static final String TAG = Cryptograph.class.getSimpleName();
@@ -44,56 +40,22 @@ public class Cryptograph {
         if (Strings.isEmpty(key))
             throw new IllegalArgumentException(TAG + ": Encryption is impossible: Illegal key!!");
 
-        key += UserHelper.getUserHash();
-
         InputStream is = null;
-        FileOutputStream fos = null;
 
         try {
+
             is = ctx.getContentResolver().openInputStream(uri);
-
-            byte[] buffer = IOUtils.toByteArray(is);
-
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, getSecretKeySpec(key));
 
             Uri secureUri = Storage.Images.getPrivateUri(uri);//todo storage images
 
-            File file = new File(secureUri.getPath());
-
-            fos = new FileOutputStream(file);
-
-            fos.write(cipher.doFinal(buffer));
-
-            Log.d("Encode", "SecurePath = " + secureUri.getPath());
+            return encrypt(ctx, secureUri, IOUtils.toByteArray(is), key);
 
         } catch (IOException e) {
             AppConst.Log.e(TAG, "Encrypt", e);
             return false;
-        } catch (IllegalBlockSizeException e) {
-            AppConst.Log.e(TAG, "Encrypt: ", e);
-            return false;
-        } catch (InvalidKeyException e) {
-            AppConst.Log.e(TAG, "Encrypt: ", e);
-            return false;
-        } catch (BadPaddingException e) {
-            AppConst.Log.e(TAG, "Encrypt: ", e);
-            return false;
-        } catch (NoSuchAlgorithmException e) {
-            AppConst.Log.e(TAG, "Encrypt: ", e);
-            return false;
-        } catch (NoSuchPaddingException e) {
-            AppConst.Log.e(TAG, "Encrypt: ", e);
-            return false;
-        } catch (NoSuchProviderException e) {
-            AppConst.Log.e(TAG, "Encrypt: ", e);
-            return false;
         } finally {
             IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(fos);
         }
-
-        return true;
     }
 
     public static boolean encrypt(Context ctx, Uri securedUri, byte[] source, String key) {
@@ -106,8 +68,6 @@ public class Cryptograph {
 
         key += UserHelper.getUserHash();
 
-        FileOutputStream fos = null;
-
         try {
 
             Cipher cipher = Cipher.getInstance("AES");
@@ -115,11 +75,7 @@ public class Cryptograph {
 
             File file = new File(securedUri.getPath());
 
-            fos = new FileOutputStream(file, false);
-
-            fos.write(cipher.doFinal(source));
-
-            Log.d("Encode", "SecurePath = " + securedUri.getPath());
+            FileUtils.writeByteArrayToFile(file, cipher.doFinal(source));
 
         } catch (IOException e) {
             AppConst.Log.e(TAG, "Encrypt", e);
@@ -142,8 +98,6 @@ public class Cryptograph {
         } catch (NoSuchProviderException e) {
             AppConst.Log.e(TAG, "Encrypt: ", e);
             return false;
-        } finally {
-            IOUtils.closeQuietly(fos);
         }
 
         return true;
@@ -151,39 +105,8 @@ public class Cryptograph {
 
     public static byte[] decrypt(byte[] encodedBytes, String key) {
 
-        if (encodedBytes == null || encodedBytes.length <= 0)
-            throw new IllegalArgumentException(TAG + ": Decryption is impossible: Illegal source");
+        return decrypt(encodedBytes, key, UserHelper.getUserHash());
 
-        if (Strings.isEmpty(key))
-            throw new IllegalArgumentException(TAG + ": Decryption is impossible: Illegal key");
-
-        key += UserHelper.getUserHash();
-
-        try {
-
-            Cipher cipher = Cipher.getInstance("AES");
-
-            cipher.init(Cipher.DECRYPT_MODE, getSecretKeySpec(key));
-
-            return cipher.doFinal(encodedBytes);
-
-        } catch (IllegalBlockSizeException e) {
-            AppConst.Log.e(TAG, "Decryption: ", e);
-        } catch (InvalidKeyException e) {
-            AppConst.Log.e(TAG, "Decryption: ", e);
-        } catch (BadPaddingException e) {
-            AppConst.Log.e(TAG, "Decryption: ", e);
-        } catch (NoSuchAlgorithmException e) {
-            AppConst.Log.e(TAG, "Decryption: ", e);
-        } catch (NoSuchPaddingException e) {
-            AppConst.Log.e(TAG, "Decryption: ", e);
-        } catch (NoSuchProviderException e) {
-            AppConst.Log.e(TAG, "Decryption: ", e);
-        } catch (UnsupportedEncodingException e) {
-            AppConst.Log.e(TAG, "Decryption: ", e);
-        }
-
-        return null;
     }
 
     public static byte[] decrypt(byte[] encodedBytes, String key, String hash) {
@@ -240,45 +163,4 @@ public class Cryptograph {
         return new SecretKeySpec(skey.getEncoded(), "AES");
 
     }
-
-    public void storeKey(final String alias, final String key) {
-        KeyStoreManager.put(alias, key, new Procedure<String>() {
-            @Override
-            public void apply(String result) {
-                if (result != null && result.equals(KeyStoreManager.ERROR_LOCKED)) {
-
-                    AppConst.API.get().putPreference(alias, key);
-
-                }
-            }
-        });
-
-    }
-
-    public void getKey(final String alias, final Procedure<String> resultCallback) {
-
-        KeyStoreManager.get(alias, new Procedure<String>() {
-            @Override
-            public void apply(String result) {
-
-                if (result != null && result.equals(KeyStoreManager.ERROR_LOCKED)) {
-
-                    resultCallback.apply(AppConst.API.get().getPreferenceString(alias, null));
-                    return;
-
-                }
-
-                resultCallback.apply(result);
-
-            }
-        });
-    }
-
-    public void deleteKey(String alias) {
-
-        KeyStoreManager.deleteEntries();
-
-        AppConst.API.get().putPreference(alias, null);
-    }
-
 }

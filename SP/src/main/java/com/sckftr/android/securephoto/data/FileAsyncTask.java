@@ -9,6 +9,8 @@ import com.sckftr.android.securephoto.R;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Strings;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -170,13 +172,13 @@ public class FileAsyncTask extends AsyncTask<Bundle, Void, Bundle> {
 
             File file = new File(uri.getPath());
 
-            if (file.exists()) {
+            try {
 
-                AppConst.Log.d(TAG, "file: %s, deleted: %s ", uri, file.delete());
+                FileUtils.forceDelete(file);
 
-            } else {
+            } catch (IOException e) {
 
-                AppConst.Log.w(TAG, "file does not exist: " + uri);
+                AppConst.Log.e(TAG, "delete: ", e);
 
             }
         }

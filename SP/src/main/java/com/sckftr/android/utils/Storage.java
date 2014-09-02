@@ -7,6 +7,8 @@ import android.os.Environment;
 
 import com.sckftr.android.securephoto.AppConst;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +59,15 @@ public class Storage {
 
             File f = new File(uri.getPath());
 
-            if (f.exists()) f.delete();
+            try {
+
+                FileUtils.forceDelete(f);
+
+            } catch (IOException e) {
+
+                AppConst.Log.e(TAG, "deleteFileSync: ", e);
+
+            }
         }
     }
 

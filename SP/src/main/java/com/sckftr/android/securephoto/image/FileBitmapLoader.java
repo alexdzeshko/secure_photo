@@ -6,8 +6,12 @@ import android.os.Bundle;
 
 import com.sckftr.android.securephoto.AppConst;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import by.mcreader.imageloader.BaseBitmapLoader;
 import by.mcreader.imageloader.utils.BitmapAnalizer;
@@ -24,10 +28,13 @@ public class FileBitmapLoader extends BaseBitmapLoader<FileInputStream> {
     protected FileInputStream getSource(String url, BitmapFactory.Options options, Bundle extra) {
 
         try {
-            return new FileInputStream(url);
-        } catch (FileNotFoundException e) {
-            AppConst.Log.d(TAG, e.getMessage());
+
+            return FileUtils.openInputStream(new File(url));
+
+        } catch (IOException e) {
+            AppConst.Log.d(TAG, "getSource: ", e);
         }
+
         return null;
     }
 

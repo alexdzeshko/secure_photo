@@ -10,7 +10,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CursorAdapter;
 
+import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
@@ -23,6 +25,7 @@ import com.sckftr.android.utils.Strings;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.apache.commons.io.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +52,16 @@ public class SecuredFragment extends ImageGridFragment {
         super.onResume();
 
         if (!isDetached()) {
-
             getActivityParams().putString(EXTRA.CURRENT_FRAGMENT, TAG);
 
             API.images().setPlaceholder(R.drawable.ic_blue_lock);
+
+            if (!Strings.isEmpty(UserHelper.getOldUserHash())) {
+
+                BaseCursorAdapter adapter = getAdapter();
+
+                if (adapter != null) getAdapter().swapCursor(null);
+            }
         }
 
     }

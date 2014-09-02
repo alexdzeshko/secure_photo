@@ -24,6 +24,7 @@ import com.sckftr.android.utils.ContractUtils;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
