@@ -1,8 +1,16 @@
 package com.sckftr.android.securephoto.helper;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.securephoto.Application;
 import com.sckftr.android.utils.HashUtils;
 import com.sckftr.android.utils.Strings;
+
+import org.androidannotations.api.sharedpreferences.EditorHelper;
+
+import java.util.prefs.Preferences;
 
 //todo complete refactor
 public class UserHelper implements AppConst {
@@ -10,26 +18,25 @@ public class UserHelper implements AppConst {
     private static final String TEMPLATE_FOR_HASH = "%s-%s";
 
     public static boolean isLogged() {
-        return API.get().getPreferenceBool(KEYS.PREF_USER_LOGGED, false);
+        return getBoolean(KEYS.PREF_USER_LOGGED, false);
     }
 
-    public static void setIsLogged(boolean isLogged) {
-        API.get().putPreference(KEYS.PREF_USER_LOGGED, isLogged);
+    public static boolean setIsLogged(boolean isLogged) {
+        return putBoolean(KEYS.PREF_USER_LOGGED, isLogged);
     }
 
-    public static void logIn(String userName, String password) {
+    public static boolean logIn(String userName, String password) {
 
         String hash = HashUtils.stringToMD5(String.format(TEMPLATE_FOR_HASH, userName, password));
 
-        API.get().putPreference(KEYS.PREF_USER_KEY, hash);
-
+        return putString(KEYS.PREF_USER_KEY, hash);
     }
 
-    public static void changePassword(String userName, String password) {
+    public static boolean changePassword(String userName, String password) {
 
-        API.get().putPreference(KEYS.PREF_USER_OLD_KEY, getUserHash());
+        putString(KEYS.PREF_USER_OLD_KEY, getUserHash());
 
-        logIn(userName, password);
+        return logIn(userName, password);
     }
 
     public static boolean authenticate(String userName, String password) {
@@ -40,30 +47,76 @@ public class UserHelper implements AppConst {
 
     }
 
-    public static void clearUserAuthenticateInfo() {
-        API.get().putPreference(KEYS.PREF_USER_KEY, Strings.EMPTY);
-        API.get().putPreference(KEYS.PREF_FIRST_LOGGED, false);
-        API.get().putPreference(KEYS.PREF_USER_LOGGED, false);
-    }
-
-    public static void clearOldHash() {
-        API.get().putPreference(KEYS.PREF_USER_OLD_KEY, Strings.EMPTY);
-    }
-
-
-    public static void setFirstLogin(boolean was) {
-        API.get().putPreference(KEYS.PREF_FIRST_LOGGED, was);
+    public static boolean setFirstLogin(boolean was) {
+        return putBoolean(KEYS.PREF_FIRST_LOGGED, was);
     }
 
     public static boolean isFirstLogin() {
-        return API.get().getPreferenceBool(KEYS.PREF_FIRST_LOGGED, true);
+        return getBoolean(KEYS.PREF_FIRST_LOGGED, true);
     }
 
     public static String getUserHash() {
-        return API.get().getPreferenceString(KEYS.PREF_USER_KEY, Strings.EMPTY);
+        return getString(KEYS.PREF_USER_KEY, Strings.EMPTY);
     }
 
     public static String getOldUserHash() {
-        return API.get().getPreferenceString(KEYS.PREF_USER_OLD_KEY, Strings.EMPTY);
+        return getString(KEYS.PREF_USER_OLD_KEY, Strings.EMPTY);
+    }
+
+    public static void clearUserAuthenticateInfo() {
+
+        remove(KEYS.PREF_USER_KEY);
+        remove(KEYS.PREF_USER_OLD_KEY);
+        remove(KEYS.PREF_FIRST_LOGGED);
+        remove(KEYS.PREF_USER_LOGGED);
+
+        clearOldHash();
+    }
+
+    public static void clearOldHash() {
+        remove(KEYS.PREF_USER_OLD_KEY);
+    }
+
+    /**
+     * ******************************************************
+     * /** Preferences
+     * /********************************************************
+     */
+
+    private static SharedPreferences getPreferences() {
+        Context context = Application.get();
+
+        return context == null ? null : context.getSharedPreferences("app_values", Context.MODE_PRIVATE);
+    }
+
+    private static boolean putString(String key, String value) {
+
+        SharedPreferences sp = getPreferences();
+
+        return sp == null ? false : sp.edit().putString(key, value).commit();
+    }
+
+    private static boolean putBoolean(String key, boolean value) {
+        SharedPreferences sp = getPreferences();
+
+        return sp == null ? false : sp.edit().putBoolean(key, value).commit();
+    }
+
+    private static String getString(String key, String defValue) {
+        SharedPreferences sp = getPreferences();
+
+        return sp == null ? defValue : sp.getString(key, defValue);
+    }
+
+    private static boolean getBoolean(String key, boolean defValue) {
+        SharedPreferences sp = getPreferences();
+
+        return sp == null ? defValue : getPreferences().getBoolean(key, defValue);
+    }
+
+    private static boolean remove(String key) {
+        SharedPreferences sp = getPreferences();
+
+        return sp == null ? false : getPreferences().edit().remove(key).commit();
     }
 }
