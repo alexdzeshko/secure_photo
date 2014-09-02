@@ -12,6 +12,7 @@ import com.sckftr.android.app.activity.BaseActivity;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
+import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.Platform;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @EBean
-public class PhotoHelper {
+public class PhotoHelper implements AppConst {
 
     public static final String EXTRA_NEW_PHOTO = "com.sckftr.android.securephoto.helper.EXTRA_NEW_PHOTO";
 
@@ -53,7 +54,7 @@ public class PhotoHelper {
 
                     activity.getParams().putParcelable(EXTRA_NEW_PHOTO, uri);
 
-                    AppConst.API.get().camera(activity, AppConst.REQUESTS.IMAGE_CAPTURE, uri);
+                    API.get().camera(activity, REQUESTS.IMAGE_CAPTURE, uri);
 
                 } else {
 
@@ -102,12 +103,12 @@ public class PhotoHelper {
 
         CursorUtils.close(cursor);
 
-        AppConst.API.data().cryptonize(images, new Procedure<String>() {
+        API.data().cryptonize(images, new Procedure<String>() {
             @Override
             public void apply(String dialog) {
 
                 for (String id : contentIds)
-                    AppConst.API.db().delete(Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + id), null, null);
+                    API.db().delete(Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString() + "/" + id), null, null);
 
                 onFinished.apply(dialog);
 
@@ -140,7 +141,7 @@ public class PhotoHelper {
             }
         }
 
-        AppConst.API.data().uncryptonize(images, null);
+        API.data().uncryptonize(images, null);
     }
 
     public void deletePhotos(SparseBooleanArray items, final Cursor cursor) {
@@ -168,7 +169,36 @@ public class PhotoHelper {
             }
         }
 
-        AppConst.API.data().deleteFiles(images);
+        API.data().deleteFiles(images);
+    }
+
+    public void restorePhotos(Cursor data) {
+        if (data == null || isPhotosRestoring()) return;
+
+        setPhotosRestoring(true);
+
+        ArrayList<Cryptonite> items = new ArrayList<Cryptonite>(data.getCount());
+
+        for (int i = 0; i < data.getCount(); i++) {
+
+            if (data.moveToPosition(i)) items.add(new Image(data));
+
+        }
+
+        API.data().recryptonize(items, new Procedure<Object>() {
+            @Override
+            public void apply(Object dialog) {
+                setPhotosRestoring(false);
+            }
+        });
+    }
+
+    public void setPhotosRestoring(boolean restoring) {
+        API.get().putPreference(KEYS.PREF_PHOTOS_RESTORING, restoring);
+    }
+
+    public boolean isPhotosRestoring() {
+        return API.get().getPreferenceBool(KEYS.PREF_PHOTOS_RESTORING, false);
     }
 
 }

@@ -212,6 +212,10 @@ public class MainActivity extends BaseSPActivity {
         photoHelper.deletePhotos(items, cursor);
     }
 
+    public void restorePhotos(Cursor cursor) {
+        photoHelper.restorePhotos(cursor);
+    }
+
     public void setSaveLivingHint(boolean saveLivingHint) {
         this.saveLivingHint = saveLivingHint;
     }

@@ -10,24 +10,24 @@ public class UserHelper implements AppConst {
     private static final String TEMPLATE_FOR_HASH = "%s-%s";
 
     public static boolean isLogged() {
-        return API.get().getPreferenceBool(KEYS.USER_LOGGED, false);
+        return API.get().getPreferenceBool(KEYS.PREF_USER_LOGGED, false);
     }
 
     public static void setIsLogged(boolean isLogged) {
-        API.get().putPreference(KEYS.USER_LOGGED, isLogged);
+        API.get().putPreference(KEYS.PREF_USER_LOGGED, isLogged);
     }
 
     public static void logIn(String userName, String password) {
 
         String hash = HashUtils.stringToMD5(String.format(TEMPLATE_FOR_HASH, userName, password));
 
-        API.get().putPreference(KEYS.USER_KEY, hash);
+        API.get().putPreference(KEYS.PREF_USER_KEY, hash);
 
     }
 
     public static void changePassword(String userName, String password) {
 
-        API.get().putPreference(KEYS.USER_OLD_KEY, getUserHash());
+        API.get().putPreference(KEYS.PREF_USER_OLD_KEY, getUserHash());
 
         logIn(userName, password);
     }
@@ -41,13 +41,13 @@ public class UserHelper implements AppConst {
     }
 
     public static void clearUserAuthenticateInfo() {
-        API.get().putPreference(KEYS.USER_KEY, Strings.EMPTY);
+        API.get().putPreference(KEYS.PREF_USER_KEY, Strings.EMPTY);
         API.get().putPreference(KEYS.PREF_FIRST_LOGGED, false);
-        API.get().putPreference(KEYS.USER_LOGGED, false);
+        API.get().putPreference(KEYS.PREF_USER_LOGGED, false);
     }
 
     public static void clearOldHash() {
-        API.get().putPreference(KEYS.USER_OLD_KEY, Strings.EMPTY);
+        API.get().putPreference(KEYS.PREF_USER_OLD_KEY, Strings.EMPTY);
     }
 
 
@@ -60,10 +60,10 @@ public class UserHelper implements AppConst {
     }
 
     public static String getUserHash() {
-        return API.get().getPreferenceString(KEYS.USER_KEY, Strings.EMPTY);
+        return API.get().getPreferenceString(KEYS.PREF_USER_KEY, Strings.EMPTY);
     }
 
     public static String getOldUserHash() {
-        return API.get().getPreferenceString(KEYS.USER_OLD_KEY, Strings.EMPTY);
+        return API.get().getPreferenceString(KEYS.PREF_USER_OLD_KEY, Strings.EMPTY);
     }
 }

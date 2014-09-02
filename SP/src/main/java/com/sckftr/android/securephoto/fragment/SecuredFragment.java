@@ -3,32 +3,23 @@ package com.sckftr.android.securephoto.fragment;
 import android.app.Fragment;
 import android.content.Loader;
 import android.database.Cursor;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CursorAdapter;
 
 import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
-import com.sckftr.android.securephoto.db.Cryptonite;
-import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Strings;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
-import org.apache.commons.io.FileUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Dzianis_Roi on 19.08.2014.
@@ -60,10 +51,16 @@ public class SecuredFragment extends ImageGridFragment {
 
                 BaseCursorAdapter adapter = getAdapter();
 
-                if (adapter != null) getAdapter().swapCursor(null);
+                if (adapter != null) {
+
+                    setRefreshing(true);
+
+                    restorePhotos(adapter.getCursor());
+
+                    adapter.swapCursor(null);
+                }
             }
         }
-
     }
 
     @Override
@@ -83,16 +80,8 @@ public class SecuredFragment extends ImageGridFragment {
             setListShown(true);
             setRefreshing(true);
 
-            ArrayList<Cryptonite> items = new ArrayList<Cryptonite>(data.getCount());
+            restorePhotos(data);
 
-            for (int i = 0; i < data.getCount(); i++) {
-
-                if (data.moveToPosition(i))
-                    items.add(new Image(data));
-
-            }
-
-            API.data().recryptonize(items, null);
         }
     }
 
@@ -151,6 +140,12 @@ public class SecuredFragment extends ImageGridFragment {
         setRefreshing(true);
 
         ((MainActivity) getActivity()).startCamera();
+    }
+
+    private void restorePhotos(Cursor cursor) {
+        MainActivity activity = (MainActivity) getBaseActivity();
+
+        if (activity != null) activity.restorePhotos(cursor);
     }
 
     public static Fragment build() {

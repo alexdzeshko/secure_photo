@@ -36,10 +36,12 @@ public interface AppConst {
 
     // Preferences keys.
     public interface KEYS {
-        final String USER_KEY = PACKAGE + ".USER_KEY";
-        final String USER_OLD_KEY = PACKAGE + ".USER_OLD_KEY";
-        final String USER_LOGGED = PACKAGE + ".USER_LOGGED";
+        final String PREF_USER_KEY = PACKAGE + ".USER_KEY";
+        final String PREF_USER_OLD_KEY = PACKAGE + ".USER_OLD_KEY";
+        final String PREF_USER_LOGGED = PACKAGE + ".USER_LOGGED";
         final String PREF_FIRST_LOGGED = PACKAGE + ".FIRST_LOGGED";
+
+        final String PREF_PHOTOS_RESTORING = PACKAGE + ".PHOTOS_RESTORING";
     }
 
     public static class REQUESTS {

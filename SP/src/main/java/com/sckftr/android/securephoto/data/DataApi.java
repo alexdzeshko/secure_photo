@@ -25,12 +25,8 @@ import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -62,40 +58,26 @@ public class DataApi implements AppConst {
 
         List<Image> toDbDelete = new ArrayList<Image>(files.size());
 
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
+        try {
 
-        for (Cryptonite file : files) {
+            for (Cryptonite file : files) {
 
-            try {
+                File securedFile = new File(file.getFileUri().toString());
 
-                fis = new FileInputStream(file.getFileUri().toString());
-
-                byte[] buffer = IOUtils.toByteArray(fis);
+                byte[] buffer = FileUtils.readFileToByteArray(securedFile);
 
                 File publicFile = Storage.Images.getPublicFile(file.getFileUri());
-                fos = new FileOutputStream(publicFile);
 
-                IOUtils.write(Cryptograph.decrypt(buffer, file.getKey()), fos);
+                FileUtils.writeByteArrayToFile(publicFile, Cryptograph.decrypt(buffer, file.getKey()));
 
                 Storage.scanFile(context, Uri.fromFile(publicFile));
 
                 toDbDelete.add((Image) file);
-
-            } catch (FileNotFoundException e) {
-
-                Log.e(TAG, "unlockFile: ", e);
-
-            } catch (IOException e) {
-
-                Log.e(TAG, "unlockFile: ", e);
-
-            } finally {
-
-                IOUtils.closeQuietly(fis);
-                IOUtils.closeQuietly(fos);
-
             }
+        } catch (IOException e) {
+
+            Log.e(TAG, "unlockFile: ", e);
+
         }
 
         API.db().delete((ArrayList<? extends DbModel>) toDbDelete);
@@ -138,28 +120,22 @@ public class DataApi implements AppConst {
 
     private void relockFiles(Context context, List<Cryptonite> files) {
 
-        FileInputStream fis = null;
-
         String hash = UserHelper.getOldUserHash();
 
         try {
 
             for (Cryptonite file : files) {
 
-                fis = new FileInputStream(file.getFileUri().toString());
+                File f = new File(file.getFileUri().toString());
 
-                byte[] buffer = Cryptograph.decrypt(IOUtils.toByteArray(fis), file.getKey(), hash);
+                byte[] buffer = Cryptograph.decrypt(FileUtils.readFileToByteArray(f), file.getKey(), hash);
 
                 Cryptograph.encrypt(context, file.getFileUri(), buffer, file.getKey());
             }
 
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "relockFiles: ", e);
         } catch (IOException e) {
             Log.e(TAG, "relockFiles: ", e);
         } finally {
-
-            IOUtils.closeQuietly(fis);
 
             UserHelper.clearOldHash();
 
