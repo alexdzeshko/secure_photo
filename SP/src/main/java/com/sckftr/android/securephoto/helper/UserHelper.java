@@ -36,6 +36,8 @@ public class UserHelper implements AppConst {
 
         putString(KEYS.PREF_USER_OLD_KEY, getUserHash());
 
+        API.data().recryptonize(null);
+
         return logIn(userName, password);
     }
 
@@ -118,5 +120,15 @@ public class UserHelper implements AppConst {
         SharedPreferences sp = getPreferences();
 
         return sp == null ? false : getPreferences().edit().remove(key).commit();
+    }
+
+    public static void setPhotosRestoring(boolean restoring) {
+        if (!restoring) clearOldHash();
+
+        API.get().putPreference(KEYS.PREF_PHOTOS_RESTORING, restoring);
+    }
+
+    public static boolean isPhotosRestoring() {
+        return API.get().getPreferenceBool(KEYS.PREF_PHOTOS_RESTORING, false);
     }
 }

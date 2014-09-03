@@ -1,19 +1,23 @@
 package com.sckftr.android.securephoto.data;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.v4.app.NotificationCompat;
 
 import com.sckftr.android.app.ServiceConst;
 import com.sckftr.android.securephoto.AppConst;
 import com.sckftr.android.securephoto.Application;
+import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.contract.Contracts;
 import com.sckftr.android.securephoto.db.Cryptonite;
 import com.sckftr.android.securephoto.db.DbModel;
@@ -21,8 +25,10 @@ import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.securephoto.processor.Cryptograph;
 import com.sckftr.android.utils.ContractUtils;
+import com.sckftr.android.utils.CursorUtils;
 import com.sckftr.android.utils.Procedure;
 import com.sckftr.android.utils.Storage;
+import com.sckftr.android.utils.Strings;
 
 import org.apache.commons.io.FileUtils;
 
@@ -118,13 +124,50 @@ public class DataApi implements AppConst {
         API.db().insert((ArrayList<? extends DbModel>) toDbInsert);
     }
 
-    private void relockFiles(Context context, List<Cryptonite> files) {
+    private void relockFiles(Context context) {
+
+        if (UserHelper.isPhotosRestoring()) return;
 
         String hash = UserHelper.getOldUserHash();
 
+        Cursor c = API.db().query(ContractUtils.getUri(Contracts.ImageContract.class), null);
+
+        int max = c == null ? -1 : c.getCount();
+
+        if (max <= 0 || Strings.isEmpty(hash)) return;
+
+        NotificationManager manager = null;
+        NotificationCompat.Builder builder = null;
+
         try {
 
-            for (Cryptonite file : files) {
+            UserHelper.setPhotosRestoring(true);
+
+            manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            builder = new NotificationCompat.Builder(context)
+                    .setContentTitle("Restoring " + max + " photos")
+                    .setContentText(context.getString(R.string.restoring_in_progress))
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setProgress(max, 0, false);
+
+            manager.notify(1, builder.build());
+
+            ArrayList<Cryptonite> items = new ArrayList<Cryptonite>(max);
+
+            for (int i = 0; i < max; i++) if (c.moveToPosition(i)) items.add(new Image(c));
+
+            CursorUtils.close(c);
+
+            Cryptonite file;
+
+            for (int i = 0; i < items.size(); i++) {
+
+                builder.setProgress(max, i, false);
+                manager.notify(1, builder.build());
+
+                file = items.get(i);
 
                 File f = new File(file.getFileUri().toString());
 
@@ -137,9 +180,18 @@ public class DataApi implements AppConst {
             Log.e(TAG, "relockFiles: ", e);
         } finally {
 
-            UserHelper.clearOldHash();
+            UserHelper.setPhotosRestoring(false);
 
             context.getContentResolver().notifyChange(ContractUtils.getUri(Contracts.ImageContract.class), null);
+
+            if (builder != null && manager != null) {
+                builder.setContentText(context.getString(R.string.restoring_completed))
+                        .setOngoing(false)
+                        .setAutoCancel(true)
+                        .setProgress(0, 0, false);
+
+                manager.notify(1, builder.build());
+            }
         }
     }
 
@@ -195,8 +247,6 @@ public class DataApi implements AppConst {
             final ResultReceiver receiver = intent.getParcelableExtra(PARAM_IN_CALLBACK);
             final ArrayList<Cryptonite> files = intent.getParcelableArrayListExtra(PARAM_IN_DATA);
 
-            files.trimToSize();
-
             Bundle resultingBundle = null;
 
             switch (commandName) {
@@ -220,7 +270,7 @@ public class DataApi implements AppConst {
 
                 case RELOCK:
 
-                    API.data().relockFiles(getBaseContext(), files);
+                    API.data().relockFiles(getBaseContext());
 
                     resultingBundle = createSingleEntryBundle("ok");
                 default:
@@ -269,11 +319,9 @@ public class DataApi implements AppConst {
         dispatchServiceCall(intent);
     }
 
-    public void recryptonize(ArrayList<? extends Cryptonite> cryptonite, Procedure<? extends Object> callback) {
+    public void recryptonize(Procedure<? extends Object> callback) {
 
         final Intent intent = createBaseIntentForAsyncEnforcer(CommandName.RELOCK, createResultReceiver(callback));
-
-        intent.putParcelableArrayListExtra(DataAsyncEnforcerService.PARAM_IN_DATA, cryptonite);
 
         dispatchServiceCall(intent);
     }

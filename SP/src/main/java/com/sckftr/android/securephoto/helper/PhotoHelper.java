@@ -171,34 +171,4 @@ public class PhotoHelper implements AppConst {
 
         API.data().deleteFiles(images);
     }
-
-    public void restorePhotos(Cursor data) {
-        if (data == null || isPhotosRestoring()) return;
-
-        setPhotosRestoring(true);
-
-        ArrayList<Cryptonite> items = new ArrayList<Cryptonite>(data.getCount());
-
-        for (int i = 0; i < data.getCount(); i++) {
-
-            if (data.moveToPosition(i)) items.add(new Image(data));
-
-        }
-
-        API.data().recryptonize(items, new Procedure<Object>() {
-            @Override
-            public void apply(Object dialog) {
-                setPhotosRestoring(false);
-            }
-        });
-    }
-
-    public void setPhotosRestoring(boolean restoring) {
-        API.get().putPreference(KEYS.PREF_PHOTOS_RESTORING, restoring);
-    }
-
-    public boolean isPhotosRestoring() {
-        return API.get().getPreferenceBool(KEYS.PREF_PHOTOS_RESTORING, false);
-    }
-
 }

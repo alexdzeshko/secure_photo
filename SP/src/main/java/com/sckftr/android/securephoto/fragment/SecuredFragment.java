@@ -47,19 +47,19 @@ public class SecuredFragment extends ImageGridFragment {
 
             API.images().setPlaceholder(R.drawable.ic_blue_lock);
 
-            if (!Strings.isEmpty(UserHelper.getOldUserHash())) {
-
-                BaseCursorAdapter adapter = getAdapter();
-
-                if (adapter != null) {
-
-                    setRefreshing(true);
-
-                    restorePhotos(adapter.getCursor());
-
-                    adapter.swapCursor(null);
-                }
-            }
+//            if (!Strings.isEmpty(UserHelper.getOldUserHash())) {
+//
+//                BaseCursorAdapter adapter = getAdapter();
+//
+//                if (adapter != null) {
+//
+//                    setRefreshing(true);
+//
+////                    restorePhotos(adapter.getCursor());
+//
+//                    adapter.swapCursor(null);
+//                }
+//            }
         }
     }
 
@@ -71,18 +71,16 @@ public class SecuredFragment extends ImageGridFragment {
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        if (Strings.isEmpty(UserHelper.getOldUserHash())) {
+//        if (Strings.isEmpty(UserHelper.getOldUserHash())) {
 
-            super.onLoadFinished(loader, data);
+        super.onLoadFinished(loader, data);
 
-        } else {
-
-            setListShown(true);
-            setRefreshing(true);
-
-            restorePhotos(data);
-
-        }
+//        } else {
+//
+//            setListShown(true);
+//            setRefreshing(true);
+//
+//        }
     }
 
     @Override
@@ -140,12 +138,6 @@ public class SecuredFragment extends ImageGridFragment {
         setRefreshing(true);
 
         ((MainActivity) getActivity()).startCamera();
-    }
-
-    private void restorePhotos(Cursor cursor) {
-        MainActivity activity = (MainActivity) getBaseActivity();
-
-        if (activity != null) activity.restorePhotos(cursor);
     }
 
     public static Fragment build() {

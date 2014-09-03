@@ -37,4 +37,8 @@
     <string name="change_password">Change Password</string>
     <string name="password_successfully_changed">Password successfully changed</string>
 
+    <!--========= Notification ==========-->
+    <string name="restoring_in_progress">Restoring in progress</string>
+    <string name="restoring_completed">Restoring completed</string>
+
 </resources>

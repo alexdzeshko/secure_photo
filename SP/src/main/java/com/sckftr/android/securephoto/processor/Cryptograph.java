@@ -161,6 +161,5 @@ public class Cryptograph {
         SecretKey skey = generator.generateKey();
 
         return new SecretKeySpec(skey.getEncoded(), "AES");
-
     }
 }

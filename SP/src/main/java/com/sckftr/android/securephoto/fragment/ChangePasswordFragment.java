@@ -74,7 +74,6 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
             Toast.makeText(activity, activity.getString(R.string.password_successfully_changed), Toast.LENGTH_LONG).show();
 
             activity.back();
-
         }
     }
 
