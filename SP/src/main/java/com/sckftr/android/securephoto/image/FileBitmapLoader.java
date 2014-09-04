@@ -20,16 +20,16 @@ import by.mcreader.imageloader.utils.BitmapReformer;
 /**
  * Created by dzianis_roi on 23.07.2014.
  */
-public class FileBitmapLoader extends BaseBitmapLoader<FileInputStream> {
+public class FileBitmapLoader extends BaseBitmapLoader {
 
     private static final String TAG = FileBitmapLoader.class.getSimpleName();
 
     @Override
-    protected FileInputStream getSource(String url, BitmapFactory.Options options, Bundle extra) {
+    protected byte[] getSource(String url, BitmapFactory.Options options, Bundle extra) {
 
         try {
 
-            return FileUtils.openInputStream(new File(url));
+            return FileUtils.readFileToByteArray(new File(url));
 
         } catch (IOException e) {
             AppConst.Log.d(TAG, "getSource: ", e);
@@ -40,7 +40,7 @@ public class FileBitmapLoader extends BaseBitmapLoader<FileInputStream> {
 
     @Override
     protected Bitmap onBitmapReady(String url, Bitmap result, Bundle extra) {
-        int degree = BitmapAnalizer.analizRotationDegree(url);
+        int degree = BitmapAnalizer.countRotationDegree(url);
 
         return degree > 0 ? BitmapReformer.rotate(result, degree) : result;
     }
