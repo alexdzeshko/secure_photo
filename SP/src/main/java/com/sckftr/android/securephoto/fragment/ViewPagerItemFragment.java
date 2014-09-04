@@ -1,9 +1,9 @@
 package com.sckftr.android.securephoto.fragment;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 
 import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
@@ -18,25 +18,29 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
+import by.mcreader.imageloader.callback.ImageLoaderCallback;
 import by.mcreader.imageloader.view.RecyclingImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 @EFragment(R.layout.view_pager_item)
-public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObserver.OnGlobalLayoutListener, View.OnClickListener {
+public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObserver.OnGlobalLayoutListener, View.OnClickListener, ImageLoaderCallback {
 
     @FragmentArg
     Image image;
 
-    @ViewById
-    RecyclingImageView imageView;
+    @ViewById(R.id.imageView)
+    RecyclingImageView mImageView;
 
     private final CryptoBitmapLoader mCryptoLoader = new CryptoBitmapLoader();
+    private PhotoViewAttacher mAttacher;
 
     @AfterViews
     void onAfterViews() {
 
-        imageView.setOnClickListener(this);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        mImageView.setOnClickListener(this);
+        mImageView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
+        mAttacher = new PhotoViewAttacher(mImageView);
 
     }
 
@@ -47,11 +51,9 @@ public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObser
         params.putString(EXTRA.IMAGE, image.getKey());
         params.putInt(EXTRA.ORIENTATION, image.getOrientation());
 
-        UI.displayImage(imageView, image.getFileUri().toString(), imageView.getWidth(), imageView.getHeight(), params, null, mCryptoLoader);
+        UI.displayImage(mImageView, image.getFileUri().toString(), mImageView.getWidth(), mImageView.getHeight(), params, this, mCryptoLoader);
 
-//        new PhotoViewAttacher(imageView).update();
-
-        UiUtil.removeOnGlobalLayoutListener(imageView, this);
+        UiUtil.removeOnGlobalLayoutListener(mImageView, this);
     }
 
     public static ViewPagerItemFragment build(Image image) {
@@ -61,5 +63,16 @@ public class ViewPagerItemFragment extends BaseFragment implements ViewTreeObser
     @Override
     public void onClick(View v) {
         ((DetailActivity) getBaseActivity()).toggleNavigation();
+    }
+
+    @Override public void onLoadingStarted(String url) {
+    }
+
+    @Override public void onLoadingError(Exception e, String url) {
+    }
+
+    @Override public void onLoadingFinished(BitmapDrawable drawable) {
+        mAttacher.update();
+        mImageView.setBackgroundResource(0);
     }
 }

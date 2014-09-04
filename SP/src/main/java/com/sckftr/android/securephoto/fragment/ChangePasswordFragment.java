@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.SettingsActivity;
-import com.sckftr.android.securephoto.data.DataApi;
 import com.sckftr.android.securephoto.fragment.base.BaseSettingsFragment;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.Strings;
@@ -144,7 +143,7 @@ public class ChangePasswordFragment extends BaseSettingsFragment {
 
     @Override
     protected Drawable getBackground() {
-        return getResources().getDrawable(R.drawable.bg_start);
+        return getResources().getDrawable(R.drawable.bg_light);
     }
 
     @Override

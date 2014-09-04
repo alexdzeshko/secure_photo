@@ -154,11 +154,11 @@ public class InsetFrameLayout extends FrameLayout {
     }
 
     public void setInsetBackgroundColor(int color) {
-        Resources r = getResources();
+//        Resources r = getResources();
 
         setInsetBackgroundColorRaw(
                 Color.argb(
-                        Color.alpha(r.getColor(R.color.chrome_custom_background_alpha)),
+                        Color.alpha(color),
                         Color.red(color),
                         Color.green(color),
                         Color.blue(color)
@@ -186,7 +186,8 @@ public class InsetFrameLayout extends FrameLayout {
 
         float fraction = progress / (float) mAnimationDuration;
 
-        setInsetBackgroundColor(Color.rgb(
+        setInsetBackgroundColor(Color.argb(
+                evaluate(fraction, Color.alpha(mStartColor), Color.alpha(mEndColor)), //alpha
                 evaluate(fraction, Color.red(mStartColor), Color.red(mEndColor)),     // red
                 evaluate(fraction, Color.green(mStartColor), Color.green(mEndColor)), // green
                 evaluate(fraction, Color.blue(mStartColor), Color.blue(mEndColor)))); // blue

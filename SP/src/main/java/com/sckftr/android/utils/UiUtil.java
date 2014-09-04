@@ -16,7 +16,7 @@ import android.view.WindowManager;
 
 import java.util.regex.Pattern;
 
-
+//todo clear or delete. see DisplayMetricsUtil
 /**
  * Class for converting px to the dp values, ellipsize text and else.
  *

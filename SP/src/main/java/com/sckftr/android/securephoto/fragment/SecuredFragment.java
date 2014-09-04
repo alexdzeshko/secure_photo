@@ -10,13 +10,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
-import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.utils.Strings;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;

@@ -10,6 +10,7 @@ import com.sckftr.android.app.fragment.BaseFragment;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.adapter.ViewPagerFragmentAdapter;
+import com.sckftr.android.utils.DisplayMetricsUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -44,6 +45,8 @@ public class DetailFragment extends BaseFragment implements LoaderManager.Loader
         pager.setAdapter(pagerAdapter);
 
         pager.setOnPageChangeListener(this);
+
+        pager.setPageMargin(DisplayMetricsUtil.getPx(getContext(), 16));
 
         setHomeAsUp(true);
 
