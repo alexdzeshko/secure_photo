@@ -387,7 +387,7 @@ public class UI implements AppConst {
     public static PopupWindow showPopupText(View v, Spanned s) {
 
         Context ctx = v.getContext();
-        int unit3 = UiUtil.getUnitInPixels(ctx) * 3;
+        int unit3 = DisplayMetricsUtil.getUnitInPixels(ctx) * 3;
 
         TextView tv;
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -404,7 +404,7 @@ public class UI implements AppConst {
         PopupWindow popUp = new PopupWindow(layout1, 50, 50);
         popUp.setWindowLayoutMode(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        popUp.showAsDropDown(v, 0, UiUtil.getPx(ctx, 5f));
+        popUp.showAsDropDown(v, 0, DisplayMetricsUtil.getDp(ctx, 5));
 
         return popUp;
     }

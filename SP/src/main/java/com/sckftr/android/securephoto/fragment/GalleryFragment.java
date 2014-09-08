@@ -1,5 +1,6 @@
 package com.sckftr.android.securephoto.fragment;
 
+import android.animation.ObjectAnimator;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.GalleryAdapter;
 import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 
@@ -30,10 +32,16 @@ public class GalleryFragment extends ImageGridFragment {
         setTitle(R.string.gallery);
 
         aq.id(R.id.fab_icon).image(R.drawable.add_button_icon_unchecked);
+        aq.id(R.id.fab).background(R.drawable.add_fab_background);
+
+
 
         ((MainActivity) getBaseActivity()).setBackgroundDrawableWithAnimation(R.color.primary_oppozit_sibling);
     }
 
+    @AfterViews void onAfterViews(){
+
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -45,15 +53,21 @@ public class GalleryFragment extends ImageGridFragment {
             getActionBar().setDisplayHomeAsUpEnabled(true);
 
             API.images().setPlaceholder(R.drawable.placeholder_image_no_sec);
+
+            ObjectAnimator.ofFloat(aq.id(R.id.fab).getView(), "translationY", 200, 0).setDuration(1000);
         }
     }
 
     @Override
     public void onPause() {
+
+        if (!isDetached()) {
+            getActionBar().setDisplayHomeAsUpEnabled(false);
+
+        }
+
         super.onPause();
 
-        if (!isDetached())
-            getActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Override

@@ -3,10 +3,9 @@ package com.sckftr.android.app.listener;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 
-import com.sckftr.android.utils.UiUtil;
+import com.sckftr.android.utils.DisplayMetricsUtil;
 
 /**
  * Created by Dzianis_Roi on 13.08.2014.
@@ -23,7 +22,7 @@ public class HideViewScrollListener implements AbsListView.OnScrollListener {
 
     public HideViewScrollListener(Context context, View target, AbsListView.OnScrollListener externalListener) {
 
-        final int displayHeight = UiUtil.getDisplayHeight(context);
+        final int displayHeight = DisplayMetricsUtil.getDisplayHeight(context);
 
         hide = ObjectAnimator.ofFloat(target, "translationY", 0, displayHeight).setDuration(300);
         show = ObjectAnimator.ofFloat(target, "translationY", displayHeight, 0).setDuration(300);

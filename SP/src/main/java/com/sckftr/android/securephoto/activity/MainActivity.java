@@ -1,5 +1,7 @@
 package com.sckftr.android.securephoto.activity;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -11,19 +13,19 @@ import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
-import com.sckftr.android.app.view.InsetFrameLayout;
+import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.GalleryFragment;
 import com.sckftr.android.securephoto.fragment.SecuredFragment;
 import com.sckftr.android.securephoto.helper.PhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
+import com.sckftr.android.utils.DisplayMetricsUtil;
 import com.sckftr.android.utils.Procedure;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
@@ -151,7 +153,28 @@ public class MainActivity extends BaseSPActivity {
     @OptionsItem
     void add() {
 
-        loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
+
+        final ObjectAnimator animator = ObjectAnimator.ofFloat(aq.id(R.id.fab).getView(), "translationY", 0, DisplayMetricsUtil.getDisplayHeight(this)).setDuration(300);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override public void onAnimationEnd(Animator animation) {
+                loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
+            }
+
+            @Override public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        animator.start();
+
 
     }
 
@@ -164,9 +187,29 @@ public class MainActivity extends BaseSPActivity {
 
     void back() {
 
-        Fragment fragment = getSecuredFragment();
+        final Fragment fragment = getSecuredFragment();
 
-        loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SecuredFragment.TAG);
+        final ObjectAnimator animator = ObjectAnimator.ofFloat(aq.id(R.id.fab).getView(), "translationY", 0, DisplayMetricsUtil.getDisplayHeight(this)).setDuration(300);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override public void onAnimationEnd(Animator animation) {
+                loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SecuredFragment.TAG);
+            }
+
+            @Override public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        animator.start();
+
 
     }
 

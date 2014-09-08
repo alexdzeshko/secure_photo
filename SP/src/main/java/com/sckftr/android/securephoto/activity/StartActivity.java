@@ -2,8 +2,7 @@ package com.sckftr.android.securephoto.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +22,7 @@ import org.androidannotations.annotations.ViewById;
 public class StartActivity extends BaseSPActivity {
 
     private static final String LOG_TAG = StartActivity.class.getSimpleName();
+    public static final int VALIDATION_DELAY_MILLIS = 300;
 
     @ViewById
     EditText passwordInput;
@@ -32,6 +32,10 @@ public class StartActivity extends BaseSPActivity {
 
     @ViewById
     Button commitButton;
+
+    private String mInput;
+    private Handler mHandler;
+    private Runnable mValidateRunnable;
 
     @AfterViews
     void init() {
@@ -43,6 +47,27 @@ public class StartActivity extends BaseSPActivity {
             commitButton.setVisibility(View.VISIBLE);
 
         }
+
+        mHandler = new Handler();
+
+        mValidateRunnable = new Runnable() {
+            @Override public void run() {
+                if (UserHelper.authenticate("userName", mInput)) {// todo manage with user name
+
+                    runOnUiThread(new Runnable() {
+                        @Override public void run() {
+                            aq.id(R.id.validationProgress).animate(android.R.anim.fade_in).display(true);//todo change animation
+                        }
+                    });
+
+                    passwordInput.setActivated(false);
+
+                    UserHelper.setIsLogged(true);
+
+                    MainActivity.start(StartActivity.this);
+                }
+            }
+        };
     }
 
     @TextChange
@@ -51,14 +76,21 @@ public class StartActivity extends BaseSPActivity {
 
         Log.d(LOG_TAG, "onTextChanged: " + newText);
 
-        if (UserHelper.authenticate("userName", newText.toString())) {// todo manage with user name
+        validate(newText);
+//        if (UserHelper.authenticate("userName", newText.toString())) {// todo manage with user name
+//
+//            passwordInput.setActivated(false);
+//
+//            UserHelper.setIsLogged(true);
+//
+//            MainActivity.start(this);
+//        }
+    }
 
-            passwordInput.setActivated(false);
-
-            UserHelper.setIsLogged(true);
-
-            MainActivity.start(this);
-        }
+    private void validate(CharSequence newText) {
+        mInput = newText.toString();
+        mHandler.removeCallbacks(mValidateRunnable);
+        mHandler.postDelayed(mValidateRunnable, VALIDATION_DELAY_MILLIS);
     }
 
     @Click(R.id.commitButton)

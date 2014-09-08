@@ -4,13 +4,10 @@ package com.sckftr.android.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Build.VERSION;
 import android.view.Display;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 
 /**
@@ -143,74 +140,6 @@ public class DisplayMetricsUtil {
     private static int textWidth(String str) {
 	    return (str.length() - str.replaceAll(NON_THIN, "").length() / 2);
 	}
-
-    /**
-	 * Ellipsize text for lines.
-	 * @param text text
-	 * @param max max lines
-	 * @return new text
-	 */
-	public static String ellipsize(String text, int max) {
-		if (textWidth(text) <= max)
-	        return text;
-
-	    // Start by chopping off at the word before max
-	    // This is an over-approximation due to thin-characters...
-	    int end = text.lastIndexOf(' ', max - 3);
-
-	    // Just one long word. Chop it off.
-	    if (end == -1)
-	        return text.substring(0, max-3) + "...";
-
-	    // Step forward as long as textWidth allows.
-	    int newEnd = end;
-	    do {
-	        end = newEnd;
-	        newEnd = text.indexOf(' ', end + 1);
-
-	        // No more spaces.
-	        if (newEnd == -1)
-	            newEnd = text.length();
-
-	    } while (textWidth(text.substring(0, newEnd) + "...") < max);
-
-	    return text.substring(0, end) + "...";
-	}
-
-    public static void isEllipsized(final TextView textView, final Procedure<Boolean> onEllipsized){
-
-        final CharSequence text = textView == null ? null : textView.getText();
-
-        if(Strings.isEmpty(text)){
-
-            return;
-
-        }
-
-        final Paint paint = new Paint();
-        paint.setTextSize(textView.getTextSize());
-
-        final ViewTreeObserver observer = textView.getViewTreeObserver();
-
-        if (observer != null) {
-
-            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-                @Override
-                public void onGlobalLayout() {
-
-                    if (onEllipsized != null){
-
-                          onEllipsized.apply(Math.round(paint.measureText(text.toString())) > textView.getWidth());
-
-                    }
-
-                    textView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                }
-            });
-        }
-    }
 
     public static int getUnitInPixels(Context ctx) {
 

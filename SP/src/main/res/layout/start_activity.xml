@@ -25,6 +25,15 @@
         android:hint="@string/input_password"
         android:textColorHint="@color/text_hint" />
 
+    <ImageView
+        android:id="@+id/validationProgress"
+        android:layout_width="@dimen/tap_item_dimen"
+        android:layout_height="@dimen/tap_item_dimen"
+        android:src="@drawable/add_button_icon_checked"
+        android:layout_toRightOf="@id/passwordInput"
+        android:layout_alignBottom="@id/passwordInput"
+        android:visibility="invisible"/>
+
     <TextView
         android:id="@+id/passwordCaption"
         android:layout_width="wrap_content"
