@@ -99,15 +99,6 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (isPhotosSecured()) {
-            ((MainActivity) getBaseActivity()).setSaveLivingHint(true);
-
-            DetailActivity.start(this, position);
-        }
-    }
-
-    @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
 
@@ -166,14 +157,12 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
         layout.setLayoutParams(layoutParams);
 
-        final RelativeLayout button = (RelativeLayout) aq.id(R.id.fab).getView();
+        final RelativeLayout button = (RelativeLayout) aq.id(R.id.hiding).getView();
 
         layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
 
         layoutParams.bottomMargin = insets.bottom + margin;
         layoutParams.rightMargin = insets.right + margin;
-
-        setHidingView(button);
 
         button.setLayoutParams(layoutParams);
     }

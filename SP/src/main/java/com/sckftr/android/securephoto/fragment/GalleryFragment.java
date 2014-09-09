@@ -31,17 +31,12 @@ public class GalleryFragment extends ImageGridFragment {
 
         setTitle(R.string.gallery);
 
-        aq.id(R.id.fab_icon).image(R.drawable.add_button_icon_unchecked);
-        aq.id(R.id.fab).background(R.drawable.add_fab_background);
-
-
+        aq.id(R.id.fab_icon).image(R.drawable.add_button_icon_unchecked)
+                .id(R.id.hiding).background(R.drawable.add_fab_background);
 
         ((MainActivity) getBaseActivity()).setBackgroundDrawableWithAnimation(R.color.primary_oppozit_sibling);
     }
 
-    @AfterViews void onAfterViews(){
-
-    }
     @Override
     public void onResume() {
         super.onResume();
@@ -54,20 +49,15 @@ public class GalleryFragment extends ImageGridFragment {
 
             API.images().setPlaceholder(R.drawable.placeholder_image_no_sec);
 
-            ObjectAnimator.ofFloat(aq.id(R.id.fab).getView(), "translationY", 200, 0).setDuration(1000);
         }
     }
 
     @Override
     public void onPause() {
 
-        if (!isDetached()) {
-            getActionBar().setDisplayHomeAsUpEnabled(false);
-
-        }
+        if (!isDetached()) getActionBar().setDisplayHomeAsUpEnabled(false);
 
         super.onPause();
-
     }
 
     @Override
@@ -93,7 +83,7 @@ public class GalleryFragment extends ImageGridFragment {
     }
 
     @Click
-    void fab() {
+    void hiding() {
 
         if (!isDetached())
             ((MainActivity) getBaseActivity()).secureNewPhotos(getAdapterView().getCheckedItemPositions(), (Cursor) getAdapter().getItem(0));

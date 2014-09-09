@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/listContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                xmlns:tools="http://schemas.android.com/tools">
+    android:id="@+id/listContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <GridView
         android:id="@android:id/list"
@@ -15,14 +15,14 @@
         android:drawSelectorOnTop="true"
         android:clipToPadding="false"
         android:stretchMode="columnWidth"
-        tools:listitem="@layout/view_image_item"/>
+        tools:listitem="@layout/view_image_item" />
 
     <ProgressBar
         android:id="@android:id/progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@android:id/empty"
@@ -32,11 +32,10 @@
         android:visibility="gone"
         android:textColor="@color/text_secondary"
         android:text="@string/empty_list_text"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <com.sckftr.android.app.view.CheckableRelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/fab"
+        android:id="@+id/hiding"
         android:layout_width="@dimen/unit9"
         android:layout_height="@dimen/unit9"
         android:layout_alignParentRight="true"
@@ -46,13 +45,14 @@
         android:focusable="true"
         android:background="@drawable/camera_fab_background">
 
-        <ImageView android:id="@+id/fab_icon"
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:scaleType="center"
-                   android:src="@drawable/ic_camera"
-                   android:contentDescription="@null"
-                   android:layout_gravity="center" />
+        <ImageView
+            android:id="@+id/fab_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:src="@drawable/ic_camera"
+            android:contentDescription="@null"
+            android:layout_gravity="center" />
 
     </com.sckftr.android.app.view.CheckableRelativeLayout>
 
@@ -64,7 +64,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

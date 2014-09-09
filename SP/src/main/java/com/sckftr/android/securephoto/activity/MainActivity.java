@@ -1,6 +1,7 @@
 package com.sckftr.android.securephoto.activity;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Fragment;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
 import com.sckftr.android.securephoto.R;
@@ -18,6 +20,7 @@ import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.GalleryFragment;
 import com.sckftr.android.securephoto.fragment.SecuredFragment;
+import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.PhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.DisplayMetricsUtil;
@@ -153,29 +156,22 @@ public class MainActivity extends BaseSPActivity {
     @OptionsItem
     void add() {
 
+        ImageGridFragment currentFragment = getSecuredFragment();
 
-        final ObjectAnimator animator = ObjectAnimator.ofFloat(aq.id(R.id.fab).getView(), "translationY", 0, DisplayMetricsUtil.getDisplayHeight(this)).setDuration(300);
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override public void onAnimationStart(Animator animation) {
+        if (currentFragment != null && !currentFragment.isDetached()) {
 
-            }
+            currentFragment.showHidingView(false, new Procedure<Animator>() {
+                @Override
+                public void apply(Animator dialog) {
+                    loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
+                }
+            });
 
-            @Override public void onAnimationEnd(Animator animation) {
-                loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
-            }
+        } else {
 
-            @Override public void onAnimationCancel(Animator animation) {
+            loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
 
-            }
-
-            @Override public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-
-        animator.start();
-
-
+        }
     }
 
     @OptionsItem
@@ -187,30 +183,23 @@ public class MainActivity extends BaseSPActivity {
 
     void back() {
 
-        final Fragment fragment = getSecuredFragment();
+        ImageGridFragment currentFragment = (ImageGridFragment) findFragmentByTag(GalleryFragment.TAG);
+        final Fragment securedFragment = getSecuredFragment();
 
-        final ObjectAnimator animator = ObjectAnimator.ofFloat(aq.id(R.id.fab).getView(), "translationY", 0, DisplayMetricsUtil.getDisplayHeight(this)).setDuration(300);
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override public void onAnimationStart(Animator animation) {
+        if (currentFragment != null && !currentFragment.isDetached()) {
 
-            }
+            currentFragment.showHidingView(false, new Procedure<Animator>() {
+                @Override
+                public void apply(Animator dialog) {
+                    loadFragment(securedFragment != null ? securedFragment : SecuredFragment.build(), false, SecuredFragment.TAG);
+                }
+            });
 
-            @Override public void onAnimationEnd(Animator animation) {
-                loadFragment(fragment != null ? fragment : SecuredFragment.build(), false, SecuredFragment.TAG);
-            }
+        } else {
 
-            @Override public void onAnimationCancel(Animator animation) {
+            loadFragment(securedFragment != null ? securedFragment : SecuredFragment.build(), false, SecuredFragment.TAG);
 
-            }
-
-            @Override public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-
-        animator.start();
-
-
+        }
     }
 
     /**

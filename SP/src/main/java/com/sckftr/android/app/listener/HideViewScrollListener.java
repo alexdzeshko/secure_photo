@@ -14,6 +14,8 @@ public class HideViewScrollListener implements AbsListView.OnScrollListener {
 
     private AbsListView.OnScrollListener mExternalListener;
 
+    private View mTargetView;
+
     private boolean hidden;
 
     private int mPrevFirstVisibleItem;
@@ -22,10 +24,12 @@ public class HideViewScrollListener implements AbsListView.OnScrollListener {
 
     public HideViewScrollListener(Context context, View target, AbsListView.OnScrollListener externalListener) {
 
+        mTargetView = target;
+
         final int displayHeight = DisplayMetricsUtil.getDisplayHeight(context);
 
-        hide = ObjectAnimator.ofFloat(target, "translationY", 0, displayHeight).setDuration(300);
-        show = ObjectAnimator.ofFloat(target, "translationY", displayHeight, 0).setDuration(300);
+        hide = ObjectAnimator.ofFloat(target, View.TRANSLATION_Y, 0, displayHeight).setDuration(300);
+        show = ObjectAnimator.ofFloat(target, View.TRANSLATION_Y, displayHeight, 0).setDuration(300);
 
         mExternalListener = externalListener;
     }
@@ -62,5 +66,16 @@ public class HideViewScrollListener implements AbsListView.OnScrollListener {
         if (mExternalListener != null)
             mExternalListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
 
+    }
+
+    public void cancelAll() {
+
+        if (show != null && show.isRunning()) show.cancel();
+
+        if (hide != null && hide.isRunning()) hide.cancel();
+    }
+
+    public View getTargetView() {
+        return mTargetView;
     }
 }

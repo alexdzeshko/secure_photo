@@ -1,10 +1,14 @@
 package com.sckftr.android.app.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -17,10 +21,11 @@ import android.widget.TextView;
 
 import com.sckftr.android.app.listener.HideViewScrollListener;
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.utils.DisplayMetricsUtil;
 import com.sckftr.android.utils.Procedure;
+import com.sckftr.android.utils.UiUtil;
 
-public abstract class SickAdapterViewFragment<T extends AbsListView, A extends BaseAdapter> extends
-        BaseFragment implements OnScrollListener, OnItemClickListener {
+public abstract class SickAdapterViewFragment<T extends AbsListView, A extends BaseAdapter> extends BaseFragment implements OnScrollListener {
 
     private T mAdapterView;
     private A mAdapter;
@@ -40,8 +45,6 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
      */
     protected int mActivatedPosition = ListView.INVALID_POSITION;
 
-    protected CharSequence mEmptyText = null;
-
     final private Runnable mRequestFocus = new Runnable() {
         public void run() {
             mAdapterView.focusableViewAvailable(mAdapterView);
@@ -51,12 +54,9 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        mEmptyText = getText(R.string.empty_list_text);
-
         restoreSavedInstanceState(savedInstanceState);
 
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -65,51 +65,22 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
 //        return inflater.inflate(Platform.getResourceIdFor(this, Platform.RESOURCE_TYPE_LAYOUT, R.layout.list_content), container, false);
     }
 
-    protected abstract int layoutId();
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-    protected void setActivatedPosition(int position) {
+        initUI(view);
 
-        if (position == ListView.INVALID_POSITION) {
+        mAdapterView.setAdapter(getAdapter());
 
-            getAdapterView().setItemChecked(mActivatedPosition, false);
-
-        } else {
-
-            getAdapterView().setItemChecked(position, true);
-
-        }
-
-        mActivatedPosition = position;
+        setActivatedPosition(mActivatedPosition);
     }
-
-    public A getAdapter() {
-
-        if (mAdapter == null) {
-
-            mAdapter = createAdapter();
-
-        }
-
-        return mAdapter;
-    }
-
-    protected abstract A createAdapter();
 
     @Override
-    public void onSaveInstanceState(Bundle bundle) {
+    public void onResume() {
+        super.onResume();
 
-        super.onSaveInstanceState(bundle);
-
-        bundle.putInt("mActivatedPosition", mActivatedPosition);
-    }
-
-    protected void restoreSavedInstanceState(Bundle savedInstanceState) {
-
-        if (savedInstanceState != null) {
-
-            mActivatedPosition = savedInstanceState.getInt("mActivatedPosition");
-
-        }
+        showHidingView(true, null);
     }
 
     /**
@@ -129,18 +100,37 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
         super.onDestroyView();
     }
 
-    /**
-     * Provide the cursor for the list view.
-     */
-    public void setAdapter(A adapter) {
 
-        mAdapter = adapter;
+    protected void setActivatedPosition(int position) {
 
-        if (mAdapterView != null) {
-
-            mAdapterView.setAdapter(adapter);
-
+        if (position == ListView.INVALID_POSITION) {
+            getAdapterView().setItemChecked(mActivatedPosition, false);
+        } else {
+            getAdapterView().setItemChecked(position, true);
         }
+
+        mActivatedPosition = position;
+    }
+
+    public A getAdapter() {
+
+        if (mAdapter == null) mAdapter = createAdapter();
+
+        return mAdapter;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+
+        super.onSaveInstanceState(bundle);
+
+        bundle.putInt("mActivatedPosition", mActivatedPosition);
+    }
+
+    protected void restoreSavedInstanceState(Bundle savedInstanceState) {
+
+        if (savedInstanceState != null)
+            mActivatedPosition = savedInstanceState.getInt("mActivatedPosition");
     }
 
 //    protected void setListItems(List<E> items) {
@@ -187,12 +177,7 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
      * display, call this method to supply the text it should use.
      */
     public void setEmptyText(CharSequence text) {
-
-        if (mEmptyView != null) {
-
-            mEmptyView.setText(text);
-
-        }
+        if (mEmptyView != null) mEmptyView.setText(text);
     }
 
     public void setEmptySubText(String s) {
@@ -204,7 +189,30 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
     }
 
     public void setHidingView(View v) {
-        mHideScrollListener = new HideViewScrollListener(getActivity(), v, null);
+        if (v != null)
+            mHideScrollListener = new HideViewScrollListener(getActivity(), v, null);
+    }
+
+    public void showHidingView(boolean show, final Procedure<Animator> onAnimationEnd) {
+        if (mHideScrollListener != null) {
+
+            int delta = DisplayMetricsUtil.getDisplayHeight(getActivity());
+
+            mHideScrollListener.cancelAll();
+
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mHideScrollListener.getTargetView(), View.TRANSLATION_Y, show ? delta : 0, show ? 0 : delta).setDuration(300);
+
+            if (onAnimationEnd != null) {
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        onAnimationEnd.apply(animation);
+                    }
+                });
+            }
+
+            animator.start();
+        }
     }
 
     /**
@@ -212,9 +220,22 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
      * given the 'activated' state when touched.
      */
     public void setActivateOnItemClick(boolean activateOnItemClick) {
-        // When setting CHOICE_MODE_SINGLE, ListView will automatically
-        // give mItems the 'activated' state when touched.
+        // When setting CHOICE_MODE_SINGLE, ListView will automatically give mItems the 'activated' state when touched.
         getAdapterView().setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
+    }
+
+    /**
+     * Provide the cursor for the list view.
+     */
+    public void setAdapter(A adapter) {
+
+        mAdapter = adapter;
+
+        if (mAdapterView != null) {
+
+            mAdapterView.setAdapter(adapter);
+
+        }
     }
 
     public void setListShown(boolean shown) {
@@ -269,22 +290,13 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
         }
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        initUI(view);
-
-        mAdapterView.setAdapter(getAdapter());
-
-        setActivatedPosition(mActivatedPosition);
-    }
-
     private void initUI(View view) {
 
         mEmptyView = (TextView) view.findViewById(android.R.id.empty);
         mProgressBar = (ProgressBar) view.findViewById(android.R.id.progress);
         mListContainer = view.findViewById(R.id.listContainer);
+
+        setHidingView(view.findViewById(R.id.hiding));
 
         View rawListView = view.findViewById(android.R.id.list);
 
@@ -297,40 +309,28 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
 
         mAdapterView = (T) rawListView;
         mAdapterView.setEmptyView(mEmptyView);
-        mAdapterView.setOnItemClickListener(this);
+
         mAdapterView.setOnScrollListener(this);
 
-        setEmptyText(mEmptyText);
+        setEmptyText(getText(R.string.empty_list_text));
 
         setListShown(false, false);
-
-        aq.id(getAdapterView()).scrolledBottom(this, "onScrolledBottom").scrolled(this);
 
         mHandler.post(mRequestFocus);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //NOOP
-    }
-
-    @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (mHideScrollListener != null) {
 
+        if (mHideScrollListener != null)
             mHideScrollListener.onScrollStateChanged(view, scrollState);
-
-        }
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-        if (mHideScrollListener != null) {
-
+        if (mHideScrollListener != null)
             mHideScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-
-        }
     }
 
     @Override
@@ -339,7 +339,6 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
         mInsets = insets;
 
         updateInsets(insets);
-
     }
 
     protected void updateInsets(Rect insets) {
@@ -349,6 +348,9 @@ public abstract class SickAdapterViewFragment<T extends AbsListView, A extends B
         view.setClipToPadding(false);
 
         view.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-
     }
+
+    protected abstract int layoutId();
+
+    protected abstract A createAdapter();
 }

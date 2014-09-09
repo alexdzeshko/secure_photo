@@ -9,8 +9,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.sckftr.android.securephoto.R;
+import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.ImagesGridCursorAdapter;
 import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
@@ -22,7 +24,7 @@ import org.androidannotations.annotations.EFragment;
  * Created by Dzianis_Roi on 19.08.2014.
  */
 @EFragment
-public class SecuredFragment extends ImageGridFragment {
+public class SecuredFragment extends ImageGridFragment implements AdapterView.OnItemClickListener {
 
     public static final String TAG = "SecuredFragment";
 
@@ -31,6 +33,8 @@ public class SecuredFragment extends ImageGridFragment {
         super.onViewCreated(view, savedInstanceState);
 
         setTitle(R.string.secured);
+
+        getAdapterView().setOnItemClickListener(this);
 
         ((MainActivity) getBaseActivity()).setBackgroundDrawableWithAnimation(R.color.primary_dark_60);
     }
@@ -43,41 +47,12 @@ public class SecuredFragment extends ImageGridFragment {
             getActivityParams().putString(EXTRA.CURRENT_FRAGMENT, TAG);
 
             API.images().setPlaceholder(R.drawable.ic_blue_lock);
-
-//            if (!Strings.isEmpty(UserHelper.getOldUserHash())) {
-//
-//                BaseCursorAdapter adapter = getAdapter();
-//
-//                if (adapter != null) {
-//
-//                    setRefreshing(true);
-//
-////                    restorePhotos(adapter.getCursor());
-//
-//                    adapter.swapCursor(null);
-//                }
-//            }
         }
     }
 
     @Override
     protected ImagesGridCursorAdapter createAdapter() {
         return new ImagesGridCursorAdapter(getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-//        if (Strings.isEmpty(UserHelper.getOldUserHash())) {
-
-        super.onLoadFinished(loader, data);
-
-//        } else {
-//
-//            setListShown(true);
-//            setRefreshing(true);
-//
-//        }
     }
 
     @Override
@@ -121,6 +96,13 @@ public class SecuredFragment extends ImageGridFragment {
     }
 
     @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ((MainActivity) getBaseActivity()).setSaveLivingHint(true);
+
+        DetailActivity.start(this, position);
+    }
+
+    @Override
     public Loader<Cursor> getCursorLoader() {
         return API.data().getEncryptedImagesCursorLoader(getActivity());
     }
@@ -131,7 +113,7 @@ public class SecuredFragment extends ImageGridFragment {
     }
 
     @Click
-    void fab() {
+    void hiding() {
         setRefreshing(true);
 
         ((MainActivity) getActivity()).startCamera();
