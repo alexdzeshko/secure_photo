@@ -77,7 +77,7 @@ public class MainActivity extends BaseSPActivity {
         switch (item.getItemId()) {
             case android.R.id.home: {
 
-                back();
+                back(false);
 
                 return true;
             }
@@ -176,22 +176,25 @@ public class MainActivity extends BaseSPActivity {
 
     @OptionsItem
     void settings() {
+
         setSaveLivingHint(true);
 
         SettingsActivity.start(this);
     }
 
-    void back() {
+    void back(final boolean setRefreshing) {
 
         ImageGridFragment currentFragment = (ImageGridFragment) findFragmentByTag(GalleryFragment.TAG);
-        final Fragment securedFragment = getSecuredFragment();
+        final SecuredFragment securedFragment = getSecuredFragment();
 
         if (currentFragment != null && !currentFragment.isDetached()) {
 
             currentFragment.showHidingView(false, new Procedure<Animator>() {
                 @Override
                 public void apply(Animator dialog) {
-                    loadFragment(securedFragment != null ? securedFragment : SecuredFragment.build(), false, SecuredFragment.TAG);
+                    loadFragment(securedFragment, false, SecuredFragment.TAG);
+
+                    securedFragment.setRefreshing(setRefreshing);
                 }
             });
 
@@ -226,14 +229,12 @@ public class MainActivity extends BaseSPActivity {
                 SecuredFragment securedFragment = getSecuredFragment();
 
                 if (securedFragment != null && !securedFragment.isDetached())
-                    getSecuredFragment().setRefreshing(false);
+                    securedFragment.setRefreshing(false);
 
             }
         });
 
-        back();
-
-        getSecuredFragment().setRefreshing(true);
+        back(true);
     }
 
     public void unSecurePhotos(SparseBooleanArray items, Cursor cursor) {

@@ -1,6 +1,5 @@
 package com.sckftr.android.securephoto.fragment;
 
-import android.animation.ObjectAnimator;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.GalleryAdapter;
 import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
 
-import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 
