@@ -197,19 +197,16 @@ public class DataApi implements AppConst {
 
     public void deleteFiles(List<? extends Cryptonite> files) {
 
-        ArrayList<DbModel> dbList = null;
+        if (files == null || files.isEmpty()) return;
+
+        ArrayList<DbModel> dbList = new ArrayList<DbModel>(files.size());
 
         for (Cryptonite image : files) {
 
             Storage.deleteFileSync(image.getFileUri());
 
-            if (image instanceof DbModel) {
+            if (image instanceof DbModel) dbList.add((DbModel) image);
 
-                if (dbList == null) dbList = new ArrayList<DbModel>();
-
-                dbList.add((DbModel) image);
-
-            }
         }
 
         API.db().delete(dbList);

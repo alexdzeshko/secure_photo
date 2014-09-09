@@ -8,11 +8,6 @@ import com.sckftr.android.securephoto.Application;
 import com.sckftr.android.utils.HashUtils;
 import com.sckftr.android.utils.Strings;
 
-import org.androidannotations.api.sharedpreferences.EditorHelper;
-
-import java.util.prefs.Preferences;
-
-//todo complete refactor
 public class UserHelper implements AppConst {
 
     private static final String TEMPLATE_FOR_HASH = "%s-%s";
@@ -71,11 +66,6 @@ public class UserHelper implements AppConst {
         remove(KEYS.PREF_USER_OLD_KEY);
         remove(KEYS.PREF_FIRST_LOGGED);
         remove(KEYS.PREF_USER_LOGGED);
-
-        clearOldHash();
-    }
-
-    public static void clearOldHash() {
         remove(KEYS.PREF_USER_OLD_KEY);
     }
 
@@ -123,12 +113,26 @@ public class UserHelper implements AppConst {
     }
 
     public static void setPhotosRestoring(boolean restoring) {
-        if (!restoring) clearOldHash();
+        if (!restoring) remove(KEYS.PREF_USER_OLD_KEY);
 
-        API.get().putPreference(KEYS.PREF_PHOTOS_RESTORING, restoring);
+        putBoolean(KEYS.PREF_PHOTOS_RESTORING, restoring);
     }
 
     public static boolean isPhotosRestoring() {
-        return API.get().getPreferenceBool(KEYS.PREF_PHOTOS_RESTORING, false);
+        return getBoolean(KEYS.PREF_PHOTOS_RESTORING, false);
+    }
+
+    public static void registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        SharedPreferences preferences = getPreferences();
+
+        if (preferences != null)
+            getPreferences().registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public static void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        SharedPreferences preferences = getPreferences();
+
+        if (preferences != null)
+            getPreferences().unregisterOnSharedPreferenceChangeListener(listener);
     }
 }
