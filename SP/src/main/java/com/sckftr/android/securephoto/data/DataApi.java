@@ -72,6 +72,8 @@ public class DataApi implements AppConst {
 
                 byte[] buffer = FileUtils.readFileToByteArray(securedFile);
 
+                FileUtils.forceDelete(securedFile);
+
                 File publicFile = Storage.Images.getPublicFile(file.getFileUri());
 
                 FileUtils.writeByteArrayToFile(publicFile, Cryptograph.decrypt(buffer, file.getKey()));
