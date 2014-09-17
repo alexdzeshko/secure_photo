@@ -1,10 +1,7 @@
 package com.sckftr.android.securephoto.activity;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,10 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
-import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.GalleryFragment;
@@ -23,7 +18,6 @@ import com.sckftr.android.securephoto.fragment.SecuredFragment;
 import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.PhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.utils.DisplayMetricsUtil;
 import com.sckftr.android.utils.Procedure;
 
 import org.androidannotations.annotations.Bean;
