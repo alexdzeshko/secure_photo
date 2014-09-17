@@ -1,29 +1,20 @@
 package com.sckftr.android.securephoto.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
-import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.GalleryFragment;
 import com.sckftr.android.securephoto.fragment.SecuredFragment;
-import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
 import com.sckftr.android.securephoto.helper.PhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
-import com.sckftr.android.utils.DisplayMetricsUtil;
 import com.sckftr.android.utils.Procedure;
 
 import org.androidannotations.annotations.Bean;
@@ -72,22 +63,6 @@ public class MainActivity extends BaseSPActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home: {
-
-                back(false);
-
-                return true;
-            }
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         saveLivingHint = false;
@@ -99,11 +74,6 @@ public class MainActivity extends BaseSPActivity {
             if (uri != null) {
 
                 if (resultCode != Activity.RESULT_OK) {
-
-                    SecuredFragment fragment = getSecuredFragment();
-
-                    if (fragment != null && !fragment.isDetached())
-                        fragment.setRefreshing(false);
 
                     new FileAsyncTask().deleteFile(uri);
 
@@ -154,55 +124,11 @@ public class MainActivity extends BaseSPActivity {
      */
 
     @OptionsItem
-    void add() {
-
-        ImageGridFragment currentFragment = getSecuredFragment();
-
-        if (currentFragment != null && !currentFragment.isDetached()) {
-
-            currentFragment.showHidingView(false, new Procedure<Animator>() {
-                @Override
-                public void apply(Animator dialog) {
-                    loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
-                }
-            });
-
-        } else {
-
-            loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
-
-        }
-    }
-
-    @OptionsItem
     void settings() {
 
         setSaveLivingHint(true);
 
         SettingsActivity.start(this);
-    }
-
-    void back(final boolean setRefreshing) {
-
-        ImageGridFragment currentFragment = (ImageGridFragment) findFragmentByTag(GalleryFragment.TAG);
-        final SecuredFragment securedFragment = getSecuredFragment();
-
-        if (currentFragment != null && !currentFragment.isDetached()) {
-
-            currentFragment.showHidingView(false, new Procedure<Animator>() {
-                @Override
-                public void apply(Animator dialog) {
-                    loadFragment(securedFragment, false, SecuredFragment.TAG);
-
-                    securedFragment.setRefreshing(setRefreshing);
-                }
-            });
-
-        } else {
-
-            loadFragment(securedFragment != null ? securedFragment : SecuredFragment.build(), false, SecuredFragment.TAG);
-
-        }
     }
 
     /**
@@ -211,8 +137,16 @@ public class MainActivity extends BaseSPActivity {
      * /********************************************************
      */
 
-    SecuredFragment getSecuredFragment() {
-        return (SecuredFragment) findFragmentByTag(SecuredFragment.TAG);
+    public void showSecuredFragment() {
+
+        final SecuredFragment securedFragment = (SecuredFragment) findFragmentByTag(SecuredFragment.TAG);
+
+        loadFragment(securedFragment != null ? securedFragment : SecuredFragment.build(), false, SecuredFragment.TAG);
+
+    }
+
+    public void showGalleryFragment() {
+        loadFragment(GalleryFragment.build(), false, GalleryFragment.TAG);
     }
 
     /**
@@ -225,16 +159,11 @@ public class MainActivity extends BaseSPActivity {
         photoHelper.secureNewPhotos(items, cursor, new Procedure<String>() {
             @Override
             public void apply(String dialog) {
-
-                SecuredFragment securedFragment = getSecuredFragment();
-
-                if (securedFragment != null && !securedFragment.isDetached())
-                    securedFragment.setRefreshing(false);
-
+                //TODO
             }
         });
 
-        back(true);
+        showSecuredFragment();
     }
 
     public void unSecurePhotos(SparseBooleanArray items, Cursor cursor) {

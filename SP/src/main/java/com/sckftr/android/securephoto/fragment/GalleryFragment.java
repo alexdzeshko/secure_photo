@@ -1,16 +1,19 @@
 package com.sckftr.android.securephoto.fragment;
 
+import android.animation.Animator;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.MainActivity;
 import com.sckftr.android.securephoto.adapter.GalleryAdapter;
 import com.sckftr.android.securephoto.fragment.base.ImageGridFragment;
+import com.sckftr.android.utils.Procedure;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -32,7 +35,10 @@ public class GalleryFragment extends ImageGridFragment {
         aq.id(R.id.fab_icon).image(R.drawable.add_button_icon_unchecked)
                 .id(R.id.hiding).background(R.drawable.add_fab_background);
 
-        ((MainActivity) getBaseActivity()).setBackgroundDrawableWithAnimation(R.color.primary_oppozit_sibling);
+        MainActivity mainActivity = getMainActivity();
+
+        if (mainActivity != null)
+            mainActivity.setInsetBackgroundWithAnimation(R.color.primary_oppozit_sibling);
     }
 
     @Override
@@ -66,6 +72,30 @@ public class GalleryFragment extends ImageGridFragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+
+                showHidingView(false, new Procedure<Animator>() {
+                    @Override
+                    public void apply(Animator dialog) {
+
+                        MainActivity mainActivity = getMainActivity();
+
+                        if (mainActivity != null) mainActivity.showSecuredFragment();
+                    }
+                });
+
+                return true;
+            }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected GalleryAdapter createAdapter() {
         return new GalleryAdapter(getActivity());
     }
@@ -83,9 +113,15 @@ public class GalleryFragment extends ImageGridFragment {
     @Click
     void hiding() {
 
-        if (!isDetached())
-            ((MainActivity) getBaseActivity()).secureNewPhotos(getAdapterView().getCheckedItemPositions(), (Cursor) getAdapter().getItem(0));
+        MainActivity mainActivity = getMainActivity();
 
+        if (mainActivity != null)
+            mainActivity.secureNewPhotos(getAdapterView().getCheckedItemPositions(), (Cursor) getAdapter().getItem(0));
+
+    }
+
+    private MainActivity getMainActivity() {
+        return isDetached() ? null : ((MainActivity) getBaseActivity());
     }
 
     public static GalleryFragment build() {
