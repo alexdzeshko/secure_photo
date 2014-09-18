@@ -29,6 +29,39 @@
         <item name="android:textColor">@color/text_white</item>
     </style>
 
+    <style name="Window.SP.Animation" parent="@android:style/Animation.Activity">
+    </style>
+
+    <style name="Window.SP.Animation.SlideFromBottom" >
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+
+        <item name="android:activityOpenEnterAnimation">@anim/window_slide_in_bottom</item>
+        <item name="android:activityOpenExitAnimation">@anim/window_slide_out_bottom</item>
+        <item name="android:activityCloseEnterAnimation">@anim/window_slide_in_bottom</item>
+        <item name="android:activityCloseExitAnimation">@anim/window_slide_out_bottom</item>
+
+    </style>
+
+    <!--<style name="Window.SP.Animation.SlideSide">-->
+        <!--<item name="android:windowEnterAnimation">@null</item>-->
+        <!--<item name="android:windowExitAnimation">@null</item>-->
+
+        <!--<item name="android:activityOpenEnterAnimation">@anim/window_slide_in_bottom</item>-->
+        <!--<item name="android:activityOpenExitAnimation">@anim/window_slide_out_bottom</item>-->
+        <!--<item name="android:activityCloseEnterAnimation">@anim/window_slide_in_bottom</item>-->
+        <!--<item name="android:activityCloseExitAnimation">@anim/window_slide_out_bottom</item>-->
+    <!--</style>-->
+
+    <style name="Window.SP.Animation.No" >
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+    </style>
+
     <style name="panel">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

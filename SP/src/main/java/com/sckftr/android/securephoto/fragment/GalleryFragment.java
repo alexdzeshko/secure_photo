@@ -32,7 +32,7 @@ public class GalleryFragment extends ImageGridFragment {
 
         setTitle(R.string.gallery);
 
-        aq.id(R.id.fab_icon).image(R.drawable.add_button_icon_unchecked)
+        aq.id(R.id.hiding).image(R.drawable.add_button_icon_unchecked)
                 .id(R.id.hiding).background(R.drawable.add_fab_background);
 
         MainActivity mainActivity = getMainActivity();

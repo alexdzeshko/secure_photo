@@ -65,9 +65,15 @@ public class StartActivity extends BaseSPActivity {
                     UserHelper.setIsLogged(true);
 
                     MainActivity.start(StartActivity.this);
+
+                    StartActivity.this.finish();
                 }
             }
         };
+    }
+
+    @Override public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @TextChange

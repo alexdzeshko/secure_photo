@@ -34,7 +34,29 @@
         android:text="@string/empty_list_text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <com.sckftr.android.app.view.CheckableRelativeLayout
+    <!--<com.sckftr.android.app.view.CheckableRelativeLayout-->
+    <!--android:id="@+id/hiding"-->
+    <!--android:layout_width="@dimen/unit9"-->
+    <!--android:layout_height="@dimen/unit9"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_margin="@dimen/unit3"-->
+    <!--android:clickable="true"-->
+    <!--android:focusable="true"-->
+    <!--android:background="@drawable/camera_fab_background">-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/fab_icon"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:scaleType="center"-->
+    <!--android:src="@drawable/ic_camera"-->
+    <!--android:contentDescription="@null"-->
+    <!--android:layout_gravity="center" />-->
+
+    <!--</com.sckftr.android.app.view.CheckableRelativeLayout>-->
+
+    <ImageButton
         android:id="@+id/hiding"
         android:layout_width="@dimen/unit9"
         android:layout_height="@dimen/unit9"
@@ -43,18 +65,8 @@
         android:layout_margin="@dimen/unit3"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/camera_fab_background">
-
-        <ImageView
-            android:id="@+id/fab_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="center"
-            android:src="@drawable/ic_camera"
-            android:contentDescription="@null"
-            android:layout_gravity="center" />
-
-    </com.sckftr.android.app.view.CheckableRelativeLayout>
+        android:background="@drawable/camera_fab_background"
+        android:src="@drawable/ic_camera" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refreshContainer"

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.sckftr.android.app.adapter.BaseCursorAdapter;
@@ -150,14 +151,14 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
 
         getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
 
-        final SwipeRefreshLayout layout = (SwipeRefreshLayout) aq.id(R.id.refreshContainer).getView();
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+        final SwipeRefreshLayout srl = (SwipeRefreshLayout) aq.id(R.id.refreshContainer).getView();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) srl.getLayoutParams();
 
         layoutParams.topMargin = insets.top;
 
-        layout.setLayoutParams(layoutParams);
+        srl.setLayoutParams(layoutParams);
 
-        final RelativeLayout button = (RelativeLayout) aq.id(R.id.hiding).getView();
+        final ImageButton button = (ImageButton) aq.id(R.id.hiding).getView();
 
         layoutParams = (RelativeLayout.LayoutParams) button.getLayoutParams();
 

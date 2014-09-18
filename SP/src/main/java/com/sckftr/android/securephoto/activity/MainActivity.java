@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.SparseBooleanArray;
 
 import com.sckftr.android.app.activity.BaseSPActivity;
+import com.sckftr.android.securephoto.activity.manager.RefreshingManager;
 import com.sckftr.android.securephoto.data.FileAsyncTask;
 import com.sckftr.android.securephoto.db.Image;
 import com.sckftr.android.securephoto.fragment.GalleryFragment;
@@ -30,6 +31,9 @@ public class MainActivity extends BaseSPActivity {
 
     @Bean
     PhotoHelper photoHelper;
+
+    @Bean
+    RefreshingManager mRefreshingManager;
 
     private boolean saveLivingHint;
 
@@ -142,11 +146,10 @@ public class MainActivity extends BaseSPActivity {
         final SecuredFragment securedFragment = (SecuredFragment) findFragmentByTag(SecuredFragment.TAG);
 
         loadFragment(securedFragment != null ? securedFragment : SecuredFragment.build(), false, SecuredFragment.TAG);
-
     }
 
     public void showGalleryFragment() {
-        loadFragment(GalleryFragment.build(), false, GalleryFragment.TAG);
+        loadFragment(GalleryFragment.build(), true, GalleryFragment.TAG);
     }
 
     /**
@@ -159,11 +162,13 @@ public class MainActivity extends BaseSPActivity {
         photoHelper.secureNewPhotos(items, cursor, new Procedure<String>() {
             @Override
             public void apply(String dialog) {
-                //TODO
+                mRefreshingManager.refreshing(false);
             }
         });
 
         showSecuredFragment();
+
+        mRefreshingManager.refreshing(true);
     }
 
     public void unSecurePhotos(SparseBooleanArray items, Cursor cursor) {
@@ -173,6 +178,26 @@ public class MainActivity extends BaseSPActivity {
     public void deletePhotos(SparseBooleanArray items, Cursor cursor) {
         photoHelper.deletePhotos(items, cursor);
     }
+
+    /**
+     * ******************************************************
+     * /** Refreshing
+     * /********************************************************
+     */
+
+    public void subscribeOnRefreshing(Procedure<Boolean> listener) {
+        mRefreshingManager.subscribe(listener);
+    }
+
+    public void unSubscribeOnRefreshing(Procedure<Boolean> listener) {
+        mRefreshingManager.unSubscribe(listener);
+    }
+
+    /**
+     * ******************************************************
+     * /** User living hint
+     * /********************************************************
+     */
 
     public void setSaveLivingHint(boolean saveLivingHint) {
         this.saveLivingHint = saveLivingHint;

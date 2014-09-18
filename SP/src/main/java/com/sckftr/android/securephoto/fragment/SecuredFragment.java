@@ -1,6 +1,7 @@
 package com.sckftr.android.securephoto.fragment;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Loader;
 import android.database.Cursor;
@@ -27,7 +28,7 @@ import org.androidannotations.annotations.OptionsItem;
  * Created by Dzianis_Roi on 19.08.2014.
  */
 @EFragment
-public class SecuredFragment extends ImageGridFragment implements AdapterView.OnItemClickListener {
+public class SecuredFragment extends ImageGridFragment implements AdapterView.OnItemClickListener, Procedure<Boolean> {
 
     public static final String TAG = "SecuredFragment";
 
@@ -54,6 +55,20 @@ public class SecuredFragment extends ImageGridFragment implements AdapterView.On
 
             API.images().setPlaceholder(R.drawable.ic_blue_lock);
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        ((MainActivity) activity).subscribeOnRefreshing(this);
+    }
+
+    @Override
+    public void onDetach() {
+        getMainActivity().unSubscribeOnRefreshing(this);
+
+        super.onDetach();
     }
 
     @OptionsItem
@@ -151,5 +166,10 @@ public class SecuredFragment extends ImageGridFragment implements AdapterView.On
 
     public static Fragment build() {
         return SecuredFragment_.builder().build();
+    }
+
+    @Override
+    public void apply(Boolean dialog) {
+        setRefreshing(dialog);
     }
 }

@@ -5,12 +5,16 @@
         <item name="android:homeAsUpIndicator">@drawable/ic_up</item>
         <item name="android:actionOverflowButtonStyle">@style/ActionButton.Overflow</item>
         <item name="android:actionBarStyle">@style/Widget.SP.ActionBar</item>
+
+        <item name="android:windowAnimationStyle">@style/Window.SP.Animation.SlideFromBottom</item>
     </style>
 
     <style name="Theme.SP.Base" parent="Theme">
 
         <item name="grey_shade">@color/light_gray</item>
         <item name="default_inset_color">@color/primary_dark_60</item>
+
+
     </style>
 
     <style name="Theme.SP" parent="Theme.SP.Base">
@@ -27,6 +31,7 @@
 
     <style name="Theme.SP.Start" parent="Theme.SP.NoActionBar">
         <item name="android:windowBackground">@drawable/bg_start</item>
+
     </style>
 
     <style name="Theme.SP.Settings" parent="Theme.SP.Base">
@@ -36,5 +41,6 @@
 
     <style name="Theme.SP.Detail">
         <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowAnimationStyle">@style/Window.SP.Animation</item>
     </style>
 </resources>
