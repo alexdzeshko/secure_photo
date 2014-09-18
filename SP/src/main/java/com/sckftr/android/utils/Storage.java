@@ -97,6 +97,10 @@ public class Storage {
             return secureUri;
         }
 
+        public static String createKeyString() {
+            return String.valueOf(System.currentTimeMillis());
+        }
+
         public static Uri getPublicUri(Uri uri) {
 
             Uri publicUri = Uri.parse(Uri.fromFile(getPublicFolder()).toString() + File.separator + uri.getLastPathSegment());

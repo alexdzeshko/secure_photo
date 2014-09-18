@@ -66,7 +66,10 @@ public class SecuredFragment extends ImageGridFragment implements AdapterView.On
 
     @Override
     public void onDetach() {
-        getMainActivity().unSubscribeOnRefreshing(this);
+
+        MainActivity mainActivity = getMainActivity();
+
+        if (mainActivity != null) mainActivity.unSubscribeOnRefreshing(this);
 
         super.onDetach();
     }

@@ -17,6 +17,7 @@ import com.sckftr.android.securephoto.fragment.SecuredFragment;
 import com.sckftr.android.securephoto.helper.PhotoHelper;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.Procedure;
+import com.sckftr.android.utils.Storage;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -26,8 +27,6 @@ import java.util.ArrayList;
 
 @EActivity
 public class MainActivity extends BaseSPActivity {
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Bean
     PhotoHelper photoHelper;
@@ -79,18 +78,17 @@ public class MainActivity extends BaseSPActivity {
 
                 if (resultCode != Activity.RESULT_OK) {
 
+                    mRefreshingManager.refreshing(false);
+
                     new FileAsyncTask().deleteFile(uri);
 
-                    return;
+                } else {
+
+                    API.data().cryptonize(new ArrayList<Image>(1) {{
+                        add(new Image(Storage.Images.createKeyString(), uri.toString()));
+                    }}, null);
+                    
                 }
-
-                Image image = new Image(String.valueOf(System.currentTimeMillis()), uri.toString());
-
-                ArrayList<Image> images = new ArrayList<Image>(1);
-
-                images.add(image);
-
-                API.data().cryptonize(images, null);
             }
 
             getParams().remove(PhotoHelper.EXTRA_NEW_PHOTO);
