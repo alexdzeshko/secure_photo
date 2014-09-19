@@ -5,8 +5,10 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.sckftr.android.app.fragment.BaseFragment;
+import com.sckftr.android.app.view.HackyViewPager;
 import com.sckftr.android.securephoto.R;
 import com.sckftr.android.securephoto.activity.DetailActivity;
 import com.sckftr.android.securephoto.adapter.ViewPagerFragmentAdapter;
@@ -25,7 +27,7 @@ public class DetailFragment extends BaseFragment implements LoaderManager.Loader
     private static final String EXTRA_POSITION = "com.sckftr.android.securephoto.fragment.EXTRA_POSITION";
 
     @ViewById
-    ViewPager pager;
+    HackyViewPager pager;
 
     @FragmentArg
     int position;
@@ -47,6 +49,14 @@ public class DetailFragment extends BaseFragment implements LoaderManager.Loader
         pager.setOnPageChangeListener(this);
 
         pager.setPageMargin(DisplayMetricsUtil.getPx(getContext(), 16));
+
+        pager.setOnSingleTapListener(new HackyViewPager.OnSingleTapListener() {
+            @Override public void onSingleTap(View view) {
+
+                ((DetailActivity) getBaseActivity()).getSystemUiHelper().toggle();
+
+            }
+        });
 
         setHomeAsUp(true);
 
@@ -86,7 +96,6 @@ public class DetailFragment extends BaseFragment implements LoaderManager.Loader
     public void onPageSelected(int i) {
         mCurrentPosition = i;
 
-        ((DetailActivity) getBaseActivity()).delayedHide(5000);
     }
 
     @Override

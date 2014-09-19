@@ -53,7 +53,7 @@ public class SecuredFragment extends ImageGridFragment implements AdapterView.On
         if (!isDetached()) {
             getActivityParams().putString(EXTRA.CURRENT_FRAGMENT, TAG);
 
-            API.images().setPlaceholder(R.drawable.ic_blue_lock);
+            API.images().setPlaceholder(R.drawable.placeholder);
         }
     }
 

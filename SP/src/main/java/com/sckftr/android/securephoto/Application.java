@@ -3,7 +3,6 @@ package com.sckftr.android.securephoto;
 import org.androidannotations.annotations.EApplication;
 
 import by.mcreader.imageloader.SuperImageLoader;
-import by.mcreader.imageloader.SuperImageLoaderCore;
 
 @EApplication
 public class Application extends android.app.Application {
@@ -20,7 +19,7 @@ public class Application extends android.app.Application {
         final int cacheSize = (int) (Runtime.getRuntime().maxMemory() / 4);
 
         mSuperImageLoader = new SuperImageLoader.ImageLoaderBuilder(this)
-                .setPlaceholder(R.drawable.ic_blue_lock)
+                .setPlaceholder(R.drawable.placeholder)
                 .enableFadeIn(true)
                 .setDiscCacheEnabled(false)
                 .setMemoryCacheEnabled(true)

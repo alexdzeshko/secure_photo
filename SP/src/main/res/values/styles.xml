@@ -17,6 +17,10 @@
         <item name="android:background">@color/primary_dark_60</item>
     </style>
 
+    <style name="Widget.SP.ActionBar.Solid.Dark">
+        <item name="android:background">@color/bg_black_transparent</item>
+    </style>
+
     <style name="Widget.SP.ActionBar.Solid.NoIcon">
         <item name="android:icon">@drawable/btn_up_increaser</item>
     </style>
