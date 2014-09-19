@@ -2,7 +2,6 @@ package com.sckftr.android.app.fragment;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
@@ -228,7 +227,7 @@ public abstract class BaseFragment extends InsetAwareFragment implements AppCons
 
             refreshContainer.setOnRefreshListener(this);
 
-            refreshContainer.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+            refreshContainer.setColorSchemeResources(R.color.progress1, R.color.progress2, R.color.progress3, R.color.progress4);
         }
     }
 

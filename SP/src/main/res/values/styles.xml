@@ -43,16 +43,6 @@
 
     </style>
 
-    <!--<style name="Window.SP.Animation.SlideSide">-->
-        <!--<item name="android:windowEnterAnimation">@null</item>-->
-        <!--<item name="android:windowExitAnimation">@null</item>-->
-
-        <!--<item name="android:activityOpenEnterAnimation">@anim/window_slide_in_bottom</item>-->
-        <!--<item name="android:activityOpenExitAnimation">@anim/window_slide_out_bottom</item>-->
-        <!--<item name="android:activityCloseEnterAnimation">@anim/window_slide_in_bottom</item>-->
-        <!--<item name="android:activityCloseExitAnimation">@anim/window_slide_out_bottom</item>-->
-    <!--</style>-->
-
     <style name="Window.SP.Animation.No" >
         <item name="android:windowEnterAnimation">@null</item>
         <item name="android:windowExitAnimation">@null</item>

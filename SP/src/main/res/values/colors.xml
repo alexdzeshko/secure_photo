@@ -21,6 +21,10 @@
     <color name="primary_inverse_dark">#0097a7</color>
     <color name="primary_inverse_light">#b2ebf2</color>
 
+    <color name="progress1">#0B58E1</color>
+    <color name="progress2">#0C97EB</color>
+    <color name="progress3">#00BCD4</color>
+    <color name="progress4">#0CEBC7</color>
 
     <color name="chrome_background">#E6E6E6E6</color>
     <color name="chrome_custom_background_alpha">#E6FFFFFF</color>

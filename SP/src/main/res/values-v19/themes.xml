@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<style name="Theme.SP.Base" parent="android:Theme.Holo.Light">
-
-
-        <item name="android:actionOverflowButtonStyle">@style/ActionButton.Overflow</item>
-        <item name="android:actionBarStyle">@style/Widget.SP.ActionBar</item>
-
-        <item name="grey_shade">@color/light_gray</item>
-        <item name="default_inset_color">@color/primary_dark_60</item>
-    </style>-->
 
     <style name="Theme.SP" parent="Theme.SP.Base">
 
