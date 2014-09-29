@@ -12,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -20,8 +19,6 @@ import android.widget.RelativeLayout;
 import com.sckftr.android.app.adapter.BaseCursorAdapter;
 import com.sckftr.android.app.fragment.SickAdapterViewFragment;
 import com.sckftr.android.securephoto.R;
-import com.sckftr.android.securephoto.activity.DetailActivity;
-import com.sckftr.android.securephoto.activity.MainActivity;
 
 import by.mcreader.imageloader.listener.PauseScrollListener;
 
@@ -149,7 +146,10 @@ public abstract class ImageGridFragment extends SickAdapterViewFragment<GridView
         final int spacing = getResources().getDimensionPixelSize(R.dimen.dim_small);
         final int margin = getResources().getDimensionPixelSize(R.dimen.unit3);
 
-        getAdapterView().setPadding(insets.left + spacing, insets.top + spacing, insets.right + spacing, insets.bottom + spacing);
+        getAdapterView().setPadding(insets.left,// + spacing,
+                insets.top + spacing,
+                insets.right,// + spacing,
+                insets.bottom + spacing);
 
         final SwipeRefreshLayout srl = (SwipeRefreshLayout) aq.id(R.id.refreshContainer).getView();
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) srl.getLayoutParams();

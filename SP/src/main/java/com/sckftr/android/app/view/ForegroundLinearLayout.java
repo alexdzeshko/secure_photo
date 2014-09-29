@@ -16,6 +16,7 @@
 
 package com.sckftr.android.app.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -34,6 +35,7 @@ public class ForegroundLinearLayout extends LinearLayout implements Checkable {
     private boolean mChecked;
 
     private Drawable mForeground;
+    private Drawable mCheckedDrawable;
 
     private final Rect mSelfBounds = new Rect();
     private final Rect mOverlayBounds = new Rect();
@@ -42,10 +44,11 @@ public class ForegroundLinearLayout extends LinearLayout implements Checkable {
 
     private boolean mForegroundBoundsChanged = false;
 
-    @Override
+    @SuppressLint("NewApi") @Override
     public void setChecked(boolean checked) {
         mChecked = checked;
-        setBackgroundResource(checked ? R.drawable.bg_checkable_item : 0);//todo extract attrs
+
+        invalidate();
     }
 
     @Override
@@ -79,6 +82,8 @@ public class ForegroundLinearLayout extends LinearLayout implements Checkable {
         if (d != null) {
             setForeground(d);
         }
+
+        mCheckedDrawable = a.getDrawable(R.styleable.ForegroundLinearLayout_checkedDrawable);
 
         a.recycle();
     }
@@ -203,6 +208,15 @@ public class ForegroundLinearLayout extends LinearLayout implements Checkable {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
+        if(mCheckedDrawable != null && mChecked) {
+            final Drawable checkground = mCheckedDrawable;
+
+            checkground.setAlpha(100);
+            final Rect overlayBounds = mOverlayBounds;
+            checkground.setBounds(overlayBounds);
+
+            checkground.draw(canvas);
+        }
         if (mForeground != null) {
             final Drawable foreground = mForeground;
 

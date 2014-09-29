@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="@dimen/column_width"
+        android:horizontalSpacing="@dimen/unit.5"
+        android:verticalSpacing="@dimen/unit.5"
         android:numColumns="auto_fit"
         android:drawSelectorOnTop="true"
         android:clipToPadding="false"
@@ -71,8 +73,7 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refreshContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context="com.epam.mgov.MainActivity">
+        android:layout_height="wrap_content">
 
         <View
             android:layout_width="match_parent"
