@@ -40,5 +40,7 @@
     <!--========= Notification ==========-->
     <string name="restoring_in_progress">Restoring in progress</string>
     <string name="restoring_completed">Restoring completed</string>
+    <string name="settings_category_system">System</string>
+    <string name="settings_item_change_algorithm">Change cipher algorithm</string>
 
 </resources>

@@ -7,11 +7,13 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
 import com.sckftr.android.app.ServiceConst;
@@ -158,7 +160,11 @@ public class DataApi implements AppConst {
 
             ArrayList<Cryptonite> items = new ArrayList<Cryptonite>(max);
 
-            for (int i = 0; i < max; i++) if (c.moveToPosition(i)) items.add(new Image(c));
+            for (int i = 0; i < max; i++) {
+                if (c.moveToPosition(i)) {
+                    items.add(new Image(c));
+                }
+            }
 
             CursorUtils.close(c);
 
@@ -221,6 +227,24 @@ public class DataApi implements AppConst {
                 null,
                 null,
                 Contracts.ImageContract._ID + " DESC");
+    }
+
+    public void getCryptedImagesCount(@NonNull Context context, @NonNull final Procedure<Integer> callback) {
+        new AsyncTask<Context, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Context... params) {
+                Cursor query = params[0].getContentResolver().query(ContractUtils.getUri(Contracts.ImageContract.class),
+                        null, null, null, null);
+                int count = query.getCount();
+                CursorUtils.close(query);
+                return count;
+            }
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                callback.apply(integer);
+            }
+        }.execute(context);
     }
 
     public CursorLoader getGalleryImagesCursorLoader(Context context) {

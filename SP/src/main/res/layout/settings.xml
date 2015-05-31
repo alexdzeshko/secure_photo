@@ -16,7 +16,7 @@
         android:textAllCaps="true"
         android:textColor="@color/primary_inverse_dark"
         android:textSize="@dimen/textMidi"
-        android:layout_marginBottom="@dimen/unit2"
+        android:layout_marginBottom="@dimen/unit"
         android:paddingLeft="@dimen/unit"
         android:paddingRight="@dimen/unit"
         app:font="roboto_condensed_bold" />
@@ -40,9 +40,44 @@
         android:paddingRight="@dimen/unit"
         app:font="roboto_light" />
 
+    <include layout="@layout/divider" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unit2" />
+
+    <com.sckftr.android.app.view.AutofitTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/settings_category_system"
+        android:textAllCaps="true"
+        android:textColor="@color/primary_inverse_dark"
+        android:textSize="@dimen/textMidi"
+        android:layout_marginBottom="@dimen/unit"
+        android:paddingLeft="@dimen/unit"
+        android:paddingRight="@dimen/unit"
+        app:font="roboto_condensed_bold" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_grey_transparent" />
+
+    <com.sckftr.android.app.view.FontTextView
+        android:id="@+id/changeAlgorithm"
+        android:background="@drawable/bg_on_press_highlight"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_item_change_algorithm"
+        android:textSize="18sp"
+        android:paddingTop="@dimen/unit"
+        android:paddingBottom="@dimen/unit"
+        android:paddingLeft="@dimen/unit"
+        android:paddingRight="@dimen/unit"
+        app:font="roboto_light" />
+
+    <include layout="@layout/divider" />
 
 </LinearLayout>

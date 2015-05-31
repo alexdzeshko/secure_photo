@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.sckftr.android.securephoto.AppConst;
+import com.sckftr.android.securephoto.fragment.SettingsFragment;
 import com.sckftr.android.securephoto.helper.UserHelper;
 import com.sckftr.android.utils.Storage;
 import com.sckftr.android.utils.Strings;
@@ -70,7 +71,7 @@ public class Cryptograph {
 
         try {
 
-            Cipher cipher = Cipher.getInstance("AES");
+            Cipher cipher = Cipher.getInstance(SettingsFragment.Algorithm.AES.name());
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKeySpec(key));
 
             File file = new File(securedUri.getPath());
@@ -121,7 +122,7 @@ public class Cryptograph {
 
         try {
 
-            Cipher cipher = Cipher.getInstance("AES");
+            Cipher cipher = Cipher.getInstance(SettingsFragment.Algorithm.AES.name());
 
             cipher.init(Cipher.DECRYPT_MODE, getSecretKeySpec(key));
 
